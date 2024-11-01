@@ -1,9 +1,7 @@
-
-import express from "express";
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import * as dotenv from 'dotenv'; 
 import * as readline from 'readline'; 
-import { submitTransaction, signTx, getVaults } from "@intuweb3/exp-node";
+import { submitTransaction, signTx, getVault } from "@intuweb3/exp-node";
 
 dotenv.config()
 
@@ -16,11 +14,10 @@ const signer = wallet.connect(provider);
 (async () => {
     const publicAddress = await signer.getAddress();
     console.log(`\n***Asset Manager ${publicAddress} connected***`); 
-
     // Run the main function
-main().catch((error) => {
-    console.error('Error:', error);
-});
+    main().catch((error) => {
+        console.error('Error:', error);
+    });
 })(); 
 
 // Create an interface for reading input from the terminal
@@ -55,9 +52,11 @@ async function main() {
         return; 
     }
 
-    const managedVaults = await getVaults(signer.address,signer.provider); 
+    //const managedVaults = await getVaultsWithoutTransactions(signer.address,signer.provider); 
 
-    const vault = managedVaults.find(v => v.masterPublicAddress === vaultAddress); 
+    //const vault = managedVaults.find(v => v.masterPublicAddress === vaultAddress); 
+
+    const vault = await getVault(vaultAddress,signer.provider);
 
     if(!vault) {
         console.log('No Managed account found for address: '+vaultAddress); 
