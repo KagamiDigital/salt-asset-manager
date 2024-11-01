@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "ES2022", // target JS to compile TS code to
+      "forceConsistentCasingInFileNames": true,
+      "strict": false,
+      "skipLibCheck": true,
+      "outDir": "./dist/lib",
+      "typeRoots": ["./node_modules/@types"],
+      "allowJs": false,
+      "moduleResolution": "bundler"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"],
+    "lib":["ES2022"] // type definitions to be included, does not change compilation outputs
+  }

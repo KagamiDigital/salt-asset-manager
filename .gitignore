@@ -1,0 +1,8 @@
+/node_modules
+dist/
+.env
+index.js
+TODO.md
+/logs/*.log
+
+*.sublime-*
