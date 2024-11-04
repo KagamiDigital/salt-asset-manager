@@ -77,7 +77,7 @@ async function main() {
 
     const amount = await askForInput(`Please enter the amount to transfer: `); 
 
-    if((+amount) <= 0) {
+    if((+amount) < 0) {
         console.log('You need a valid amount to propose a transaction');  
         return; 
     }
