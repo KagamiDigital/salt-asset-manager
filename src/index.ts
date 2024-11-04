@@ -1,7 +1,7 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import * as dotenv from 'dotenv'; 
 import * as readline from 'readline'; 
-import { submitTransaction, signTx, getVault } from "@intuweb3/exp-node";
+import { submitTransaction, signTx, getVault, getVaultsWithoutTransactions } from "@intuweb3/exp-node";
 
 dotenv.config()
 
@@ -9,15 +9,29 @@ const provider = new ethers.providers.StaticJsonRpcProvider({url: process.env.RP
 const sepoliaProvider = new ethers.providers.StaticJsonRpcProvider({url: process.env.SEPOLIA_NODE_URL || "",skipFetchSetup:true});
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 
+const ETH_SEPOLIA = '11155111'; 
+
 const signer = wallet.connect(provider);
 
 (async () => {
     const publicAddress = await signer.getAddress();
     console.log(`\n***Asset Manager ${publicAddress} connected***`); 
     // Run the main function
-    main().catch((error) => {
-        console.error('Error:', error);
-    });
+    let done = false; 
+    while(!done) {
+        const input = await askForInput('Do you wish to make a native currency transfer [yes/no]: '); 
+        if(input === 'yes') {
+            await main().catch((error) => {
+                console.error('Error:', error);
+            });
+        } else if(input === 'no') {
+            done = true; 
+        } else {
+            console.log('Please enter a valid choice'); 
+            console.log('Do you wish to make a transaction [yes/no]: ');
+        }
+    }
+    rl.close(); 
 })(); 
 
 // Create an interface for reading input from the terminal
@@ -37,43 +51,46 @@ function askForInput(question: string): Promise<string> {
 
 // Main function to run the input logic
 async function main() {
-    const newTx = await askForInput('\nPropose a new transaction? [yes/no] ');
-
-    if(newTx !== 'yes') {
-        rl.close();
-        return;  
-    }
 
     const vaultAddress = await askForInput(`\nPlease enter the account address from where you wish to execute the transfer: `);
 
     if(!ethers.utils.isAddress(vaultAddress)) {
-        console.log('You need a valid account address to propose a transaction'); 
-        rl.close(); 
+        console.log('You need a valid account address to propose a transaction');  
         return; 
     }
 
-    //const managedVaults = await getVaultsWithoutTransactions(signer.address,signer.provider); 
+    const managedVaults = await getVaultsWithoutTransactions(signer.address,signer.provider); 
 
-    //const vault = managedVaults.find(v => v.masterPublicAddress === vaultAddress); 
-
-    const vault = await getVault(vaultAddress,signer.provider);
+    const vault = managedVaults.find(v => v.masterPublicAddress === vaultAddress); 
 
     if(!vault) {
         console.log('No Managed account found for address: '+vaultAddress); 
-        rl.close(); 
         return; 
     }
-    const nonce = await sepoliaProvider.getTransactionCount(vault.masterPublicAddress); 
 
-    console.log(nonce); 
+    const recipient = await askForInput(`Please enter the recipient's address: `); 
+
+    if(!ethers.utils.isAddress(recipient)) {
+        console.log('You need a valid recipient address to propose a transaction');  
+        return; 
+    }
+
+    const amount = await askForInput(`Please enter the amount to transfer: `); 
+
+    if((+amount) <= 0) {
+        console.log('You need a valid amount to propose a transaction');  
+        return; 
+    }
+        
+    const nonce = await sepoliaProvider.getTransactionCount(vault.masterPublicAddress); 
 
     // get the fee data on the broadcasting network
     const feeData = await sepoliaProvider.getFeeData();
     
     const submitTransactionTx = await submitTransaction(
-        '0x447603546Ee18245d1640Aaa5150eB3A328256EF',
-        '0.00001',
-        '11155111',
+        recipient,
+        amount,
+        ETH_SEPOLIA,
         nonce,
         '',
         BigNumber.from(feeData.gasPrice).toNumber(),
@@ -96,9 +113,9 @@ async function main() {
     console.log('transaction submitted successfully',eventData.txId); 
 
     console.log('Please review the transaction details:'); 
-    console.log('recipient: 0x447603546Ee18245d1640Aaa5150eB3A328256EF'); 
-    console.log('amount: 00001 SEPOLIA ETH');
-    console.log('chainId: 11155111'); 
+    console.log('recipient: '+recipient); 
+    console.log('amount: '+amount);
+    console.log('chainId: '+ETH_SEPOLIA); 
     console.log('nonce: '+nonce); 
     console.log('gasPrice: '+ BigNumber.from(feeData.gasPrice).toNumber()); 
     console.log('gas: 21000'); 
@@ -107,7 +124,6 @@ async function main() {
 
     if(approval !== 'yes') {
         console.log('transaction proposal cannot carry on without the signature'); 
-        rl.close(); 
         return;
     }
 
@@ -116,6 +132,4 @@ async function main() {
     await tx.wait(); 
 
     console.log('transaction signed successfully'); 
-
-    rl.close();
 }
