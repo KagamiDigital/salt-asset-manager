@@ -12,7 +12,8 @@ Node.js is a required dependency to be able to install and run the the Asset Man
 
 1. clone the repository to your local machine
 2. npm install
-3. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from. 
+3. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from.
+4. (optional) change the broadcasting network 
 
 
 ## Using the asset Manager Bot
@@ -22,6 +23,15 @@ Node.js is a required dependency to be able to install and run the the Asset Man
 ### Notes
 This repository is meant to serve as a starter pack, we encourage you to update the code, improve it, and propose changes as you see fit.
 
+### Important Considerations
+The orchestration network cannot be change, as of now SALT uses Arbitrum Sepolia for account orchestration.
+As of now Salt supports the following networks to broadcast transactions:
+- Ethereum Sepolia
+- Base Sepolia
+- Moonbase Alpha
+- Polygon Amoy
+
+The RPC nodes supplied by default in the .env.sample file are free nodes, the repository has been tested using these nodes, however you are free to switch them to improve your experience. 
 
 
 
