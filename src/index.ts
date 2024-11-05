@@ -1,17 +1,18 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import * as dotenv from 'dotenv'; 
 import * as readline from 'readline'; 
-import { submitTransaction, signTx, getVault, getVaultsWithoutTransactions } from "@intuweb3/exp-node";
+import { submitTransaction, signTx, getVaultsWithoutTransactions } from "@intuweb3/exp-node";
 
 dotenv.config()
 
-const provider = new ethers.providers.StaticJsonRpcProvider({url: process.env.RPC_NODE_URL || "",skipFetchSetup:true});
-const sepoliaProvider = new ethers.providers.StaticJsonRpcProvider({url: process.env.SEPOLIA_NODE_URL || "",skipFetchSetup:true});
+const orchestration_network_provider = new ethers.providers.StaticJsonRpcProvider({url: process.env.ORCHESTRATION_NETWORK_RPC_NODE_URL || "",skipFetchSetup:true});
+const broadcasting_network_provider = new ethers.providers.StaticJsonRpcProvider({url: process.env.BROADCASTING_NETWORK_RPC_NODE_URL || "",skipFetchSetup:true});
+
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 
-const ETH_SEPOLIA = '11155111'; 
+const ETH_SEPOLIA = process.env.BROADCASTING_NETWORK_ID; 
 
-const signer = wallet.connect(provider);
+const signer = wallet.connect(orchestration_network_provider);
 
 (async () => {
     const publicAddress = await signer.getAddress();
@@ -82,10 +83,10 @@ async function main() {
         return; 
     }
         
-    const nonce = await sepoliaProvider.getTransactionCount(vault.masterPublicAddress); 
+    const nonce = await broadcasting_network_provider.getTransactionCount(vault.masterPublicAddress); 
 
     // get the fee data on the broadcasting network
-    const feeData = await sepoliaProvider.getFeeData();
+    const feeData = await broadcasting_network_provider.getFeeData();
     
     const submitTransactionTx = await submitTransaction(
         recipient,
