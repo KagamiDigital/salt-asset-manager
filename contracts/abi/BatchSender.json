@@ -1,0 +1,17 @@
+{
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address[]",
+					"name": "_recipients",
+					"type": "address[]"
+				}
+			],
+			"name": "multisendEther",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		}
+	]
+}

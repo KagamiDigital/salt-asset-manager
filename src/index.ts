@@ -2,6 +2,7 @@ import { BigNumber, ContractTransaction, ethers } from "ethers";
 import * as dotenv from 'dotenv'; 
 import * as readline from 'readline'; 
 import { submitTransaction, signTx, getVaultsWithoutTransactions } from "@intuweb3/exp-node";
+import BatchSender from "../contracts/abi/BatchSender.json"
 
 dotenv.config()
 
@@ -9,8 +10,6 @@ const orchestration_network_provider = new ethers.providers.StaticJsonRpcProvide
 const broadcasting_network_provider = new ethers.providers.StaticJsonRpcProvider({url: process.env.BROADCASTING_NETWORK_RPC_NODE_URL || "",skipFetchSetup:true});
 
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
-
-const ETH_SEPOLIA = process.env.BROADCASTING_NETWORK_ID; 
 
 const signer = wallet.connect(orchestration_network_provider);
 
@@ -20,9 +19,9 @@ const signer = wallet.connect(orchestration_network_provider);
     // Run the main function
     let done = false; 
     while(!done) {
-        const input = await askForInput('Do you wish to make a native currency transfer [yes/no]: '); 
+        const input = await askForInput('Do you wish to make a new batch native currency transfers [yes/no]: '); 
         if(input === 'yes') {
-            await main().catch((error) => {
+            await mainBatch().catch((error) => {
                 console.error('Error:', error);
             });
         } else if(input === 'no') {
@@ -51,7 +50,7 @@ function askForInput(question: string): Promise<string> {
 }
 
 // Main function to run the input logic
-async function main() {
+async function mainBatch() {
 
     const vaultAddress = await askForInput(`\nPlease enter the account address from where you wish to execute the transfer: `);
 
@@ -69,14 +68,22 @@ async function main() {
         return; 
     }
 
-    const recipient = await askForInput(`Please enter the recipient's address: `); 
+    const recipient = await askForInput(`Please enter the recipient's address: `);
+    const recipientArray = []
+    for (let i = 0; i < 50; i++) {
+        recipientArray.push(recipient); 
+    }
+
+    
+    const BatchSenderContractInterface = new ethers.utils.Interface(BatchSender.abi); 
+    const data = BatchSenderContractInterface.encodeFunctionData('multisendEther',[recipientArray])
 
     if(!ethers.utils.isAddress(recipient)) {
         console.log('You need a valid recipient address to propose a transaction');  
         return; 
     }
 
-    const amount = await askForInput(`Please enter the amount to transfer: `); 
+    const amount = 0.001; 
 
     if((+amount) < 0) {
         console.log('You need a valid amount to propose a transaction');  
@@ -87,15 +94,17 @@ async function main() {
 
     // get the fee data on the broadcasting network
     const feeData = await broadcasting_network_provider.getFeeData();
+
+    const gas = 500000; // 7392 units of gas / transaction in the batch
     
     const submitTransactionTx = await submitTransaction(
-        recipient,
+        process.env.BATCH_SENDER_SC_POLYGON_AMOY_ADDRESS,
         amount,
-        ETH_SEPOLIA,
+        process.env.BROADCASTING_NETWORK_ID,
         nonce,
-        '',
+        data,
         BigNumber.from(feeData.gasPrice).toNumber(),
-        21000,
+        gas,
         vault.vaultAddress,
         signer,
         'SERVER',
@@ -110,16 +119,13 @@ async function main() {
         txInfo: event.args[1],
       };
 
-    
     console.log('transaction submitted successfully',eventData.txId); 
-
     console.log('Please review the transaction details:'); 
-    console.log('recipient: '+recipient); 
     console.log('amount: '+amount);
-    console.log('chainId: '+ETH_SEPOLIA); 
+    console.log('chainId: '+process.env.BROADCASTING_NETWORK_ID); 
     console.log('nonce: '+nonce); 
-    console.log('gasPrice: '+ BigNumber.from(feeData.gasPrice).toNumber()); 
-    console.log('gas: 21000'); 
+    console.log('gasPrice: '+ ethers.utils.formatEther(BigNumber.from(feeData.gasPrice))); 
+    console.log('gas: '+gas); 
 
     const approval = await askForInput(`\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `);
 
@@ -132,5 +138,7 @@ async function main() {
     
     await tx.wait(); 
 
-    console.log('transaction signed successfully'); 
+    console.log('transaction signed successfully');
+
+    console.log(`visit https://sepolia.arbiscan.io/address/${vault.vaultAddress} to follow along the orchestration in real time`); 
 }
