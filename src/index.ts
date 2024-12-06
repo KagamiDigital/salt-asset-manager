@@ -98,7 +98,7 @@ async function mainBatch() {
     const gas = 500000; // 7392 units of gas / transaction in the batch
     
     const submitTransactionTx = await submitTransaction(
-        process.env.BATCH_SENDER_SC_POLYGON_AMOY_ADDRESS,
+        process.env.BATCH_SENDER_SC_ADDRESS,
         amount,
         process.env.BROADCASTING_NETWORK_ID,
         nonce,
