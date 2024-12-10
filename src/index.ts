@@ -2,6 +2,7 @@ import { BigNumber, ContractTransaction, ethers } from "ethers";
 import * as dotenv from 'dotenv'; 
 import * as readline from 'readline'; 
 import { submitTransaction, signTx, getVaultsWithoutTransactions } from "@intuweb3/exp-node";
+import { preRegisterBot, registerBot } from "./setup";
 
 dotenv.config()
 
@@ -20,16 +21,20 @@ const signer = wallet.connect(orchestration_network_provider);
     // Run the main function
     let done = false; 
     while(!done) {
-        const input = await askForInput('Do you wish to make a native currency transfer [yes/no]: '); 
-        if(input === 'yes') {
+        const input = await askForInput('Do you wish to: \n [1] make a native currency transfer \n [2] setup the asset manager bot \n [3] exit \n'); 
+        if(input === '1') {
             await main().catch((error) => {
                 console.error('Error:', error);
             });
-        } else if(input === 'no') {
+        } else if(input === '2') {
+            await setup().catch((error) => {
+                console.log('Error:', error); 
+            })
+        } else if(input === '3') {
             done = true; 
         } else {
             console.log('Please enter a valid choice'); 
-            console.log('Do you wish to make a transaction [yes/no]: ');
+            console.log('Do you wish to: \n [1] make a native currency transfer \n [2] setup the asset manager bot \n [3] exit \n');
         }
     }
     rl.close(); 
@@ -48,6 +53,32 @@ function askForInput(question: string): Promise<string> {
             resolve(answer);
         });
     });
+}
+
+async function setup() {
+
+    const vaultAddress = await askForInput(`\nPlease enter the VAULT address from which you want to add the asset manager bot to: `); 
+
+    if(!ethers.utils.isAddress(vaultAddress)) {
+        console.log('You need a valid account address to proceed.');  
+        return; 
+    }
+
+    let done = false; 
+
+    while(!done) {
+        const input = await askForInput('Do you wish to: \n [1] pre-register the bot \n [2] register the bot \n [3] exit \n Please choose one of the options listed above: \n '); 
+        if(input === '1') {
+            await preRegisterBot(vaultAddress, signer,orchestration_network_provider); 
+        } else if(input === '2') {
+            await registerBot(vaultAddress, signer, orchestration_network_provider); 
+        } else if(input === '3') {
+            done = true; 
+        } else {
+            console.log('Please enter a valid choice'); 
+            console.log('Do you wish to: \n [1] pre-register the bot \n [2] register the bot \n [3] exit \n Please choose one of the options listed above: \n');
+        }
+    }
 }
 
 // Main function to run the input logic
