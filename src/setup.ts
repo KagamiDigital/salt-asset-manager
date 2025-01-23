@@ -2,6 +2,7 @@ import { automateRegistration, getUserPreRegisterInfos, getUserRegistrationAllIn
 import { ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { orchestration_network_provider, signer } from "./constants";
+import { getUserIndex } from "@intuweb3/exp-node/lib/services/web3/utils";
 
 const preRegisterBot = async (accountAddress:string, bot:ethers.Signer, provider: ethers.providers.JsonRpcProvider) => {
     const botAddress = await bot.getAddress(); 
@@ -26,9 +27,13 @@ const preRegisterBot = async (accountAddress:string, bot:ethers.Signer, provider
 const registerBot = async (accountAddress:string, bot:ethers.Signer,provider:ethers.providers.JsonRpcProvider) => {
     const botAddress = await bot.getAddress(); 
     try {
-        const registerAllInfo = await getUserRegistrationAllInfos(accountAddress,botAddress,provider);
+        const botIdx = await getUserIndex(accountAddress,botAddress,provider); 
+        const registerAllInfo = await getUserRegistrationAllInfos(accountAddress,provider);
         
-        if(registerAllInfo.registered) {
+        console.log('the bot idx is ' +botIdx); 
+        console.log(registerAllInfo); 
+
+        if(registerAllInfo[botIdx] !== null && registerAllInfo[botIdx].registered) {
             console.log('The asset manager bot has already been registered'); 
             return; 
         }
@@ -41,7 +46,8 @@ const registerBot = async (accountAddress:string, bot:ethers.Signer,provider:eth
         console.log('registerAllSteps:start'); 
 
         const tx = await registerAllSteps(accountAddress, bot,undefined, 'wss://relay.nostrdice.com', undefined) as ethers.ContractTransaction
-        const res = await tx.wait(); 
+        
+        await tx.wait(); 
 
         console.log('registerAllSteps:success'); 
 
