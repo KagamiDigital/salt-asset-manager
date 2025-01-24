@@ -3,7 +3,6 @@ import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { getVaultsWithoutTransactions, signTx, submitTransaction } from "@intuweb3/exp-node";
 import { broadcasting_network_provider, signer } from "./constants";
-import FijaVault from "../contracts/Fija/abi/FijaVault.json"
 
 const fijaVaultContractAddress = '0x16aca5A3889cAaF62AF2346d302D60a93F6bB0D4'; 
 
