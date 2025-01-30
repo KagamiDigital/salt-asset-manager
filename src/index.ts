@@ -16,7 +16,6 @@ import { transaction } from "./transaction";
                 console.error('Error:', error);
             });
         } else if(input === '2') {
-            console.log('\x1b[32m' + 'CONFIGURED STRATEGY: AAVE ETH LIQUIDITY POOL (visit https://app.aave.com/)' + '\x1b[0m');
             const input = await askForInput('Do you wish to: \n [1] deposit into the strategy \n [2] approve funds withdrawal from the strategy \n [3] withdraw from the strategy \n [4] exit \n Please choose one of the options listed above: '); 
 
             if(input === '1') {
