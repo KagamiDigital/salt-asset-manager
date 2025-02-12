@@ -1,4 +1,4 @@
-# kagami-asset-manager
+# salt-asset-manager
 
 ## Introduction
 
