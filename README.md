@@ -1,4 +1,4 @@
-# salt-asset-manager
+# Salt Asset Manager
 
 ## Introduction
 
