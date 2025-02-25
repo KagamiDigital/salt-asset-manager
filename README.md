@@ -46,5 +46,5 @@ The orchestration network cannot be changed. Salt uses Arbitrum Sepolia for acco
 
 The RPC nodes supplied by default in the .env.sample file are free nodes. The repository has been tested using these nodes. You may want to switch to paid nodes to improve your experience. 
 
-If you wish to broadcast on a network that is not supported in the list, please contact the Salt team on [Discord](https://discord.com/invite/M4H8gbUy3B).
+If you wish to broadcast on a network that is not supported in the list, please contact the Salt team on [Discord](https://discord.gg/M4H8gbUy3B).
 
