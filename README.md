@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The asset manager bot is a starter pack for Salt asset managers. By setting up this software, you can propose transactions to Salt accounts that you are an authorised signer on. The transaction proposal will be picked up by Salt's backend, which will initiate the signing flow. 
+The asset manager bot is a starter pack for Salt asset managers. By setting up this software, you can propose transactions to Salt accounts that you are an authorised signer on. The transaction proposal will be picked up by Salt's backend, which will initiate the signing flow.
 
 ## Pre-requisites
 
@@ -21,7 +21,7 @@ The bot will need to be set up as a co-signers on a Salt account. To do this, it
 1. clone the repo to your local machine
 2. npm install
 3. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from. You must be a signer on this account.
-4. set BROADCASTING_NETWORK_RPC_NODE_URL, and BROADCASTING_NETWORK_ID to the broadcasting network of your choice from the [supported networks list](#supported-networks) below. 
+4. set BROADCASTING_NETWORK_RPC_NODE_URL, and BROADCASTING_NETWORK_ID to the broadcasting network of your choice from the [supported networks list](#supported-networks) below.
 
 ## Start the Asset Manager Bot
 
@@ -44,7 +44,6 @@ As of now Salt supports the following networks to broadcast transactions:
 
 The orchestration network cannot be changed. Salt uses Arbitrum Sepolia for account orchestration.
 
-The RPC nodes supplied by default in the .env.sample file are free nodes. The repository has been tested using these nodes. You may want to switch to paid nodes to improve your experience. 
+The RPC nodes supplied by default in the .env.sample file are free nodes. The repository has been tested using these nodes. You may want to switch to paid nodes to improve your experience.
 
 If you wish to broadcast on a network that is not supported in the list, please contact the Salt team on [Discord](https://discord.gg/UhDUBW9ymM).
-

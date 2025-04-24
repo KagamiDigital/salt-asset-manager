@@ -7,6 +7,93 @@ import {
 } from "@intuweb3/exp-node";
 import { broadcasting_network_provider, signer } from "./constants";
 
+export async function transaction_raw(
+  vaultAddress: string,
+  recipientAddress: string,
+  amount: string | Number,
+) {
+  if (!ethers.utils.isAddress(vaultAddress)) {
+    throw "You need a valid account address to propose a transaction";
+  }
+
+  if (!ethers.utils.isAddress(recipientAddress)) {
+    throw "You need a valid recipient address to propose a transaction";
+  }
+
+  // skips if string
+  if (+amount < 0) {
+    throw "You need a positive amount to propose a transaction";
+  }
+
+  const managedVaults = await getVaultsWithoutTransactions(
+    signer.address,
+    signer.provider,
+  );
+
+  const vault = managedVaults.find(
+    (v) => v.masterPublicAddress === vaultAddress,
+  );
+
+  const nonce = await broadcasting_network_provider.getTransactionCount(
+    vault.masterPublicAddress,
+  );
+
+  // get the fee data on the broadcasting network
+  const feeData = await broadcasting_network_provider.getFeeData();
+
+  const submitTransactionTx = await submitTransaction(
+    recipientAddress,
+    amount,
+    process.env.BROADCASTING_NETWORK_ID,
+    nonce,
+    "",
+    BigNumber.from(feeData.gasPrice).toNumber(),
+    21000,
+    vault.vaultAddress,
+    signer,
+    "SERVER",
+    false,
+  );
+
+  const submitTransactionResult = await (
+    submitTransactionTx as ContractTransaction
+  ).wait();
+  const submitTransactionEvents = submitTransactionResult.events;
+  const event = submitTransactionEvents[0];
+
+  const eventData = {
+    txId: event.args[0]._hex,
+    txInfo: event.args[1],
+  };
+
+  console.log("transaction submitted successfully", eventData.txId);
+
+  console.log("Note the transaction details:");
+  console.log("recipient: " + recipientAddress);
+  console.log("amount: " + amount);
+  console.log("chainId: " + process.env.BROADCASTING_NETWORK_ID);
+  console.log("nonce: " + nonce);
+  console.log(
+    "gasPrice: " +
+      ethers.utils
+        .parseEther(BigNumber.from(feeData.gasPrice).toString())
+        .toString(),
+  );
+  console.log("gas: 21000");
+  
+  // no approval
+
+  const tx = (await signTx(
+    vault.vaultAddress,
+    Number(eventData.txId),
+    signer,
+  )) as ethers.ContractTransaction;
+
+  await tx.wait();
+
+  console.log("transaction signed successfully");
+}
+
 export async function transaction() {
   const vaultAddress = await askForInput(
     `\nPlease enter the account address from where you wish to execute the transfer: `,
