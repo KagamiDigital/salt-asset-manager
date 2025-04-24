@@ -19,9 +19,9 @@ import { transaction } from "./transaction";
         console.error("Error:", error);
       });
     } else if (input === "2") {
-      const input = await askForInput(
-        "Do you wish to: \n [1] deposit into the strategy \n [2] approve funds withdrawal from the strategy \n [3] withdraw from the strategy \n [4] exit \n Please choose one of the options listed above: ",
-      );
+      const strategy_q =
+        "Do you wish to: \n [1] deposit into the strategy \n [2] approve funds withdrawal from the strategy \n [3] withdraw from the strategy \n [4] exit \n Please choose one of the options listed above: ";
+      const input = await askForInput(strategy_q);
 
       if (input === "1") {
         await deposit().catch((error) => {
@@ -39,9 +39,7 @@ import { transaction } from "./transaction";
         done = true;
       } else {
         console.log("Please enter a valid choice");
-        console.log(
-          "Do you wish to: \n [1] deposit into the strategy \n [2] approve funds withdrawal from the strategy \n [3] withdraw from the strategy \n [4] exit \n Please choose one of the options listed above: ",
-        );
+        console.log(strategy_q);
       }
     } else if (input === "3") {
       done = true;
