@@ -71,9 +71,11 @@ const registerBot = async (
     await automateRegistration(
       accountAddress,
       bot,
-      undefined,
+      // what and why?
+      // https://docs.intu.xyz/intu-sdk-functions/core-functionality/automateregistration/#parameters
+      // idk why this is here
+      // related to this?: https://github.com/nostrdice/nostrdice
       "wss://relay.nostrdice.com",
-      undefined,
     );
 
     console.log("automaticRegistration:success");
@@ -83,9 +85,6 @@ const registerBot = async (
     const tx = (await registerAllSteps(
       accountAddress,
       bot,
-      undefined,
-      "wss://relay.nostrdice.com",
-      undefined,
     )) as ethers.ContractTransaction;
 
     await tx.wait();
