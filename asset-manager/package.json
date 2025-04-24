@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "rm -rf dist && webpack && node dist/bundle.js",
     "buildwebpack": "rm -rf dist && webpack",

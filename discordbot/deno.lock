@@ -1,0 +1,66 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/collections@^1.0.10": "1.0.10",
+    "jsr:@std/toml@*": "1.0.4",
+    "npm:@discordeno/bot@*": "21.0.0"
+  },
+  "jsr": {
+    "@std/collections@1.0.10": {
+      "integrity": "903af106a3d92970d74e20f7ebff77d9658af9bef4403f1dc42a7801c0575899"
+    },
+    "@std/toml@1.0.4": {
+      "integrity": "8781e687d04c8fbe246b9c5714be01925792a94d943462c33777675ab557cff1",
+      "dependencies": [
+        "jsr:@std/collections"
+      ]
+    }
+  },
+  "npm": {
+    "@discordeno/bot@21.0.0": {
+      "integrity": "sha512-x6EcVHBvWIhjY5/lcwgZzzCiqdpKFZqu2qUaZqKb7RYS8L8Q8zY40hCnbToVehLB8+BGcnHzxCeEvWWg8tnT/g==",
+      "dependencies": [
+        "@discordeno/gateway",
+        "@discordeno/rest",
+        "@discordeno/types",
+        "@discordeno/utils"
+      ]
+    },
+    "@discordeno/gateway@21.0.0": {
+      "integrity": "sha512-ur5Hatd1x86PPI4UnXKghAWat3vS90NvLJcpOSu1B1gYSENRZow8dohZ8Ov58SXWq5nZVuBYDJNCR248pWJvrg==",
+      "dependencies": [
+        "@discordeno/types",
+        "@discordeno/utils",
+        "fzstd",
+        "ws"
+      ]
+    },
+    "@discordeno/rest@21.0.0": {
+      "integrity": "sha512-ew5ddhUd7Qyv/GSzCy42bEmRv0yr2PspCMsLD/NeMiTLd3+OrVN5pAxBN9z+9JpS/daiiD/PVmvuUAVx/nXTEw==",
+      "dependencies": [
+        "@discordeno/types",
+        "@discordeno/utils"
+      ]
+    },
+    "@discordeno/types@21.0.0": {
+      "integrity": "sha512-TUZAEqqlXRNQji+NCaQo8DruzI8rXbBvMaZYsZvN9f03PrdSddzMOy3cjs4eeL6ZMVocmMVRIaVnB713blylCw=="
+    },
+    "@discordeno/utils@21.0.0": {
+      "integrity": "sha512-I7I3Szlk+LkT/CRmJJiLPsjuBUjbuXUCvOzsgWCltkxDMIGmQeNoQtFK7t89V1Gcc4icsrnHVMho1BcaAITijg==",
+      "dependencies": [
+        "@discordeno/types"
+      ]
+    },
+    "fzstd@0.1.1": {
+      "integrity": "sha512-dkuVSOKKwh3eas5VkJy1AW1vFpet8TA/fGmVA5krThl8YcOVE/8ZIoEA1+U1vEn5ckxxhLirSdY837azmbaNHA=="
+    },
+    "ws@8.18.1": {
+      "integrity": "sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1"
+    ]
+  }
+}
