@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --watch bot.ts"
+    "dev": "deno run -A --watch bot.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"
