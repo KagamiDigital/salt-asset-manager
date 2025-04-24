@@ -1,3 +1,3 @@
 ```nushell
-deno run -A bot.ts
+deno task dev
 ```
