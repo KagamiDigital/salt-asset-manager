@@ -1,5 +1,6 @@
-import { createBot } from "npm:@discordeno/bot";
+import { createBot, InteractionTypes } from "npm:@discordeno/bot";
 import { parse } from "jsr:@std/toml";
+// import { InteractionTypes } from "npm:@discordeno/bot"
 
 // get cwd
 const cwd = Deno.cwd();
@@ -28,11 +29,12 @@ const bot = createBot({
 
 /// https://discordeno.js.org/docs/examples/reactionroles
 const transaction_command = {
-  name: "Salt Faucet",
+  name: "salt-faucet",
   description: "Provides tokens from the testing Salt account",
 };
 
-await bot.rest.upsertGlobalApplicationCommands([transaction_command]);
+let ret = await bot.rest.upsertGlobalApplicationCommands([transaction_command]);
+console.log("Finished", ret);
 
 export const event_handler: typeof bot.events.interactionCreate = async (
   interaction,
@@ -50,7 +52,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
     // const command = commands.get(interaction.data.name);
     // if (!command) return;
 
-    console.log("Handling slash command", interaction);
+    console.log("Handling slash command", interaction.data);
     // await command.execute(interaction, commandOptionsParser(interaction));
   }
 };
@@ -60,4 +62,5 @@ const events = {
 };
 bot.events = events;
 
+console.log("Starting");
 await bot.start();
