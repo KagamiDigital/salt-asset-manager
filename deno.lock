@@ -1,6 +1,8 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/collections@^1.0.10": "1.0.10",
+    "jsr:@std/toml@*": "1.0.4",
     "npm:@discordeno/bot@*": "21.0.0_bufferutil@4.0.9_utf-8-validate@5.0.10",
     "npm:@intuweb3/exp-node@~0.99.927": "0.99.954_typescript@5.8.3_bufferutil@4.0.9_utf-8-validate@5.0.10",
     "npm:assert-browserify@2": "2.0.0",
@@ -24,6 +26,17 @@
     "npm:webpack-cli@^5.1.4": "5.1.4_webpack@5.99.6",
     "npm:webpack@^5.92.1": "5.99.6",
     "npm:winston@^3.13.0": "3.17.0"
+  },
+  "jsr": {
+    "@std/collections@1.0.10": {
+      "integrity": "903af106a3d92970d74e20f7ebff77d9658af9bef4403f1dc42a7801c0575899"
+    },
+    "@std/toml@1.0.4": {
+      "integrity": "8781e687d04c8fbe246b9c5714be01925792a94d943462c33777675ab557cff1",
+      "dependencies": [
+        "jsr:@std/collections"
+      ]
+    }
   },
   "npm": {
     "@adraffy/ens-normalize@1.11.0": {
@@ -3601,6 +3614,11 @@
     "yocto-queue@0.1.0": {
       "integrity": "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="
     }
+  },
+  "remote": {
+    "https://deno.land/std@0.212.0/dotenv/mod.ts": "46cc7a78cf3f7ba533c8c9b90407a365f925be332ebdc867a1f502614e3d8523",
+    "https://deno.land/std@0.212.0/dotenv/parse.ts": "55d5d1a5ba76c1324e6dc2f2f7917f03c47e5da5c2c55af11fd0fe2d6a3d3a2e",
+    "https://deno.land/std@0.212.0/dotenv/stringify.ts": "0047ad7068289735d08964046aea267a750c141b494ca0e38831b89be6c020c2"
   },
   "workspace": {
     "packageJson": {
