@@ -10,9 +10,19 @@ const env = parse(file_str);
 console.info(env);
 
 const bot = createBot({
-  token: env.BOT_TOKEN,
+  applicationId: env.BOT_APPLICATION_ID as string,
+  token: env.BOT_TOKEN as string,
   events: {
     ready: ({ shardId }) => console.log(`Shard ${shardId} ready`),
+  },
+  desiredProperties: {
+    interaction: {
+      id: true,
+      data: true,
+      type: true,
+      token: true,
+      channelId: true,
+    },
   },
 });
 
@@ -22,14 +32,7 @@ const transaction_command = {
   description: "Provides tokens from the testing Salt account",
 };
 
-/// First is testing, second is actual Salt server
-const TESTING_GUILD = "1334470308198875252";
-const PROD_GUILD = "1343280000144773242";
-const guildIDs = ["1334470308198875252"];
-
-for (const guildId in guildIDs) {
-  await bot.rest.upsertGuildApplicationCommands(guildId, [transaction_command]);
-}
+await bot.rest.upsertGlobalApplicationCommands([transaction_command]);
 
 export const event_handler: typeof bot.events.interactionCreate = async (
   interaction,
