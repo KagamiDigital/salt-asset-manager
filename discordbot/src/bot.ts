@@ -29,12 +29,13 @@ const bot = createBot({
 
 /// https://discordeno.js.org/docs/examples/reactionroles
 const transaction_command = {
-  name: "salt-faucet",
-  description: "Provides tokens from the testing Salt account",
+  name: "salt-faucet-somnia",
+  description:
+    "Provides Somnia test tokens from the testing Salt account, a faucet showcasing Salt's multi-signer authentication process in action",
 };
 
 let ret = await bot.rest.upsertGlobalApplicationCommands([transaction_command]);
-console.log("Finished", ret);
+console.log("Upserted application commands", ret);
 
 export const event_handler: typeof bot.events.interactionCreate = async (
   interaction,

@@ -1,8 +1,9 @@
 /*
 
-!bot.ts
+!src
 !deno.json
 !deno.lock
 !discord.sample.toml
 !README.md
 !.gitignore
+!discord-db.toml
