@@ -47,8 +47,15 @@ const transaction_command = {
   ],
 };
 
-let ret = await bot.rest.upsertGlobalApplicationCommands([transaction_command]);
+const ret = await bot.rest.upsertGlobalApplicationCommands([
+  transaction_command,
+]);
 console.log("Upserted application commands", ret);
+
+const ret2 = await bot.rest.sendMessage(env.BOT_LOGGING_CHANNEL_ID, {
+  content: "Bot started",
+});
+console.log("Sent logging message");
 
 export const event_handler: typeof bot.events.interactionCreate = async (
   interaction,
@@ -80,13 +87,22 @@ export const event_handler: typeof bot.events.interactionCreate = async (
       // somnia shannon chain ID, effectively a constant
       const somnia_shannon_chain_id = 50312;
       const amount = 0.01;
-      
-      await transaction(
-        recipientAddress,
-        amount,
-        rpc_node,
-        somnia_shannon_chain_id,
-      );
+
+      try {
+        await transaction(
+          recipientAddress,
+          amount,
+          rpc_node,
+          somnia_shannon_chain_id,
+        );
+        await interaction.respond({
+          content: "Transaction successful!",
+        });
+      } catch (err) {
+        await interaction.respond({
+          content: "Transaction failed",
+        });
+      }
     }
   }
 };

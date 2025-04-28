@@ -10,6 +10,7 @@ const file_str = await Deno.readTextFile("discord.toml");
 const env = parse(file_str) as {
   BOT_APPLICATION_ID: string;
   BOT_TOKEN: string;
+  BOT_LOGGING_CHANNEL_ID: string;
   SOMNIA_SHANNON_RPC_ENDPOINT: string;
   FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS: string;
   PRIVATE_KEY: string;
@@ -20,6 +21,7 @@ console.info(env);
 if (
   !env.BOT_APPLICATION_ID ||
   !env.BOT_TOKEN ||
+  !env.BOT_LOGGING_CHANNEL_ID ||
   !env.SOMNIA_SHANNON_RPC_ENDPOINT ||
   !env.FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS ||
   !env.PRIVATE_KEY ||

@@ -3,12 +3,12 @@
 //! This is done by assuming a checkout of this repo exists *WITHOUT* a .env file,
 //! and uses a CLI interface instead of a user-friendly terminal interface
 
-import env from "./config";
+import env from "./config.ts";
 
 /** Calls across the CLI boundary, reads from discord.toml */
 export async function transaction(
   recipientAddress: string,
-  amount: number,
+  amount: string | number,
   broadcasting_rpc_node_url: string,
   broadcasting_network_id: string | number,
 ) {
@@ -23,7 +23,7 @@ export async function transaction(
       "-recipient-address",
       recipientAddress,
       "-amount",
-      amount,
+      String(amount),
     ],
     clearEnv: true,
     env: {
@@ -49,6 +49,8 @@ export async function transaction(
   const stderr2 = new TextDecoder("utf-8").decode(stderr);
   console.log("asset-manager subprocess finished:", stdout2, stderr2);
   if (code !== 0) {
-    throw new Error(`asset-manager subprocess failed with code ${code}`);
+    throw new Error(
+      `asset-manager subprocess failed with code ${code}\nStderr:\n${stderr2}\nStdout:\n${stdout2}`,
+    );
   }
 }
