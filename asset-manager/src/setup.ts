@@ -71,11 +71,8 @@ const registerBot = async (
     await automateRegistration(
       accountAddress,
       bot,
-      // what and why?
       // https://docs.intu.xyz/intu-sdk-functions/core-functionality/automateregistration/#parameters
-      // idk why this is here
-      // related to this?: https://github.com/nostrdice/nostrdice
-      "wss://relay.nostrdice.com",
+      "wss://relay.nostrdice.com" as any,
     );
 
     console.log("automaticRegistration:success");

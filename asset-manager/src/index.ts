@@ -2,10 +2,17 @@ import { signer } from "./constants";
 import { askForInput, printRectangle, rl } from "./helpers";
 import { approve, deposit, withdraw } from "./strategy/aave/aave";
 import { transaction } from "./transaction";
+import { handleCLIArgs } from "./cli";
 
 (async () => {
   const publicAddress = await signer.getAddress();
   printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
+
+  // if CLI args are passed, skip the user/terminal logic below
+  if (await handleCLIArgs()) {
+    rl.close();
+    return;
+  }
 
   let done = false;
 

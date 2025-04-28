@@ -1,3 +1,3 @@
 //! Loads config found in config.toml
 
-const 
+const config_text = await Deno.readTextFile("discord.toml");

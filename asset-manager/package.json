@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "rm -rf dist && webpack && node dist/bundle.js",
     "buildwebpack": "rm -rf dist && webpack",
@@ -14,6 +14,7 @@
     "assert-browserify": "^2.0.0",
     "buffer-browserify": "^0.2.5",
     "bufferutil": "^4.0.8",
+    "command-line-parser": "^0.2.10",
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.20.2",
