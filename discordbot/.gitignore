@@ -6,4 +6,4 @@
 !discord.sample.toml
 !README.md
 !.gitignore
-!discord-db.toml
+!db.toml

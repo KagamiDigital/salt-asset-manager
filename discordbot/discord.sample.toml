@@ -1,3 +1,10 @@
 BOT_APPLICATION_ID = "1364832034677198949"
 BOT_TOKEN = "bot token see https://discord.com/developers/applications/1364832034677198949/bot"
-somnia-rpc-endpoint = "https://rpc.ankr.com/somnia_testnet"
+SOMNIA_SHANNON_RPC_ENDPOINT = "https://rpc.ankr.com/somnia_testnet"
+FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS = "0xcedc0DD99D036d73dd39509Ef7970A998D3e7FD8"
+
+## These are forwarded to the underlying asset-manager through env variables
+# private key for the person (e.g. metamask acc) who is part of the salt account
+PRIVATE_KEY = "private key here"
+# see asset-manager/.env.sample, forwards to that
+ORCHESTRATION_NETWORK_RPC_NODE_URL = "https://sepolia-rollup.arbitrum.io/rpc"
