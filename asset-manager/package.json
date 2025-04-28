@@ -7,6 +7,7 @@
   "scripts": {
     "start": "rm -rf dist && webpack && node dist/bundle.js",
     "buildwebpack": "rm -rf dist && webpack",
+    "startwebpacked": "node dist/bundle.js",
     "nodev": "node --version"
   },
   "dependencies": {

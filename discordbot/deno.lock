@@ -1,13 +1,29 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@david/which@*": "0.4.1",
+    "jsr:@david/which@~0.4.1": "0.4.1",
+    "jsr:@std/assert@1": "1.0.13",
     "jsr:@std/collections@^1.0.10": "1.0.10",
+    "jsr:@std/internal@^1.0.6": "1.0.6",
     "jsr:@std/toml@*": "1.0.4",
     "npm:@discordeno/bot@*": "21.0.0"
   },
   "jsr": {
+    "@david/which@0.4.1": {
+      "integrity": "896a682b111f92ab866cc70c5b4afab2f5899d2f9bde31ed00203b9c250f225e"
+    },
+    "@std/assert@1.0.13": {
+      "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
     "@std/collections@1.0.10": {
       "integrity": "903af106a3d92970d74e20f7ebff77d9658af9bef4403f1dc42a7801c0575899"
+    },
+    "@std/internal@1.0.6": {
+      "integrity": "9533b128f230f73bd209408bb07a4b12f8d4255ab2a4d22a1fd6d87304aca9a4"
     },
     "@std/toml@1.0.4": {
       "integrity": "8781e687d04c8fbe246b9c5714be01925792a94d943462c33777675ab557cff1",
@@ -60,6 +76,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@david/which@~0.4.1",
       "jsr:@std/assert@1"
     ]
   }

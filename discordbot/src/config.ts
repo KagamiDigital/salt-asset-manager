@@ -15,6 +15,7 @@ const env = parse(file_str) as {
   FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS: string;
   PRIVATE_KEY: string;
   ORCHESTRATION_NETWORK_RPC_NODE_URL: string;
+  ASSET_MANAGER_FOLDER: string;
 };
 console.info(env);
 
@@ -25,7 +26,8 @@ if (
   !env.SOMNIA_SHANNON_RPC_ENDPOINT ||
   !env.FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS ||
   !env.PRIVATE_KEY ||
-  !env.ORCHESTRATION_NETWORK_RPC_NODE_URL
+  !env.ORCHESTRATION_NETWORK_RPC_NODE_URL ||
+  !env.ASSET_MANAGER_FOLDER
 ) {
   console.error("Missing required key in discord.toml");
   Deno.exit(1);

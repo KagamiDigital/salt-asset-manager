@@ -22,6 +22,12 @@ const bot = createBot({
       token: true,
       channelId: true,
     },
+    user: {
+      id: true,
+    },
+    message: {
+      id: true,
+    },
   },
 });
 
@@ -52,10 +58,10 @@ const ret = await bot.rest.upsertGlobalApplicationCommands([
 ]);
 console.log("Upserted application commands", ret);
 
-const ret2 = await bot.rest.sendMessage(env.BOT_LOGGING_CHANNEL_ID, {
-  content: "Bot started",
-});
-console.log("Sent logging message");
+// const ret2 = await bot.rest.sendMessage(env.BOT_LOGGING_CHANNEL_ID, {
+//   content: "Bot started",
+// });
+// console.log("Sent logging message", ret2);
 
 export const event_handler: typeof bot.events.interactionCreate = async (
   interaction,
@@ -100,7 +106,18 @@ export const event_handler: typeof bot.events.interactionCreate = async (
         });
       } catch (err) {
         await interaction.respond({
-          content: "Transaction failed",
+          content: "Transaction failed, see the logs channel for more info",
+        });
+        let err_msg = String(err);
+        const max_len = 1900;
+        err_msg = err_msg.substring(0, Math.min(1950, err_msg.length));
+        const truncated_note = err_msg.length > max_len ? "...<truncated>" : "";
+
+        bot.rest.sendMessage(env.BOT_LOGGING_CHANNEL_ID, {
+          content:
+            "A transaction failed, pasting the error here:\n" +
+            String(err) +
+            truncated_note,
         });
       }
     }
