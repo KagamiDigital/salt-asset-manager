@@ -94,6 +94,10 @@ export const event_handler: typeof bot.events.interactionCreate = async (
       const somnia_shannon_chain_id = 50312;
       const amount = 0.01;
 
+      await interaction.respond({
+        content: "Doing transaction ...",
+      });
+
       try {
         await transaction(
           recipientAddress,
