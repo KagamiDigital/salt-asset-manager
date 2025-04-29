@@ -10,10 +10,10 @@ import env from "./env";
 
 /** Will ask using stdin for missing arguments if not provided */
 export async function transaction(
-  vaultAddressI: string | undefined,
-  recipientAddressI: string | undefined,
-  amountI: string | Number | undefined,
-  skipConfirmation: boolean | undefined,
+  vaultAddressI?: string | undefined,
+  recipientAddressI?: string | undefined,
+  amountI?: string | Number | undefined,
+  skipConfirmation?: boolean | undefined,
 ) {
   const vaultAddress =
     vaultAddressI ||
@@ -23,6 +23,11 @@ export async function transaction(
   if (!ethers.utils.isAddress(vaultAddress)) {
     throw "You need a valid account address to propose a transaction";
   }
+
+  const managedVaults = await getVaultsWithoutTransactions(
+    signer.address,
+    signer.provider,
+  );
 
   const recipientAddress =
     recipientAddressI ||
@@ -39,10 +44,10 @@ export async function transaction(
     throw "You need a positive amount to propose a transaction";
   }
 
-  const managedVaults = await getVaultsWithoutTransactions(
-    signer.address,
-    signer.provider,
-  );
+  console.info("Beginning transaction ...");
+  console.info("vaultAddress:", vaultAddress);
+  console.info("recipientAddress:", recipientAddress);
+  console.info("amount:", amount);
 
   const vault = managedVaults.find(
     (v) => v.masterPublicAddress === vaultAddress,
@@ -57,7 +62,7 @@ export async function transaction(
 
   const sendingProvider = new ethers.providers.JsonRpcProvider(
     env.BROADCASTING_NETWORK_RPC_NODE_URL,
-    env.BROADCASTING_NETWORK_ID,
+    // env.BROADCASTING_NETWORK_ID,
   );
   const submitTransactionTx = await submitTransaction(
     recipientAddress,
