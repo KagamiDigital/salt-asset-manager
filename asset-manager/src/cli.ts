@@ -1,5 +1,5 @@
 import argsObj from "command-line-parser";
-import { transaction_raw } from "./transaction";
+import { transaction } from "./transaction";
 
 export async function handleCLIArgs(): Promise<boolean> {
   let args = argsObj();
@@ -24,7 +24,7 @@ export async function handleCLIArgs(): Promise<boolean> {
       return true;
     }
 
-    await transaction_raw(vaultAddress, recipientAddress, amount, true);
+    await transaction(vaultAddress, recipientAddress, amount, true);
 
     return true;
   }
