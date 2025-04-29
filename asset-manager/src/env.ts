@@ -5,28 +5,34 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const env = process.env as {
+const expected = {
+  ORCHESTRATION_NETWORK_RPC_NODE_URL: String,
+  PRIVATE_KEY: String,
+  BROADCASTING_NETWORK_RPC_NODE_URL: String,
+  BROADCASTING_NETWORK_ID: String,
+};
+const env_raw = process.env;
+
+for (const key in expected) {
+  if (!env_raw[key]) {
+    throw new Error(
+      `${key} is not defined in process.env after looking in local .env file`,
+    );
+  }
+}
+
+const env = {
+  ORCHESTRATION_NETWORK_RPC_NODE_URL:
+    env_raw.ORCHESTRATION_NETWORK_RPC_NODE_URL,
+  PRIVATE_KEY: env_raw.PRIVATE_KEY,
+  BROADCASTING_NETWORK_RPC_NODE_URL: env_raw.BROADCASTING_NETWORK_RPC_NODE_URL,
+  BROADCASTING_NETWORK_ID: env_raw.BROADCASTING_NETWORK_ID,
+} as {
   ORCHESTRATION_NETWORK_RPC_NODE_URL: string;
   PRIVATE_KEY: string;
   BROADCASTING_NETWORK_RPC_NODE_URL: string;
   BROADCASTING_NETWORK_ID: string;
 };
 
-if (!env.ORCHESTRATION_NETWORK_RPC_NODE_URL) {
-  throw new Error("ORCHESTRATION_NETWORK_RPC_NODE_URL is not defined");
-}
-
-if (!env.PRIVATE_KEY) {
-  throw new Error("PRIVATE_KEY is not defined");
-}
-
-if (!env.BROADCASTING_NETWORK_RPC_NODE_URL) {
-  throw new Error("BROADCASTING_NETWORK_RPC_NODE_URL is not defined");
-}
-
-if (!env.BROADCASTING_NETWORK_ID) {
-  throw new Error("BROADCASTING_NETWORK_ID is not defined");
-}
-
-console.info("Env", env);
+// console.info("Env", env);
 export default env;

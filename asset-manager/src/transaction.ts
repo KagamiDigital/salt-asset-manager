@@ -9,17 +9,29 @@ import { broadcasting_network_provider, signer } from "./constants";
 import env from "./env";
 
 export async function transaction_raw(
-  vaultAddress: string,
-  recipientAddress: string,
-  amount: string | Number,
+  vaultAddressI: string | undefined,
+  recipientAddressI: string | undefined,
+  amountI: string | Number | undefined,
+  skipConfirmation: boolean | undefined,
 ) {
+  const vaultAddress =
+    vaultAddressI ||
+    (await askForInput(
+      `Please enter the account address from where you wish to execute the transfer: `,
+    ));
   if (!ethers.utils.isAddress(vaultAddress)) {
     throw "You need a valid account address to propose a transaction";
   }
 
+  const recipientAddress =
+    recipientAddressI ||
+    (await askForInput(`Please enter the recipient's address: `));
   if (!ethers.utils.isAddress(recipientAddress)) {
     throw "You need a valid recipient address to propose a transaction";
   }
+
+  const amount =
+    amountI || (await askForInput(`Please enter the amount to transfer: `));
 
   // skips if string
   if (+amount < 0) {
@@ -42,6 +54,10 @@ export async function transaction_raw(
   // get the fee data on the broadcasting network
   const feeData = await broadcasting_network_provider.getFeeData();
 
+  const sendingProvider = new ethers.providers.JsonRpcProvider(
+    env.BROADCASTING_NETWORK_RPC_NODE_URL,
+    env.BROADCASTING_NETWORK_ID,
+  );
   const submitTransactionTx = await submitTransaction(
     recipientAddress,
     amount,
@@ -53,7 +69,11 @@ export async function transaction_raw(
     vault.vaultAddress,
     signer,
     "SERVER",
-    false,
+    // this is technically undocumented, but other wise
+    // this function relies on hard-coded RPC node URLs
+    // based on the network ID you provide (above),
+    // and somnia shannon isn't in this list which requires use to manually specify this
+    sendingProvider as any as boolean,
   );
 
   const submitTransactionResult = await (
@@ -82,7 +102,17 @@ export async function transaction_raw(
   );
   console.log("gas: 21000");
 
-  // no approval
+  if (!skipConfirmation) {
+    const approval = await askForInput(
+      `\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `,
+    );
+
+    if (approval !== "yes") {
+      console.log("You haven't manually approved the transaction");
+      console.log("transaction proposal cannot carry on without the signature");
+      return;
+    }
+  }
 
   const tx = (await signTx(
     vault.vaultAddress,
@@ -151,7 +181,7 @@ export async function transaction() {
     vault.vaultAddress,
     signer,
     "SERVER",
-    false,
+    env.BROADCASTING_NETWORK_RPC_NODE_URL,
   );
 
   const submitTransactionResult = await (

@@ -114,7 +114,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
         });
         let err_msg = String(err);
         const max_len = 1900;
-        err_msg = err_msg.substring(0, Math.min(1950, err_msg.length));
+        err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
         const truncated_note = err_msg.length > max_len ? "...<truncated>" : "";
 
         bot.rest.sendMessage(env.BOT_LOGGING_CHANNEL_ID, {

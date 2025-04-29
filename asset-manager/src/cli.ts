@@ -24,7 +24,7 @@ export async function handleCLIArgs(): Promise<boolean> {
       return true;
     }
 
-    await transaction_raw(vaultAddress, recipientAddress, amount);
+    await transaction_raw(vaultAddress, recipientAddress, amount, true);
 
     return true;
   }
