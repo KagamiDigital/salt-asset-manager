@@ -8,6 +8,7 @@ import {
 import { broadcasting_network_provider, signer } from "../../constants";
 import WrappedTokenGatewayV3 from "../../../contracts/Protocols/Aave/abi/WrappedTokenGatewayV3.json";
 import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
+import env from "../../env";
 
 const aETHWETHContractAddress = "0x5b071b590a59395fE4025A0Ccc1FcC931AAc1830";
 const WrappedTokenGatewayV3ContractAddress =
@@ -56,7 +57,7 @@ export async function deposit() {
   const submitTransactionTx = await submitTransaction(
     WrappedTokenGatewayV3ContractAddress,
     depositAmountInEth,
-    process.env.BROADCASTING_NETWORK_ID,
+    env.BROADCASTING_NETWORK_ID,
     nonce,
     data,
     BigNumber.from(feeData.gasPrice).toNumber(),
@@ -150,7 +151,7 @@ export async function approve() {
   const submitTransactionTx = await submitTransaction(
     aETHWETHContractAddress,
     0,
-    process.env.BROADCASTING_NETWORK_ID,
+    env.BROADCASTING_NETWORK_ID,
     nonce,
     data,
     BigNumber.from(feeData.gasPrice).toNumber(),
@@ -243,7 +244,7 @@ export async function withdraw() {
   const submitTransactionTx = await submitTransaction(
     WrappedTokenGatewayV3ContractAddress,
     0,
-    process.env.BROADCASTING_NETWORK_ID,
+    env.BROADCASTING_NETWORK_ID,
     nonce,
     data,
     BigNumber.from(feeData.gasPrice).toNumber(),

@@ -6,6 +6,7 @@ import {
   submitTransaction,
 } from "@intuweb3/exp-node";
 import { broadcasting_network_provider, signer } from "./constants";
+import env from "./env";
 
 export async function transaction_raw(
   vaultAddress: string,
@@ -44,7 +45,7 @@ export async function transaction_raw(
   const submitTransactionTx = await submitTransaction(
     recipientAddress,
     amount,
-    process.env.BROADCASTING_NETWORK_ID,
+    env.BROADCASTING_NETWORK_ID,
     nonce,
     "",
     BigNumber.from(feeData.gasPrice).toNumber(),
@@ -71,7 +72,7 @@ export async function transaction_raw(
   console.log("Note the transaction details:");
   console.log("recipient: " + recipientAddress);
   console.log("amount: " + amount);
-  console.log("chainId: " + process.env.BROADCASTING_NETWORK_ID);
+  console.log("chainId: " + env.BROADCASTING_NETWORK_ID);
   console.log("nonce: " + nonce);
   console.log(
     "gasPrice: " +
@@ -80,7 +81,7 @@ export async function transaction_raw(
         .toString(),
   );
   console.log("gas: 21000");
-  
+
   // no approval
 
   const tx = (await signTx(
@@ -142,7 +143,7 @@ export async function transaction() {
   const submitTransactionTx = await submitTransaction(
     recipient,
     amount,
-    process.env.BROADCASTING_NETWORK_ID,
+    env.BROADCASTING_NETWORK_ID,
     nonce,
     "",
     BigNumber.from(feeData.gasPrice).toNumber(),
@@ -169,7 +170,7 @@ export async function transaction() {
   console.log("Please review the transaction details:");
   console.log("recipient: " + recipient);
   console.log("amount: " + amount);
-  console.log("chainId: " + process.env.BROADCASTING_NETWORK_ID);
+  console.log("chainId: " + env.BROADCASTING_NETWORK_ID);
   console.log("nonce: " + nonce);
   console.log(
     "gasPrice: " +

@@ -1,8 +1,10 @@
-/node_modules
-dist/
-.env
-index.js
-TODO.md
-/logs/*.log
+/*
 
-*.sublime-*
+!contracts
+!src
+!.env.sample
+!package.json
+!package-lock.json
+!README.md
+!tsconfig.json
+!webpack.config.js
