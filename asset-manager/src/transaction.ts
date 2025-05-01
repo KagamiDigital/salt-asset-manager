@@ -60,10 +60,15 @@ export async function transaction(
   // get the fee data on the broadcasting network
   const feeData = await broadcasting_network_provider.getFeeData();
 
+	console.info("Using custom sending provider", env.BROADCASTING_NETWORK_RPC_NODE_URL, "chainID", env.BROADCASTING_NETWORK_ID);
   const sendingProvider = new ethers.providers.JsonRpcProvider(
     env.BROADCASTING_NETWORK_RPC_NODE_URL,
     // env.BROADCASTING_NETWORK_ID,
   );
+	const actualChainId = await sendingProvider.getNetwork().then((network) => network.chainId);
+	if (actualChainId !== Number(env.BROADCASTING_NETWORK_ID)) {
+		throw new Error(`Expected chain ID ${env.BROADCASTING_NETWORK_ID} but got ${actualChainId}`);
+	}
   const submitTransactionTx = await submitTransaction(
     recipientAddress,
     amount,
@@ -75,11 +80,13 @@ export async function transaction(
     vault.vaultAddress,
     signer,
     "SERVER",
+    false,
     // this is technically undocumented, but other wise
     // this function relies on hard-coded RPC node URLs
     // based on the network ID you provide (above),
     // and somnia shannon isn't in this list which requires use to manually specify this
-    sendingProvider as any as boolean,
+    // sendingProvider as any,
+    broadcasting_network_provider as any
   );
 
   const submitTransactionResult = await (
