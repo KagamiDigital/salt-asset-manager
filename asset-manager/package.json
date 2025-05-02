@@ -5,10 +5,10 @@
   "main": "index.ts",
   "type": "commonjs",
   "scripts": {
-    "start": "rm -rf dist && webpack && node dist/bundle.js",
-    "buildwebpack": "rm -rf dist && webpack",
-    "startwebpacked": "node dist/bundle.js",
-    "nodev": "node --version"
+    "dev": "rm -rf dist && rspack build && echo 'Built project' && deno -A dist/bundle.js",
+    "build": "rm -rf dist && rspack build",
+    "run": "echo 'This doesnt build the project for you' && deno -A dist/bundle.js",
+    "nodev": "deno --version"
   },
   "dependencies": {
     "@intuweb3/exp-node": "^0.99.954",
@@ -35,6 +35,8 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@rspack/cli": "^1.3.8",
+    "@rspack/core": "^1.3.8",
     "typescript": "^5.5.3"
   },
   "keywords": [],
