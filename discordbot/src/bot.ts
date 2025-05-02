@@ -142,7 +142,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 			// handle sepolia arbitrum case
 			const parsed2 = parsed[sepolia_arbitrum] as { recipient_address: string };
 			const recipientAddress = parsed2["recipient_address"] as string;
-			const rpc_node = env.SOMNIA_SHANNON_RPC_ENDPOINT;
+			const rpc_node = env.SEPOLIA_ARBITRUM_RPC_ENDPOINT;
 			// somnia shannon chain ID, effectively a constant
 			const sepolia_arbitrum_chain_id = 421614;
 			const amount = 0.01;

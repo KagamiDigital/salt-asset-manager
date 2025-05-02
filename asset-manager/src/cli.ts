@@ -1,11 +1,15 @@
 import argsObj from "command-line-parser";
 import { transaction } from "./transaction";
+import { rl } from "./helpers";
 
 export async function handleCLIArgs(): Promise<boolean> {
   let args = argsObj();
   console.log("CLI args:", args);
   // if -use-cli-only then returns true
   if (args.useCliOnly === true) {
+		rl.close();
+		console.info("Using CLI only");
+
     const amount = args.amount;
     if (!amount) {
       console.error("-amount is required");

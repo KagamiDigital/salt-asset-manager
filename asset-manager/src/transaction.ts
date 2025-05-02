@@ -133,7 +133,8 @@ export async function transaction(
     signer,
   )) as ethers.ContractTransaction;
 
+	console.info("Waiting for tx ...");
   await tx.wait();
 
-  console.log("transaction signed successfully");
+  console.log("Transaction signed successfully");
 }

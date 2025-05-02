@@ -1,7 +1,8 @@
 //! Manages the integration between this `deno` runtime and the `node` runtime of the
 //! asset manager
 //! This is done by assuming a checkout of this repo exists *WITHOUT* a .env file,
-//! and uses a CLI interface instead of a user-friendly terminal interface
+//! and assumes that the project has already been built.
+//! This uses a CLI interface instead of a user-friendly terminal interface
 
 import env from "./config.ts";
 import { which } from "jsr:@david/which";
@@ -13,16 +14,17 @@ export async function transaction(
   broadcasting_rpc_node_url: string,
   broadcasting_network_id: string | number,
 ) {
-  const npm_path = await which("npm");
-  if (!npm_path) {
-    throw new Error("npm not found");
+	const js_runtime_name = "npm";
+	const js_runtime_args = ["start"];
+  const js_runtime = await which(js_runtime_name);
+  if (!js_runtime) {
+    throw new Error(`${js_runtime_name} not found`);
   }
 
   // spawns sub process with cli args
-  const command = new Deno.Command(npm_path, {
+  const command = new Deno.Command(js_runtime, {
     args: [
-      "run",
-      "startwebpacked",
+    ...js_runtime_args,
       "--",
       "-use-cli-only",
       "-vault-address",
@@ -34,7 +36,7 @@ export async function transaction(
     ],
     clearEnv: true,
     env: {
-      PATH: Deno.env.get("PATH"),
+      PATH: Deno.env.get("PATH")!,
       ORCHESTRATION_NETWORK_RPC_NODE_URL:
         env.ORCHESTRATION_NETWORK_RPC_NODE_URL,
       PRIVATE_KEY: env.PRIVATE_KEY,
