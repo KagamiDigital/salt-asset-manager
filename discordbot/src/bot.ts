@@ -31,38 +31,57 @@ const bot = createBot({
 	},
 });
 
+const command_somnia_shannon = {
+	name: "somnia-shannon",
+	description: "Faucet Somnia Shannon tokens",
+	type: ApplicationCommandOptionTypes.SubCommand,
+	options: [
+		{
+			name: "recipient_address",
+			description: "Your personal wallet address",
+			type: ApplicationCommandOptionTypes.String,
+			required: true,
+		},
+	],
+};
+
+const command_sepolia_arbitrum = {
+	name: "arbitrum-sepolia-etherium",
+	description: "Faucet Arbitrum Sepolia (Etherium) tokens",
+	type: ApplicationCommandOptionTypes.SubCommand,
+	options: [
+		{
+			name: "recipient_address",
+			description: "Your personal wallet address",
+			type: ApplicationCommandOptionTypes.String,
+			required: true,
+		},
+	],
+};
+
+const command_sepolia_etherium = {
+	name: "sepolia-etherium",
+	description: "Faucet Sepolia (Etherium testnet) tokens",
+	type: ApplicationCommandOptionTypes.SubCommand,
+	options: [
+		{
+			name: "recipient_address",
+			description: "Your personal wallet address",
+			type: ApplicationCommandOptionTypes.String,
+			required: true,
+		},
+	],
+};
+
 /// https://discordeno.js.org/docs/examples/reactionroles
 const transaction_command = {
 	name: "salt-faucet",
 	description:
 		"A faucet showcasing Salt's multi-signer authentication process in action",
 	options: [
-		{
-			name: "somnia-shannon",
-			description: "Faucet Somnia Shannon tokens",
-			type: ApplicationCommandOptionTypes.SubCommand,
-			options: [
-				{
-					name: "recipient_address",
-					description: "Your personal/Salt Somnia Shannon wallet address",
-					type: ApplicationCommandOptionTypes.String,
-					required: true,
-				},
-			],
-		},
-		{
-			name: "arbitrum-sepolia-etherium",
-			description: "Faucet Somnia Shannon tokens",
-			type: ApplicationCommandOptionTypes.SubCommand,
-			options: [
-				{
-					name: "recipient_address",
-					description: "Your personal/Salt Somnia Shannon wallet address",
-					type: ApplicationCommandOptionTypes.String,
-					required: true,
-				},
-			],
-		},
+		// command_somnia_shannon,
+		// command_sepolia_arbitrum,
+		command_sepolia_etherium,
 	],
 };
 
@@ -75,6 +94,41 @@ console.log("Upserted application commands", ret);
 //   content: "Bot started",
 // });
 // console.log("Sent logging message", ret2);
+
+async function botTransfer(
+	interaction: any,
+	token_name: string,
+	recipientAddress: string,
+	rpc_node: string,
+	chain_id: number,
+	amount: number,
+) {
+	await interaction.respond({
+		content: `Doing transaction ...\nTransferring ${amount} ${token_name} to ${recipientAddress}`,
+	});
+
+	try {
+		await transaction(recipientAddress, amount, rpc_node, chain_id);
+		await interaction.respond({
+			content: "Transaction successful!",
+		});
+	} catch (err) {
+		await interaction.respond({
+			content: "Transaction failed",
+		});
+		let err_msg = String(err);
+		const max_len = 1800;
+		err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
+		const truncated_note = err_msg.length === max_len ? "...<truncated>" : "";
+
+		await interaction.respond({
+			content:
+				"A transaction failed, pasting the error here:\n" +
+				String(err) +
+				truncated_note,
+		});
+	}
+}
 
 export const event_handler: typeof bot.events.interactionCreate = async (
 	interaction,
@@ -93,82 +147,43 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 		// if (!command) return;
 
 		console.log("Handling slash command", interaction.data);
-
-		const parsed = commandOptionsParser(interaction);
+		const parsed = commandOptionsParser(interaction) as any;
 		console.log("Parsed slash command", parsed);
 
-		const somnia_shannon = transaction_command.options[0].name;
-		const sepolia_arbitrum = transaction_command.options[1].name;
-		if (parsed[somnia_shannon]) {
+		if (parsed[command_somnia_shannon.name]) {
 			// handle somnia shannon case
-			const parsed2 = parsed[somnia_shannon] as { recipient_address: string };
-			const recipientAddress = parsed2["recipient_address"] as string;
-			const rpc_node = env.SOMNIA_SHANNON_RPC_ENDPOINT;
-			// somnia shannon chain ID, effectively a constant
-			const chain_id = 50312;
-			const amount = 0.01;
-
-			await interaction.respond({
-				content: `Doing transaction ...\nTransferring ${amount} SST to ${recipientAddress}`,
-			});
-
-			try {
-				await transaction(recipientAddress, amount, rpc_node, chain_id);
-				await interaction.respond({
-					content: "Transaction successful!",
-				});
-			} catch (err) {
-				await interaction.respond({
-					content: "Transaction failed",
-				});
-				let err_msg = String(err);
-				const max_len = 1800;
-				err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
-				const truncated_note =
-					err_msg.length === max_len ? "...<truncated>" : "";
-
-				await interaction.respond({
-					content:
-						"A transaction failed, pasting the error here:\n" +
-						String(err) +
-						truncated_note,
-				});
-			}
-		} else if (parsed[sepolia_arbitrum]) {
+			await botTransfer(
+				interaction,
+				"SST",
+				parsed[command_somnia_shannon.name].recipient_address,
+				env.SOMNIA_SHANNON_RPC_ENDPOINT,
+				50312,
+				0.01,
+			);
+		} else if (parsed[command_sepolia_arbitrum.name]) {
 			// handle sepolia arbitrum case
-			const parsed2 = parsed[sepolia_arbitrum] as { recipient_address: string };
-			const recipientAddress = parsed2["recipient_address"] as string;
-			const rpc_node = env.SEPOLIA_ARBITRUM_RPC_ENDPOINT;
-			// somnia shannon chain ID, effectively a constant
-			const chain_id = 421614;
-			const amount = 0.01;
-
+			await botTransfer(
+				interaction,
+				"ETH",
+				parsed[command_sepolia_arbitrum.name].recipient_address,
+				env.SEPOLIA_ARBITRUM_RPC_ENDPOINT,
+				421614,
+				0.01,
+			);
+		} else if (parsed[command_sepolia_etherium.name]) {
+			// handle sepolia arbitrum case
+			await botTransfer(
+				interaction,
+				"ETH",
+				parsed[command_sepolia_etherium.name].recipient_address,
+				env.SEPOLIA_ETHERIUM_RPC_ENDPOINT,
+				11155111,
+				0.01,
+			);
+		} else {
 			await interaction.respond({
-				content: `Doing transaction ...\nTransferring ${amount} ETH to ${recipientAddress}`,
+				content: "Invalid command",
 			});
-
-			try {
-				await transaction(recipientAddress, amount, rpc_node, chain_id);
-				await interaction.respond({
-					content: "Transaction successful!",
-				});
-			} catch (err) {
-				await interaction.respond({
-					content: "Transaction failed",
-				});
-				let err_msg = String(err);
-				const max_len = 1800;
-				err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
-				const truncated_note =
-					err_msg.length === max_len ? "...<truncated>" : "";
-
-				await interaction.respond({
-					content:
-						"A transaction failed, pasting the error here:\n" +
-						String(err) +
-						truncated_note,
-				});
-			}
 		}
 	}
 };

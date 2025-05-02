@@ -15,7 +15,7 @@ export async function transaction(
   broadcasting_network_id: string | number,
 ) {
 	const js_runtime_name = "npm";
-	const js_runtime_args = ["run-node", "--", "--"];
+	const js_runtime_args = ["run", "run-node", "--", "--"];
   const js_runtime = await which(js_runtime_name);
   if (!js_runtime) {
     throw new Error(`${js_runtime_name} not found`);

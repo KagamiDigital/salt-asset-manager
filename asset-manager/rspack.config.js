@@ -42,7 +42,9 @@ module.exports = {
 		filename: "bundle.js",
 		path: path.resolve(__dirname, "dist"),
 		environment: {
+			// https://rspack.dev/config/output
 			asyncFunction: true,
+			bigIntLiteral: true,
 		}
 	},
 	experiments: {
