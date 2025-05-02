@@ -14,7 +14,7 @@ export const broadcasting_network_provider =
 
 await broadcasting_network_provider.ready;
 const network = await broadcasting_network_provider.getNetwork();
-console.log("Network ready!");
+console.log("Network ready!", network.chainId);
 
 const wallet = new ethers.Wallet(env.PRIVATE_KEY);
 
