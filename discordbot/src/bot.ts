@@ -105,7 +105,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 			const recipientAddress = parsed2["recipient_address"] as string;
 			const rpc_node = env.SOMNIA_SHANNON_RPC_ENDPOINT;
 			// somnia shannon chain ID, effectively a constant
-			const somnia_shannon_chain_id = 50312;
+			const chain_id = 50312;
 			const amount = 0.01;
 
 			await interaction.respond({
@@ -113,12 +113,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 			});
 
 			try {
-				await transaction(
-					recipientAddress,
-					amount,
-					rpc_node,
-					somnia_shannon_chain_id,
-				);
+				await transaction(recipientAddress, amount, rpc_node, chain_id);
 				await interaction.respond({
 					content: "Transaction successful!",
 				});
@@ -127,9 +122,10 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 					content: "Transaction failed",
 				});
 				let err_msg = String(err);
-				const max_len = 1500;
+				const max_len = 1800;
 				err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
-				const truncated_note = err_msg.length > max_len ? "...<truncated>" : "";
+				const truncated_note =
+					err_msg.length === max_len ? "...<truncated>" : "";
 
 				await interaction.respond({
 					content:
@@ -144,7 +140,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 			const recipientAddress = parsed2["recipient_address"] as string;
 			const rpc_node = env.SEPOLIA_ARBITRUM_RPC_ENDPOINT;
 			// somnia shannon chain ID, effectively a constant
-			const sepolia_arbitrum_chain_id = 421614;
+			const chain_id = 421614;
 			const amount = 0.01;
 
 			await interaction.respond({
@@ -152,12 +148,7 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 			});
 
 			try {
-				await transaction(
-					recipientAddress,
-					amount,
-					rpc_node,
-					sepolia_arbitrum_chain_id,
-				);
+				await transaction(recipientAddress, amount, rpc_node, chain_id);
 				await interaction.respond({
 					content: "Transaction successful!",
 				});
@@ -166,9 +157,10 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 					content: "Transaction failed",
 				});
 				let err_msg = String(err);
-				const max_len = 1500;
+				const max_len = 1800;
 				err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
-				const truncated_note = err_msg.length > max_len ? "...<truncated>" : "";
+				const truncated_note =
+					err_msg.length === max_len ? "...<truncated>" : "";
 
 				await interaction.respond({
 					content:
@@ -176,7 +168,6 @@ export const event_handler: typeof bot.events.interactionCreate = async (
 						String(err) +
 						truncated_note,
 				});
-				console.log("Finished handling error");
 			}
 		}
 	}

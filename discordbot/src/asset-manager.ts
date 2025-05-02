@@ -15,7 +15,7 @@ export async function transaction(
   broadcasting_network_id: string | number,
 ) {
 	const js_runtime_name = "npm";
-	const js_runtime_args = ["start"];
+	const js_runtime_args = ["run-node", "--", "--"];
   const js_runtime = await which(js_runtime_name);
   if (!js_runtime) {
     throw new Error(`${js_runtime_name} not found`);
@@ -25,7 +25,6 @@ export async function transaction(
   const command = new Deno.Command(js_runtime, {
     args: [
     ...js_runtime_args,
-      "--",
       "-use-cli-only",
       "-vault-address",
       env.FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS,
