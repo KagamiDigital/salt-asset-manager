@@ -24,7 +24,13 @@ export async function handleCLIArgs(): Promise<boolean> {
       return true;
     }
 
-    await transaction(vaultAddress, recipientAddress, amount, true);
+		try {
+			await transaction(vaultAddress, recipientAddress, amount, true);
+			console.log("Transaction successful");
+		} catch (err) {
+			console.error("Transaction failed:", err);
+			process.exit(69);
+		}
 
     return true;
   }

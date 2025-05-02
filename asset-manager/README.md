@@ -28,6 +28,8 @@ The bot will need to be set up as a co-signers on a Salt account. To do this, it
 1. npm start
 2. follow the instructions printed on the command line
 
+(If you want to use deno, run `deno task dev` instead of `npm start`)
+
 ### Notes
 
 This repository is meant to serve as a starter pack for testing purposes, we encourage you to try the code, improve it, and propose changes.
