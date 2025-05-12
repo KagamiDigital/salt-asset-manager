@@ -1,7 +1,8 @@
 {
   "tasks": {
     "dev": "deno run -A --watch src/bot.ts",
-    "start": "deno run -A src/bot.ts"
+    "build-asset-manager": "cd ../asset-manager && deno task build && cd ../discordbot",
+    "start": "deno task build-asset-manager && deno run -A src/bot.ts"
   },
   "imports": {
     "@david/which": "jsr:@david/which@^0.4.1",
