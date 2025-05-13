@@ -117,14 +117,14 @@ async function botTransfer(
 			content: "Transaction failed",
 		});
 		let err_msg = String(err);
-		const max_len = 1900;
+		const max_len = 1800;
 		const truncated_note = err_msg.length > max_len ? "...<truncated>" : "";
 		err_msg = err_msg.substring(0, Math.min(max_len, err_msg.length));
 
 		await interaction.respond({
 			content:
 				"A transaction failed, pasting the error here:\n" +
-				String(err) +
+				err_msg +
 				truncated_note,
 		});
 	}

@@ -7,6 +7,5 @@
 !package-lock.json
 !README.md
 !tsconfig.json
-#!webpack.config.js
-!rspack.config.js
+!rspack.config.mjs
 !.gitignore

@@ -81,7 +81,7 @@ export async function transaction(
     signer,
     "SERVER",
     false,
-    // this is technically undocumented, but other wise
+    // this is technically undocumented, but otherwise
     // this function relies on hard-coded RPC node URLs
     // based on the network ID you provide (above),
     // and somnia shannon isn't in this list which requires use to manually specify this
