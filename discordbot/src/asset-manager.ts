@@ -15,7 +15,7 @@ export async function transaction(
   broadcasting_network_id: string | number,
 ) {
 	const js_runtime_name = "npm";
-	const js_runtime_args = ["run", "run-node", "--", "--"];
+	const js_runtime_args = ["run", "start", "--", "--"];
   const js_runtime = await which(js_runtime_name);
   if (!js_runtime) {
     throw new Error(`${js_runtime_name} not found`);
@@ -55,7 +55,7 @@ export async function transaction(
   const stderr2 = new TextDecoder("utf-8").decode(stderr);
   console.log("asset-manager subprocess finished:", stdout2, stderr2);
   if (code !== 0) {
-    const msg = `asset-manager subprocess failed with code ${code}\nStderr:\n${stderr2}\nStdout:\n${stdout2}`;
+    const msg = `asset-manager subprocess failed with code ${code} (See above for stdout and stderr)`;
     console.error(msg);
     throw new Error(msg);
   }

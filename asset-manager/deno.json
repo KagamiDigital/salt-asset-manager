@@ -1,0 +1,6 @@
+{
+	"imports": {
+		"path": "node:path",
+		"url": "node:url"
+	}
+}

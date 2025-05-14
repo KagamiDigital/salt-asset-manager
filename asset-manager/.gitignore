@@ -5,6 +5,7 @@
 !.env.sample
 !package.json
 !package-lock.json
+!deno.json
 !README.md
 !tsconfig.json
 !rspack.config.mjs
