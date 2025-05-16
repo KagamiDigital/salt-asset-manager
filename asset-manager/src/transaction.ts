@@ -61,10 +61,11 @@ export async function transaction(
   const feeData = await broadcasting_network_provider.getFeeData();
 
 	console.info("Using custom sending provider", env.BROADCASTING_NETWORK_RPC_NODE_URL, "chainID", env.BROADCASTING_NETWORK_ID);
-  const sendingProvider = new ethers.providers.JsonRpcProvider(
-    env.BROADCASTING_NETWORK_RPC_NODE_URL,
-    // env.BROADCASTING_NETWORK_ID,
-  );
+  // const sendingProvider = new ethers.providers.JsonRpcProvider(
+  //   env.BROADCASTING_NETWORK_RPC_NODE_URL,
+  //   // env.BROADCASTING_NETWORK_ID,
+  // );
+	const sendingProvider = broadcasting_network_provider;
 	const actualChainId = await sendingProvider.getNetwork().then((network) => network.chainId);
 	if (actualChainId !== Number(env.BROADCASTING_NETWORK_ID)) {
 		throw new Error(`Expected chain ID ${env.BROADCASTING_NETWORK_ID} but got ${actualChainId}`);

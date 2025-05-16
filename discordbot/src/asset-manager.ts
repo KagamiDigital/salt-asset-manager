@@ -33,7 +33,7 @@ export async function transaction(
       "-amount",
       String(amount),
     ],
-    clearEnv: true,
+    // clearEnv: true,
     env: {
       PATH: Deno.env.get("PATH")!,
       ORCHESTRATION_NETWORK_RPC_NODE_URL:
@@ -53,9 +53,9 @@ export async function transaction(
   const { code, stdout, stderr } = await process.output();
   const stdout2 = new TextDecoder("utf-8").decode(stdout);
   const stderr2 = new TextDecoder("utf-8").decode(stderr);
-  console.log("asset-manager subprocess finished:", stdout2, stderr2);
+  console.log("asset-manager subprocess finished");
   if (code !== 0) {
-    const msg = `asset-manager subprocess failed with code ${code} (See above for stdout and stderr)`;
+	  const msg = `asset-manager subprocess failed with code ${code}\nStderr:${stderr2}\nStdout:\n${stdout2}`;
     console.error(msg);
     throw new Error(msg);
   }
