@@ -79,8 +79,8 @@ const transaction_command = {
 	description:
 		"A faucet showcasing Salt's multi-signer authentication process in action",
 	options: [
-		// command_somnia_shannon,
-		// command_sepolia_arbitrum,
+		command_somnia_shannon,
+		command_sepolia_arbitrum,
 		command_sepolia_etherium,
 	],
 };
