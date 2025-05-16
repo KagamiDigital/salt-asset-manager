@@ -11,5 +11,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
-  "lib": ["ES2022"] // type definitions to be included, does not change compilation outputs
+  "lib": ["ESNEXT"] // type definitions to be included, does not change compilation outputs
 }

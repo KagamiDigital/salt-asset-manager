@@ -4,10 +4,10 @@ import {
   getVaultsWithoutTransactions,
   signTx,
   submitTransaction,
-} from "@intuweb3/exp-node";
+} from "intu";
 import { broadcasting_network_provider, signer } from "../../constants";
-import WrappedTokenGatewayV3 from "../../../contracts/Protocols/Aave/abi/WrappedTokenGatewayV3.json";
-import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
+import WrappedTokenGatewayV3 from "../../../contracts/Protocols/Aave/abi/WrappedTokenGatewayV3.json" with { type: "json" };
+import ERC20 from "../../../contracts/ERC20/abi/ERC20.json" with { type: "json" };
 import env from "../../env";
 
 const aETHWETHContractAddress = "0x5b071b590a59395fE4025A0Ccc1FcC931AAc1830";

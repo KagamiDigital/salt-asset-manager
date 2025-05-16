@@ -1,6 +1,7 @@
 {
 	"imports": {
 		"path": "node:path",
-		"url": "node:url"
+		"url": "node:url",
+		"readline": "node:readline"
 	}
 }

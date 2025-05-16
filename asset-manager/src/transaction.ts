@@ -4,7 +4,7 @@ import {
   getVaultsWithoutTransactions,
   signTx,
   submitTransaction,
-} from "@intuweb3/exp-node";
+} from "intu";
 import { broadcasting_network_provider, signer } from "./constants";
 import env from "./env";
 
