@@ -1,8 +1,8 @@
 
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "../../helpers";
-import { getVaultsWithoutTransactions, signTx, submitTransaction } from "@intuweb3/exp-node";
-import { broadcasting_network_provider, signer } from "../../constants";
+import { getVaultsWithoutTransactions, signTx, submitTransaction } from "@intuweb3/sdk"
+import { broadcasting_network_provider, orchestration_network_provider, signer } from "../../constants";
 import WrappedTokenGatewayV3 from "../../../contracts/Protocols/Aave/abi/WrappedTokenGatewayV3.json"
 import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
 
@@ -35,7 +35,21 @@ export async function deposit() {
     
     const contractInterface = new ethers.utils.Interface(WrappedTokenGatewayV3); 
     const data = contractInterface.encodeFunctionData('depositETH',[poolContractAddress,vault.masterPublicAddress,0]); 
-    
+    let gas:BigNumber; 
+
+    try {  
+        // Get the estimated gas for the fully populated transaction
+        const gasEstimate = await broadcasting_network_provider.estimateGas({
+        from: vault.masterPublicAddress!,
+        to: WrappedTokenGatewayV3ContractAddress,
+        data: data
+        });
+        gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase
+    } catch(err) {
+        console.log(err); 
+        gas = BigNumber.from(35000).mul(1000).div(100); // return 350k gas, i.e. just a large value
+    }
+
     const submitTransactionTx = await submitTransaction(
         WrappedTokenGatewayV3ContractAddress,
         depositAmountInEth,
@@ -43,11 +57,13 @@ export async function deposit() {
         nonce,
         data,
         BigNumber.from(feeData.gasPrice).toNumber(),
-        300000, // hardcoded because gase estimates fail on testnet aave smart contract
+        gas.toNumber(),
         vault.vaultAddress,
         signer,
         'SERVER',
-        false); 
+        false,
+        broadcasting_network_provider,
+    ); 
     
     const submitTransactionResult = await (submitTransactionTx as ContractTransaction).wait();
     const submitTransactionEvents = submitTransactionResult.events;
@@ -111,11 +127,13 @@ export async function approve() {
         nonce,
         data,
         BigNumber.from(feeData.gasPrice).toNumber(),
-        gas.toNumber(),
+        gas.mul(155).div(100).toNumber(),
         vault.vaultAddress,
         signer,
         'SERVER',
-        false); 
+        false,
+        broadcasting_network_provider
+    ); 
     
     const submitTransactionResult = await (submitTransactionTx as ContractTransaction).wait();
     const submitTransactionEvents = submitTransactionResult.events;
@@ -169,18 +187,34 @@ export async function withdraw() {
     const contractInterface = new ethers.utils.Interface(WrappedTokenGatewayV3); 
     const data = contractInterface.encodeFunctionData('withdrawETH',[poolContractAddress,balance,vault.masterPublicAddress]); 
     
+    let gas:BigNumber; 
+
+    try {  
+        // Get the estimated gas for the fully populated transaction
+        const gasEstimate = await broadcasting_network_provider.estimateGas({
+        from: vault.masterPublicAddress!,
+        to: WrappedTokenGatewayV3ContractAddress,
+        data: data
+        });
+        gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase
+    } catch(err) {
+        gas = BigNumber.from(35000).mul(1000).div(100); // return 350k gas, i.e. just a large value
+    }
+
     const submitTransactionTx = await submitTransaction(
         WrappedTokenGatewayV3ContractAddress,
         0,
-        process.env.BROADCASTING_NETWORK_ID ,
+        process.env.BROADCASTING_NETWORK_ID,
         nonce,
         data,
         BigNumber.from(feeData.gasPrice).toNumber(),
-        350000, // hardcoded because gase estimates fail on testnet aave smart contract
+        gas.toNumber(),
         vault.vaultAddress,
         signer,
         'SERVER',
-        false); 
+        false,
+        broadcasting_network_provider,
+    ); 
     
     const submitTransactionResult = await (submitTransactionTx as ContractTransaction).wait();
     const submitTransactionEvents = submitTransactionResult.events;

@@ -1,8 +1,7 @@
-import { automateRegistration, getUserPreRegisterInfos, getUserRegistrationAllInfos, preRegistration, registerAllSteps } from "@intuweb3/exp-node";
+import { automateRegistration, getUserPreRegisterInfos, getUserRegistrationAllInfos, preRegistration, registerAllSteps, getUserIndex } from "@intuweb3/sdk";
 import { ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { orchestration_network_provider, signer } from "./constants";
-import { getUserIndex } from "@intuweb3/exp-node/lib/services/web3/utils";
 
 const preRegisterBot = async (accountAddress:string, bot:ethers.Signer, provider: ethers.providers.JsonRpcProvider) => {
     const botAddress = await bot.getAddress(); 
@@ -39,13 +38,13 @@ const registerBot = async (accountAddress:string, bot:ethers.Signer,provider:eth
         }
         console.log('automaticRegistration:start'); 
         // open the nostr db connection
-        await automateRegistration(accountAddress, bot,undefined, 'wss://relay.nostrdice.com', undefined); 
+        await automateRegistration(accountAddress, bot, undefined, undefined); 
 
         console.log('automaticRegistration:success'); 
 
         console.log('registerAllSteps:start'); 
 
-        const tx = await registerAllSteps(accountAddress, bot,undefined, 'wss://relay.nostrdice.com', undefined) as ethers.ContractTransaction
+        const tx = await registerAllSteps(accountAddress, bot,undefined, undefined, undefined) as ethers.ContractTransaction
         
         await tx.wait(); 
 

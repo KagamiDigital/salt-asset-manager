@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
-import { getVaultsWithoutTransactions, signTx, submitTransaction } from "@intuweb3/exp-node";
+import { getVaultsWithoutTransactions, signTx, submitTransaction } from "@intuweb3/sdk";
 import { broadcasting_network_provider, signer } from "./constants";
 
 export async function transaction() {
@@ -51,7 +51,9 @@ export async function transaction() {
         vault.vaultAddress,
         signer,
         'SERVER',
-        false); 
+        false,
+        broadcasting_network_provider,
+    ); 
     
     const submitTransactionResult = await (submitTransactionTx as ContractTransaction).wait();
     const submitTransactionEvents = submitTransactionResult.events;
