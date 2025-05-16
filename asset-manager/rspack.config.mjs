@@ -45,6 +45,7 @@ export default {
 	output: {
 		filename: "bundle.js",
 		path: path.resolve(__dirname, "dist"),
+		module: true,
 		environment: {
 			// https://rspack.dev/config/output
 			asyncFunction: true,
@@ -53,6 +54,7 @@ export default {
 	},
 	experiments: {
 		asyncWebAssembly: true,
+		outputModule: true,
 	},
 	// externals: {
 	//   bufferutil: "bufferutil",
