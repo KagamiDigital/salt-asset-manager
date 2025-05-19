@@ -62,5 +62,7 @@ export async function transaction(
 	  const msg = `asset-manager subprocess failed with code ${code}\nStderr:\n${stderr2}\nStdout:\n${stdout2}`;
     console.error(msg);
     throw new Error(msg);
+  } else {
+		console.log(`Asset manager subprocess succeeded, copy-pasting the outputs here:\nStdout:\n${stdout2}\nStderr:\n${stderr2}`);
   }
 }

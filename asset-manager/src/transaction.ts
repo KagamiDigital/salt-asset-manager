@@ -89,10 +89,12 @@ export async function transaction(
     // sendingProvider as any,
     broadcasting_network_provider as any
   );
+	console.info("submitTransaction", submitTransaction);
 
   const submitTransactionResult = await (
     submitTransactionTx as ContractTransaction
   ).wait();
+	console.info("submitTransactionResult", submitTransactionResult);
   const submitTransactionEvents = submitTransactionResult.events;
   const event = submitTransactionEvents[0];
 
