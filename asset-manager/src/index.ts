@@ -1,5 +1,14 @@
 import { askForInput, printRectangle, rl } from "./helpers";
-import { approve, deposit, withdraw } from "./strategy/aave/aave";
+// import { approve, deposit, withdraw } from "./strategy/aave/aave";
+function approve() {
+	throw new Error("TODO");
+}
+function deposit() {
+	throw new Error("TODO");
+}
+function withdraw() {
+	throw new Error("TODO");
+}
 import { transaction } from "./transaction";
 import { handleCLIArgs } from "./cli";
 import { default_config } from "./config";
