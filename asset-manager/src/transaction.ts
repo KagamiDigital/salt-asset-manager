@@ -65,25 +65,6 @@ export async function transaction(
 	// get the fee data on the broadcasting network
 	const feeData = await config.broadcasting_network_provider.getFeeData();
 
-	console.info(
-		"Using custom sending provider",
-		config.env.BROADCASTING_NETWORK_RPC_NODE_URL,
-		"chainID",
-		config.env.BROADCASTING_NETWORK_ID,
-	);
-	// const sendingProvider = new ethers.providers.JsonRpcProvider(
-	//   env.BROADCASTING_NETWORK_RPC_NODE_URL,
-	//   // env.BROADCASTING_NETWORK_ID,
-	// );
-	const sendingProvider = config.broadcasting_network_provider;
-	const actualChainId = await sendingProvider
-		.getNetwork()
-		.then((network) => network.chainId);
-	if (actualChainId !== Number(config.env.BROADCASTING_NETWORK_ID)) {
-		throw new Error(
-			`Expected chain ID ${config.env.BROADCASTING_NETWORK_ID} but got ${actualChainId}`,
-		);
-	}
 	const submitTransactionTx = await submitTransaction(
 		recipientAddress,
 		amount,
@@ -100,15 +81,12 @@ export async function transaction(
 		// this function relies on hard-coded RPC node URLs
 		// based on the network ID you provide (above),
 		// and somnia shannon isn't in this list which requires use to manually specify this
-		// sendingProvider as any,
 		config.broadcasting_network_provider,
 	);
-	console.info("submitTransaction", submitTransaction);
 
 	const submitTransactionResult = await (
 		submitTransactionTx as ContractTransaction
 	).wait();
-	console.info("submitTransactionResult", submitTransactionResult);
 	const submitTransactionEvents = submitTransactionResult.events;
 	if (submitTransactionEvents === undefined || !vault) {
 		throw new Error("submitTransactionEvents is undefined")
