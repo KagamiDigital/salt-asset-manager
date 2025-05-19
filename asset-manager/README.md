@@ -19,9 +19,10 @@ The bot will need to be set up as a co-signers on a Salt account. To do this, it
 ## Set up the Asset Manager Bot
 
 1. clone the repo to your local machine
-2. npm install
-3. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from. You must be a signer on this account.
-4. set BROADCASTING_NETWORK_RPC_NODE_URL, and BROADCASTING_NETWORK_ID to the broadcasting network of your choice from the [supported networks list](#supported-networks) below.
+2. cd asset-manager
+3. npm install
+4. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from. You must be a signer on this account.
+5. set BROADCASTING_NETWORK_RPC_NODE_URL, and BROADCASTING_NETWORK_ID to the broadcasting network of your choice from the [supported networks list](#supported-networks) below.
 
 ## Start the Asset Manager Bot
 
