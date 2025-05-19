@@ -19,6 +19,7 @@ export default {
 						parser: {
 							syntax: "typescript",
 						},
+						target: 'esnext',
 					},
 				},
 				type: "javascript/auto",

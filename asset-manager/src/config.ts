@@ -6,7 +6,6 @@ export class Config {
 	env: ENV;
 	orchestration_network_provider: ethers.providers.StaticJsonRpcProvider;
 	broadcasting_network_provider: ethers.providers.StaticJsonRpcProvider;
-	wallet: ethers.Wallet;
 	signer: ethers.Wallet;
 
 	constructor(dontcallme: Symbol) {
@@ -19,7 +18,7 @@ export class Config {
 		const self = new Config(private_symbol);
 		self.env = env;
 
-		self.broadcasting_network_provider =
+		self.orchestration_network_provider =
 			new ethers.providers.StaticJsonRpcProvider({
 				url: self.env.ORCHESTRATION_NETWORK_RPC_NODE_URL,
 				skipFetchSetup: true,
@@ -34,9 +33,11 @@ export class Config {
 		const network = await self.broadcasting_network_provider.getNetwork();
 		console.log("Network ready!", network.chainId);
 
-		self.wallet = new ethers.Wallet(env.PRIVATE_KEY);
+		self.signer = new ethers.Wallet(env.PRIVATE_KEY, self.orchestration_network_provider);
+		if (!self.signer.provider) {
+			throw new Error("Provider for signer is undefined?");
+		}
 
-		self.signer = self.wallet.connect(self.orchestration_network_provider);
 		return self;
 	}
 }
