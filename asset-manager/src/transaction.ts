@@ -1,18 +1,24 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
-import { broadcasting_network_provider, signer } from "./constants";
-import env from "./env";
+import { Config, default_config } from "./config";
 
-/** Will ask using stdin for missing arguments if not provided */
+export type TransactionInfo = {
+	vaultAddress: string;
+	recipientAddress: string;
+	amount: string | Number;
+	skipConfirmation?: boolean | undefined;
+};
+
+/** Will ask using stdin for missing info fields if not provided */
 export async function transaction(
-	vaultAddressI?: string | undefined,
-	recipientAddressI?: string | undefined,
-	amountI?: string | Number | undefined,
-	skipConfirmation?: boolean | undefined,
+	info2?: Partial<TransactionInfo>,
+	config2?: Config,
 ) {
+	const config = config2 ?? default_config;
+	const info = info2 ?? {};
 	const vaultAddress =
-		vaultAddressI ||
+		info.vaultAddress ||
 		(await askForInput(
 			`Please enter the account address from where you wish to execute the transfer: `,
 		));
@@ -21,19 +27,19 @@ export async function transaction(
 	}
 
 	const managedVaults = await getVaultsWithoutTransactions(
-		signer.address,
-		signer.provider,
+		config.signer.address,
+		config.signer.provider,
 	);
 
 	const recipientAddress =
-		recipientAddressI ||
+		info.recipientAddress ||
 		(await askForInput(`Please enter the recipient's address: `));
 	if (!ethers.utils.isAddress(recipientAddress)) {
 		throw "You need a valid recipient address to propose a transaction";
 	}
 
 	const amount =
-		amountI || (await askForInput(`Please enter the amount to transfer: `));
+		info.amount || (await askForInput(`Please enter the amount to transfer: `));
 
 	// skips if string
 	if (+amount < 0) {
@@ -48,43 +54,46 @@ export async function transaction(
 	const vault = managedVaults.find(
 		(v) => v.masterPublicAddress === vaultAddress,
 	);
+	if (vault === undefined || !vault) {
+		throw new Error("Vault is undefined");
+	}
 
-	const nonce = await broadcasting_network_provider.getTransactionCount(
-		vault.masterPublicAddress,
+	const nonce = await config.broadcasting_network_provider.getTransactionCount(
+		vault.masterPublicAddress!,
 	);
 
 	// get the fee data on the broadcasting network
-	const feeData = await broadcasting_network_provider.getFeeData();
+	const feeData = await config.broadcasting_network_provider.getFeeData();
 
 	console.info(
 		"Using custom sending provider",
-		env.BROADCASTING_NETWORK_RPC_NODE_URL,
+		config.env.BROADCASTING_NETWORK_RPC_NODE_URL,
 		"chainID",
-		env.BROADCASTING_NETWORK_ID,
+		config.env.BROADCASTING_NETWORK_ID,
 	);
 	// const sendingProvider = new ethers.providers.JsonRpcProvider(
 	//   env.BROADCASTING_NETWORK_RPC_NODE_URL,
 	//   // env.BROADCASTING_NETWORK_ID,
 	// );
-	const sendingProvider = broadcasting_network_provider;
+	const sendingProvider = config.broadcasting_network_provider;
 	const actualChainId = await sendingProvider
 		.getNetwork()
 		.then((network) => network.chainId);
-	if (actualChainId !== Number(env.BROADCASTING_NETWORK_ID)) {
+	if (actualChainId !== Number(config.env.BROADCASTING_NETWORK_ID)) {
 		throw new Error(
-			`Expected chain ID ${env.BROADCASTING_NETWORK_ID} but got ${actualChainId}`,
+			`Expected chain ID ${config.env.BROADCASTING_NETWORK_ID} but got ${actualChainId}`,
 		);
 	}
 	const submitTransactionTx = await submitTransaction(
 		recipientAddress,
 		amount,
-		env.BROADCASTING_NETWORK_ID,
+		config.env.BROADCASTING_NETWORK_ID,
 		nonce,
 		"",
 		BigNumber.from(feeData.gasPrice).toNumber(),
 		21000,
 		vault.vaultAddress,
-		signer,
+		config.signer,
 		"SERVER",
 		false,
 		// this is technically undocumented, but otherwise
@@ -92,7 +101,7 @@ export async function transaction(
 		// based on the network ID you provide (above),
 		// and somnia shannon isn't in this list which requires use to manually specify this
 		// sendingProvider as any,
-		broadcasting_network_provider,
+		config.broadcasting_network_provider,
 	);
 	console.info("submitTransaction", submitTransaction);
 
@@ -101,7 +110,13 @@ export async function transaction(
 	).wait();
 	console.info("submitTransactionResult", submitTransactionResult);
 	const submitTransactionEvents = submitTransactionResult.events;
+	if (submitTransactionEvents === undefined || !vault) {
+		throw new Error("submitTransactionEvents is undefined")
+	}
 	const event = submitTransactionEvents[0];
+	if (event.args === undefined || !event.args) {
+		throw new Error("event args is undefined")
+	}
 
 	const eventData = {
 		txId: event.args[0]._hex,
@@ -113,7 +128,7 @@ export async function transaction(
 	console.log("Note the transaction details:");
 	console.log("recipient: " + recipientAddress);
 	console.log("amount: " + amount);
-	console.log("chainId: " + env.BROADCASTING_NETWORK_ID);
+	console.log("chainId: " + config.env.BROADCASTING_NETWORK_ID);
 	console.log("nonce: " + nonce);
 	console.log(
 		"gasPrice: " +
@@ -123,7 +138,7 @@ export async function transaction(
 	);
 	console.log("gas: 21000");
 
-	if (!skipConfirmation) {
+	if (!info.skipConfirmation) {
 		const approval = await askForInput(
 			`\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `,
 		);
@@ -138,7 +153,7 @@ export async function transaction(
 	const tx = (await signTx(
 		vault.vaultAddress,
 		Number(eventData.txId),
-		signer,
+		config.signer,
 	)) as ethers.ContractTransaction;
 
 	console.info("Waiting for tx ...");

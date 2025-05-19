@@ -1,0 +1,44 @@
+import { ethers } from "ethers";
+import env, { ENV } from "./env";
+
+const private_symbol = Symbol();
+export class Config {
+	env: ENV;
+	orchestration_network_provider: ethers.providers.StaticJsonRpcProvider;
+	broadcasting_network_provider: ethers.providers.StaticJsonRpcProvider;
+	wallet: ethers.Wallet;
+	signer: ethers.Wallet;
+
+	constructor(dontcallme: Symbol) {
+		if (dontcallme !== private_symbol) {
+			throw new Error("Don't manually construct instances of Config class");
+		}
+	}
+
+	static async newFromEnv(env: ENV) {
+		const self = new Config(private_symbol);
+		self.env = env;
+
+		self.broadcasting_network_provider =
+			new ethers.providers.StaticJsonRpcProvider({
+				url: self.env.ORCHESTRATION_NETWORK_RPC_NODE_URL,
+				skipFetchSetup: true,
+			});
+		self.broadcasting_network_provider =
+			new ethers.providers.StaticJsonRpcProvider({
+				url: self.env.BROADCASTING_NETWORK_RPC_NODE_URL,
+				skipFetchSetup: true,
+			});
+
+		await self.broadcasting_network_provider.ready;
+		const network = await self.broadcasting_network_provider.getNetwork();
+		console.log("Network ready!", network.chainId);
+
+		self.wallet = new ethers.Wallet(env.PRIVATE_KEY);
+
+		self.signer = self.wallet.connect(self.orchestration_network_provider);
+		return self;
+	}
+}
+
+export const default_config: Config = await Config.newFromEnv(env);
