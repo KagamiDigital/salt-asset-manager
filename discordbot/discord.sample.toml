@@ -1,10 +1,18 @@
-BOT_APPLICATION_ID = "1364832034677198949"
-BOT_TOKEN = "bot token see https://discord.com/developers/applications/1364832034677198949/bot"
-SOMNIA_SHANNON_RPC_ENDPOINT = "https://rpc.ankr.com/somnia_testnet"
+# discord stuff
+BOT_APPLICATION_ID = "discord bot id (technically in token but ehh)"
+BOT_TOKEN = "discord bot token"
+# BOT_LOGGING_CHANNEL_ID = "1355064546041004124"
+
+# integration
+ASSET_MANAGER_FOLDER = "/home/ah/Desktop/salt-asset-manager/asset-manager"
+
+# SOMNIA_SHANNON_RPC_ENDPOINT = "https://rpc.ankr.com/somnia_testnet"
+# SOMNIA_SHANNON_RPC_ENDPOINT = "https://50312.rpc.thirdweb.com/THIRDWEB_API_KEY"
+SOMNIA_SHANNON_RPC_ENDPOINT = "https://dream-rpc.somnia.network/"
+SEPOLIA_ARBITRUM_RPC_ENDPOINT = "https://sepolia-rollup.arbitrum.io/rpc"
+SEPOLIA_ETHERIUM_RPC_ENDPOINT = "https://sepolia.drpc.org"
 FAUCET_TESTNET_SALT_ACCOUNT_ADDRESS = "0xcedc0DD99D036d73dd39509Ef7970A998D3e7FD8"
 
-## These are forwarded to the underlying asset-manager through env variables
-# private key for the person (e.g. metamask acc) who is part of the salt account
-PRIVATE_KEY = "private key here"
-# see asset-manager/.env.sample, forwards to that
+# private key for my test account, which is in the test salt org
+PRIVATE_KEY = "private key for you personal acc setup with salt"
 ORCHESTRATION_NETWORK_RPC_NODE_URL = "https://sepolia-rollup.arbitrum.io/rpc"
