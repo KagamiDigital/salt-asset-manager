@@ -13,7 +13,7 @@
 		"run-node": "echo 'This doesnt build the project for you' && node dist/bundle.js"
 	},
 	"dependencies": {
-		"intu": "npm:@intuweb3/sdk@^0.0.431",
+		"intu": "npm:@intuweb3/sdk@^0.0.432",
 		"command-line-parser": "^0.2.10",
 		"dotenv": "^16.4.5",
 		"ethers": "^5.7.2"
