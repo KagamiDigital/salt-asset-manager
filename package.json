@@ -10,7 +10,7 @@
     "nodev": "node --version"
   },
   "dependencies": {
-    "@intuweb3/sdk": "^0.0.432",
+    "@intuweb3/sdk": "^0.0.433",
     "assert-browserify": "^2.0.0",
     "buffer-browserify": "^0.2.5",
     "bufferutil": "^4.0.8",
