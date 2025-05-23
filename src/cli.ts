@@ -1,8 +1,9 @@
 import argsObj from "command-line-parser";
 import { transaction } from "./transaction";
 import { rl } from "./helpers";
+import { Config } from "./config";
 
-export async function handleCLIArgs(): Promise<boolean> {
+export async function handleCLIArgs(config: Config): Promise<boolean> {
 	let args = argsObj();
 	console.log("CLI args:", args);
 	// if -use-cli-only then returns true
@@ -29,12 +30,15 @@ export async function handleCLIArgs(): Promise<boolean> {
 		}
 
 		try {
-			await transaction({
-				vaultAddress,
-				recipientAddress,
-				amount,
-				skipConfirmation: true,
-			});
+			await transaction(
+				{
+					vaultAddress,
+					recipientAddress,
+					amount,
+					skipConfirmation: true,
+				},
+				config,
+			);
 			console.log("Transaction successful");
 		} catch (err) {
 			console.error("Transaction failed:", err);

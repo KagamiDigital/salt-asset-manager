@@ -1,20 +1,20 @@
 import { ethers } from "ethers";
-import env, { ENV } from "./env";
+import { Env } from "./env";
 
 const private_symbol = Symbol();
 export class Config {
-	env: ENV;
+	env: Env;
 	orchestration_network_provider: ethers.providers.StaticJsonRpcProvider;
 	broadcasting_network_provider: ethers.providers.StaticJsonRpcProvider;
 	signer: ethers.Wallet;
 
 	constructor(dontcallme: Symbol) {
 		if (dontcallme !== private_symbol) {
-			throw new Error("Don't manually construct instances of Config class");
+			throw new Error("Don't manually construct instances of Config class, use Config.newFromEnv(env)");
 		}
 	}
 
-	static async newFromEnv(env: ENV) {
+	static async newFromEnv(env: Env) {
 		const self = new Config(private_symbol);
 		self.env = env;
 
@@ -41,5 +41,3 @@ export class Config {
 		return self;
 	}
 }
-
-export const default_config: Config = await Config.newFromEnv(env);

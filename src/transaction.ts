@@ -1,7 +1,7 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
-import { Config, default_config } from "./config";
+import { Config } from "./config";
 
 export type TransactionInfo = {
 	vaultAddress: string;
@@ -12,11 +12,9 @@ export type TransactionInfo = {
 
 /** Will ask using stdin for missing info fields if not provided */
 export async function transaction(
-	info2?: Partial<TransactionInfo>,
-	config2?: Config,
+	info: Partial<TransactionInfo>,
+	config: Config,
 ) {
-	const config = config2 ?? default_config;
-	const info = info2 ?? {};
 	const vaultAddress =
 		info.vaultAddress ||
 		(await askForInput(
