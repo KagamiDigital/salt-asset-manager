@@ -11,4 +11,4 @@
 !rspack.config.mjs
 !.gitignore
 
-!sdk2
+!fix.nu
