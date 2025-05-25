@@ -2,6 +2,7 @@
 	"name": "@salt/sdk",
 	"version": "0.0.0",
 	"license": "ISC",
+	"description": "Salt asset manager JS SDK",
 	"exports": "./src/index.ts",
 	"imports": {
 		"path": "node:path",

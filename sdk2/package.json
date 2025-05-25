@@ -1,0 +1,77 @@
+{
+  "name": "@intuweb3/sdk",
+  "version": "0.0.433",
+  "description": "INTU SDK - Modern blockchain interaction toolkit",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./services": {
+      "import": "./services/index.js",
+      "require": "./services/index.js",
+      "types": "./services/index.d.ts"
+    },
+    "./services/web3": {
+      "import": "./services/web3/index.js",
+      "require": "./services/web3/index.js",
+      "types": "./services/web3/index.d.ts"
+    },
+    "./services/cryptography": {
+      "import": "./services/cryptography/index.js",
+      "require": "./services/cryptography/index.js",
+      "types": "./services/cryptography/index.d.ts"
+    },
+    "./services/web3/contracts/contractInfos.js": {
+      "import": "./services/web3/contracts/contractInfos.js",
+      "require": "./services/web3/contracts/contractInfos.js"
+    },
+    "./services/web3/contracts/abi/*": {
+      "import": "./services/web3/contracts/abi/*",
+      "require": "./services/web3/contracts/abi/*"
+    },
+    "./package.json": "./package.json",
+    "./services/cryptography/web_assembly/intu_crypto.mjs": "./services/cryptography/web_assembly/intu_crypto.mjs"
+
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.js.map",
+    "**/*.d.ts",
+    "**/*.wasm",
+    "**/*.json",
+    "**/*.mjs",
+    "!test/**/*"
+  ],
+  "keywords": [
+    "web3",
+    "blockchain",
+    "ethereum",
+    "crypto",
+    "wallets",
+    "multi-party-computation"
+  ],
+  "dependencies": {
+    "@noble/hashes": "^1.6.1",
+    "@noble/secp256k1": "^2.1.0",
+    "graphql-request": "^7.1.2",
+    "nostr-tools": "^2.10.4",
+    "viem": "^2.21.55",
+    "ws": "^8.18.0",
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/web3.js": "^1.98.1",
+    "graphql-ws": "^6.0.4"
+  },
+  "homepage": "https://intu.xyz",
+  "author": "INTU Web3 Team",
+  "license": "ISC"
+}

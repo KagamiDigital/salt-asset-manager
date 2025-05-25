@@ -17,15 +17,15 @@ export class Env {
 	BROADCASTING_NETWORK_ID: string;
 
 	constructor(raw_input) {
-		const input = raw_input ?? process.env;
+		const initial_input = raw_input ?? process.env;
 		for (const key in Env.expected) {
-			if (!input[key]) {
+			if (!initial_input[key]) {
 				throw new Error(
 					`${key} is not defined in new Config(input) after looking in local .env file`,
 				);
 			}
 			try {
-				input[key] = Env.expected[key](input[key]);
+				this[key] = Env.expected[key](initial_input[key]);
 			} catch (err) {
 				throw new Error(
 					`ENV input at key ${key} wasn't of the expected type (see cause)`,

@@ -4,6 +4,7 @@ import { handleCLIArgs } from "./cli";
 import { Env } from "./env";
 import { Config } from "./config";
 
+
 const env = new Env(process.env);
 const config = await Config.newFromEnv(env);
 

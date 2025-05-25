@@ -10,3 +10,5 @@
 !tsconfig.json
 !rspack.config.mjs
 !.gitignore
+
+!sdk2

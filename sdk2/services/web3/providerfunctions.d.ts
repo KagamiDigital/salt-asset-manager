@@ -1,0 +1,13 @@
+import { ethers, providers } from "ethers";
+import { Vault, Proposal, VaultAllInfo, TransactionStart } from "./types/index.js";
+export declare function getVault(vaultAddress: string, provider: providers.Provider): Promise<Vault>;
+export declare function _getProposal(vaultAddress: string, proposalId: number, provider: providers.Provider, abiCoder: ethers.utils.AbiCoder): Promise<Proposal>;
+export declare function _getTransactions(vaultAddress: string, provider: providers.Provider): Promise<TransactionStart[]>;
+export declare function _getTransaction(vaultAddress: string, txId: number, provider: providers.Provider): Promise<TransactionStart>;
+export declare function _getTransactionLean(vaultAddress: string, txId: number, provider: providers.Provider): Promise<TransactionStart>;
+export declare function getFilteredUserInitializedLogs(userAddress: string, provider: providers.Provider): Promise<string[]>;
+export declare function getFilteredUserInitializedLogsSingle(userAddress: string, provider: providers.Provider): Promise<string[]>;
+export declare function getFilteredUserInitializedLogsSingleWithDeoa(masterPublicAddress: string, provider: providers.Provider): Promise<string[]>;
+export declare function getUsersMegaPublicKeysReShare(vaultAddress: string, provider: providers.Provider): Promise<string[]>;
+export declare function getRotationVaultAddresses(userAddress: string, provider: providers.Provider): Promise<string[]>;
+export declare function getSingleVaultDetails(vaultAddress: string, provider: providers.Provider): Promise<VaultAllInfo>;

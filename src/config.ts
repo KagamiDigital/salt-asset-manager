@@ -10,7 +10,9 @@ export class Config {
 
 	constructor(dontcallme: Symbol) {
 		if (dontcallme !== private_symbol) {
-			throw new Error("Don't manually construct instances of Config class, use Config.newFromEnv(env)");
+			throw new Error(
+				"Don't manually construct instances of Config class, use Config.newFromEnv(env)",
+			);
 		}
 	}
 
@@ -33,7 +35,10 @@ export class Config {
 		const network = await self.broadcasting_network_provider.getNetwork();
 		console.log("Network ready!", network.chainId);
 
-		self.signer = new ethers.Wallet(env.PRIVATE_KEY, self.orchestration_network_provider);
+		self.signer = new ethers.Wallet(
+			env.PRIVATE_KEY,
+			self.orchestration_network_provider,
+		);
 		if (!self.signer.provider) {
 			throw new Error("Provider for signer is undefined?");
 		}
