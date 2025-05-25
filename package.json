@@ -1,8 +1,9 @@
 {
-	"name": "kagami-asset-manager",
+	"name": "@salt/sdk",
 	"version": "1.0.0",
-	"description": "",
-	"main": "index.ts",
+	"description": "Salt asset manager JS SDK",
+	"main": "./src/index.ts",
+	"exports": "./src/index.ts",
 	"type": "module",
 	"scripts": {
 		"start": "npm run dev-node",
