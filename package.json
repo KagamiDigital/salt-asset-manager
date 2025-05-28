@@ -2,7 +2,7 @@
 	"name": "@salt/sdk",
 	"version": "1.0.0",
 	"description": "Salt asset manager JS SDK",
-	"main": "./src/index.ts",
+	"main": "./src/main.ts",
 	"exports": "./src/index.ts",
 	"type": "module",
 	"scripts": {

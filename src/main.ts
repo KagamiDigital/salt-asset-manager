@@ -10,7 +10,7 @@ const config = await Config.newFromEnv(env);
 const publicAddress = await config.signer.getAddress();
 printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 
-let args = argsObj();
+let args = argsObj() as any;
 console.log("CLI args:", args);
 
 // if -use-cli-only then returns true
