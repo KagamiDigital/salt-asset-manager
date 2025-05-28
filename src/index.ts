@@ -4,5 +4,5 @@ export { Env };
 import { Config } from "./config";
 export { Config };
 
-import { transaction } from "./transaction";
-export { transaction };
+import { transaction, TransactionInfo } from "./transaction";
+export { transaction, TransactionInfo };

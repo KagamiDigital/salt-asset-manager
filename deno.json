@@ -10,6 +10,7 @@
 		"readline": "node:readline"
 	},
 	"tasks": {
-		"start": "deno run -A --unstable-sloppy-imports src/main.ts"
+		"start": "deno run -A --unstable-sloppy-imports src/main.ts",
+		"doc": "deno doc --unstable-sloppy-imports --html src/index.ts"
 	}
 }

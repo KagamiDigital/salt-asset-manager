@@ -8,6 +8,7 @@ export class Config {
 	broadcasting_network_provider: ethers.providers.StaticJsonRpcProvider;
 	signer: ethers.Wallet;
 
+	/** Use `Config.newFromEnv(env)` */
 	constructor(dontcallme: Symbol) {
 		if (dontcallme !== private_symbol) {
 			throw new Error(
@@ -16,6 +17,7 @@ export class Config {
 		}
 	}
 
+	/** Construct `Config` using this static method, e.g. `Config.newFromEnv(env)` */
 	static async newFromEnv(env: Env) {
 		const self = new Config(private_symbol);
 		self.env = env;

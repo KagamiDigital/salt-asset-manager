@@ -66,3 +66,11 @@ This project is a library, with the only public file being `index.ts`.
 There is also `main.ts` which provides an *unstable* runtime CLI that prompts you for the required parameters
 to utilise some parts of the library.
 Generally, **you should only rely on `index.ts`** and shouldn't import anything not exported from that file.
+
+## Documentation
+After cloning this repo, you can build documentation for the library using `deno doc`:
+```nushell
+deno task doc
+# open it in your browser, wow deno is cool!
+open docs/index.html
+```

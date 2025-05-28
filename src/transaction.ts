@@ -3,6 +3,7 @@ import { askForInput } from "./helpers";
 import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
 import { Config } from "./config";
 
+/** Information required to complete a transaction */
 export type TransactionInfo = {
 	vaultAddress: string;
 	recipientAddress: string;
