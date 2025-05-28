@@ -29,8 +29,6 @@ The bot will need to be set up as a co-signers on a Salt account. To do this, it
 1. npm start
 2. follow the instructions printed on the command line
 
-(If you want to use deno, run `deno task dev` instead of `npm start`, although deno isn't an officially supported runtime)
-
 ### Notes
 
 This repository is meant to serve as a starter pack for testing purposes, we encourage you to try the code, improve it, and propose changes.
@@ -50,3 +48,21 @@ The orchestration network cannot be changed. Salt uses Arbitrum Sepolia for acco
 The RPC nodes supplied by default in the .env.sample file are free nodes. The repository has been tested using these nodes. You may want to switch to paid nodes to improve your experience.
 
 If you wish to broadcast on a network that is not supported in the list, please contact the Salt team on [Discord](https://discord.gg/UhDUBW9ymM).
+
+# Developer Details
+This project is fully compatible with `deno`:
+```nushell
+deno install
+
+# patches a library not compatible with deno
+# install nushell to run it: https://www.nushell.sh/
+nu patch.nu
+
+deno task start
+```
+
+## Structure
+This project is a library, with the only public file being `index.ts`.
+There is also `main.ts` which provides an *unstable* runtime CLI that prompts you for the required parameters
+to utilise some parts of the library.
+Generally, **you should only rely on `index.ts`** and shouldn't import anything not exported from that file.
