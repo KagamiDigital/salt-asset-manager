@@ -4,6 +4,29 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+/**
+* Object representing all the required environment variables,
+* checked at runtime
+*
+* @example
+* ```ts
+* // loads from `process.env` by default
+* const env = new Env();
+* console.log(env.ORCHESTRATION_NETWORK_RPC_NODE_URL);
+* ```
+*
+* @example
+* ```ts
+* // or you can provide all keys yourself
+* const env = new Env({
+* 	ORCHESTRATION_NETWORK_RPC_NODE_URL: "example",
+* 	PRIVATE_KEY: "example",
+* 	BROADCASTING_NETWORK_RPC_NODE_URL: "example",
+* 	BROADCASTING_NETWORK_ID: "example",
+* });
+* console.log(env);
+* ```
+*/
 export class Env {
 	static expected = {
 		ORCHESTRATION_NETWORK_RPC_NODE_URL: String,
