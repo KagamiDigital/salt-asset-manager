@@ -9,13 +9,49 @@ export type TransactionInfo = {
 	recipientAddress: string;
 	amount: string | Number;
 	skipConfirmation?: boolean | undefined;
+	gasEstimate?: GasEstimateConstructor;
+	data?: string;
 };
+
+export type GasEstimateConstructor =
+	| GasEstimate
+	| ((initial: number) => number)
+	| undefined;
+
+/** See [GasEstimate.estimate] */
+export class GasEstimate {
+	handler: (initial: number) => number;
+
+	constructor(input: GasEstimateConstructor) {
+		if (input instanceof GasEstimate) {
+			this.handler = input.handler;
+		} else if (typeof input === "function") {
+			this.handler = input;
+		} else if (typeof input === "number") {
+			this.handler = (initial) => initial * input;
+		} else {
+			throw new Error(
+				`Invalid input type ${typeof input}, expected function or number`,
+			);
+		}
+	}
+
+	/** Takes as input an initial estimate and uses the result */
+	estimate(initial: number): number {
+		return this.handler(initial);
+	}
+}
 
 /** Will ask using stdin for missing info fields if not provided */
 export async function transaction(
 	info: Partial<TransactionInfo>,
 	config: Config,
 ) {
+	if (typeof info !== "object")
+		throw new TypeError(
+			`Expected info to be of type object, not ${typeof info}`,
+		);
+	const gasEstimate = new GasEstimate(info.gasEstimate);
 	const vaultAddress =
 		info.vaultAddress ||
 		(await askForInput(
@@ -63,15 +99,18 @@ export async function transaction(
 
 	// get the fee data on the broadcasting network
 	const feeData = await config.broadcasting_network_provider.getFeeData();
+	const gasPrice = BigNumber.from(feeData.gasPrice).toNumber();
+	const gas = gasEstimate.estimate(21000);
+	const data = info.data ?? "";
 
 	const submitTransactionTx = await submitTransaction(
 		recipientAddress,
 		amount,
 		config.env.BROADCASTING_NETWORK_ID,
 		nonce,
-		"",
-		BigNumber.from(feeData.gasPrice).toNumber(),
-		21000,
+		data,
+		gasPrice,
+		gas,
 		vault.vaultAddress,
 		config.signer,
 		"SERVER",
@@ -79,7 +118,7 @@ export async function transaction(
 		// this is technically undocumented, but otherwise
 		// this function relies on hard-coded RPC node URLs
 		// based on the network ID you provide (above),
-		// and somnia shannon isn't in this list which requires use to manually specify this
+		// and somnia shannon isn't in this list which requires us to manually specify this
 		config.broadcasting_network_provider,
 	);
 
@@ -88,11 +127,11 @@ export async function transaction(
 	).wait();
 	const submitTransactionEvents = submitTransactionResult.events;
 	if (submitTransactionEvents === undefined || !vault) {
-		throw new Error("submitTransactionEvents is undefined")
+		throw new Error("submitTransactionEvents is undefined");
 	}
 	const event = submitTransactionEvents[0];
 	if (event.args === undefined || !event.args) {
-		throw new Error("event args is undefined")
+		throw new Error("event args is undefined");
 	}
 
 	const eventData = {
