@@ -4,14 +4,92 @@ import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
 import { Config } from "./config";
 
 /** Information required to complete a transaction */
-export type TransactionInfo = {
+export type TransactionInfoConstructor =
+	| TransactionInfo
+	| {
+			vaultAddress?: string;
+			recipientAddress?: string;
+			amount?: string | Number;
+			skipConfirmation?: boolean | undefined;
+			gasEstimate?: GasEstimateConstructor;
+			data?: string;
+	  };
+
+type InternalConstructor = {
 	vaultAddress: string;
 	recipientAddress: string;
-	amount: string | Number;
-	skipConfirmation?: boolean | undefined;
-	gasEstimate?: GasEstimateConstructor;
-	data?: string;
+	amount: string;
+	skipConfirmation: boolean;
+	gasEstimate: GasEstimateConstructor;
+	data: string;
+	key: Symbol;
 };
+const key = Symbol("Transaction Info private constructor key");
+
+export class TransactionInfo {
+	vaultAddress: string;
+	recipientAddress: string;
+	amount: string;
+	skipConfirmation: boolean;
+	gasEstimate: GasEstimate;
+	data: string;
+
+	/** @private */
+	private constructor(info: InternalConstructor) {
+		if (info.key !== key) {
+			throw new Error(
+				"Don't manually construct `new TransactionInfo({ ... })`, use `await Transaction.new({ ... })`",
+			);
+		}
+		this.vaultAddress = info.vaultAddress;
+		this.recipientAddress = info.recipientAddress;
+		this.amount = info.amount;
+	}
+
+	static async new(info: TransactionInfoConstructor): Promise<TransactionInfo> {
+		const self = { key } as any as InternalConstructor;
+		if (info instanceof TransactionInfo) {
+			return info;
+		}
+		if (typeof info !== "object") {
+			throw new TypeError(
+				`Expected info to be of type object, not ${typeof info}`,
+			);
+		}
+		self.gasEstimate = new GasEstimate(info.gasEstimate);
+		self.vaultAddress =
+			info.vaultAddress ||
+			(await askForInput(
+				`Please enter the account address from where you wish to execute the transfer: `,
+			));
+		if (!ethers.utils.isAddress(self.vaultAddress)) {
+			throw new Error(
+				"You need a valid account address to propose a transaction",
+			);
+		}
+
+		self.recipientAddress =
+			info.recipientAddress ||
+			(await askForInput(`Please enter the recipient's address: `));
+		if (!ethers.utils.isAddress(self.recipientAddress)) {
+			throw "You need a valid recipient address to propose a transaction";
+		}
+
+		if (typeof info.amount === "number" && info.amount <= 0) {
+			throw new RangeError(
+				"You need a positive amount to propose a transaction",
+			);
+		}
+		self.amount =
+			String(info.amount) ||
+			(await askForInput(`Please enter the amount to transfer: `));
+
+		self.skipConfirmation = info.skipConfirmation === true;
+		self.data = info.data ?? "";
+
+		return new TransactionInfo(self);
+	}
+}
 
 export type GasEstimateConstructor =
 	| GasEstimate
@@ -44,50 +122,22 @@ export class GasEstimate {
 
 /** Will ask using stdin for missing info fields if not provided */
 export async function transaction(
-	info: Partial<TransactionInfo>,
+	info2: TransactionInfoConstructor,
 	config: Config,
 ) {
-	if (typeof info !== "object")
-		throw new TypeError(
-			`Expected info to be of type object, not ${typeof info}`,
-		);
-	const gasEstimate = new GasEstimate(info.gasEstimate);
-	const vaultAddress =
-		info.vaultAddress ||
-		(await askForInput(
-			`Please enter the account address from where you wish to execute the transfer: `,
-		));
-	if (!ethers.utils.isAddress(vaultAddress)) {
-		throw "You need a valid account address to propose a transaction";
-	}
-
+	const info = await TransactionInfo.new(info2);
 	const managedVaults = await getVaultsWithoutTransactions(
 		config.signer.address,
 		config.signer.provider,
 	);
 
-	const recipientAddress =
-		info.recipientAddress ||
-		(await askForInput(`Please enter the recipient's address: `));
-	if (!ethers.utils.isAddress(recipientAddress)) {
-		throw "You need a valid recipient address to propose a transaction";
-	}
-
-	const amount =
-		info.amount || (await askForInput(`Please enter the amount to transfer: `));
-
-	// skips if string
-	if (+amount < 0) {
-		throw "You need a positive amount to propose a transaction";
-	}
-
 	console.info("Beginning transaction ...");
-	console.info("vaultAddress:", vaultAddress);
-	console.info("recipientAddress:", recipientAddress);
-	console.info("amount:", amount);
+	console.info("vaultAddress:", info.vaultAddress);
+	console.info("recipientAddress:", info.recipientAddress);
+	console.info("amount:", info.amount);
 
 	const vault = managedVaults.find(
-		(v) => v.masterPublicAddress === vaultAddress,
+		(v) => v.masterPublicAddress === info.vaultAddress,
 	);
 	if (vault === undefined || !vault) {
 		throw new Error("Vault is undefined");
@@ -100,12 +150,12 @@ export async function transaction(
 	// get the fee data on the broadcasting network
 	const feeData = await config.broadcasting_network_provider.getFeeData();
 	const gasPrice = BigNumber.from(feeData.gasPrice).toNumber();
-	const gas = gasEstimate.estimate(21000);
+	const gas = info.gasEstimate.estimate(21000);
 	const data = info.data ?? "";
 
 	const submitTransactionTx = await submitTransaction(
-		recipientAddress,
-		amount,
+		info.recipientAddress,
+		info.amount,
 		config.env.BROADCASTING_NETWORK_ID,
 		nonce,
 		data,
@@ -127,11 +177,11 @@ export async function transaction(
 	).wait();
 	const submitTransactionEvents = submitTransactionResult.events;
 	if (submitTransactionEvents === undefined || !vault) {
-		throw new Error("submitTransactionEvents is undefined");
+		throw new TypeError("submitTransactionEvents is undefined");
 	}
 	const event = submitTransactionEvents[0];
 	if (event.args === undefined || !event.args) {
-		throw new Error("event args is undefined");
+		throw new TypeError("event args is undefined");
 	}
 
 	const eventData = {
@@ -142,8 +192,8 @@ export async function transaction(
 	console.log("transaction submitted successfully", eventData.txId);
 
 	console.log("Note the transaction details:");
-	console.log("recipient: " + recipientAddress);
-	console.log("amount: " + amount);
+	console.log("recipient: " + info.recipientAddress);
+	console.log("amount: " + info.amount);
 	console.log("chainId: " + config.env.BROADCASTING_NETWORK_ID);
 	console.log("nonce: " + nonce);
 	console.log(
