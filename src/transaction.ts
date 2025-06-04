@@ -2,141 +2,10 @@ import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
 import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
 import { Config } from "./config";
-
-/** Information required to complete a transaction */
-export type TransactionInfoConstructor =
-	| TransactionInfo
-	| {
-			vaultAddress?: string;
-			recipientAddress?: string;
-			amount?: string | Number;
-			gasEstimate?: GasEstimateConstructor;
-			data?: string;
-			skipConfirmation?: boolean | undefined;
-			logging?: (...things: any[]) => undefined;
-	  };
-
-type InternalConstructor = {
-	vaultAddress: string;
-	recipientAddress: string;
-	amount: string;
-	skipConfirmation: boolean;
-	gasEstimate: GasEstimate;
-	data: string;
-	log: (...things: any[]) => undefined;
-	key: Symbol;
-};
-const key = Symbol("Transaction Info private constructor key");
-
-export class TransactionInfo {
-	vaultAddress: string;
-	recipientAddress: string;
-	amount: string;
-	skipConfirmation: boolean;
-	gasEstimate: GasEstimate;
-	log: (...things: any[]) => undefined;
-	data: string;
-
-	/** @private */
-	private constructor(info: InternalConstructor) {
-		if (info.key !== key) {
-			throw new Error(
-				"Don't manually construct `new TransactionInfo({ ... })`, use `await Transaction.new({ ... })`",
-			);
-		}
-		this.vaultAddress = info.vaultAddress;
-		this.recipientAddress = info.recipientAddress;
-		this.amount = info.amount;
-		this.skipConfirmation = info.skipConfirmation;
-		this.gasEstimate = info.gasEstimate;
-		this.log = info.log;
-		this.data = info.data;
-	}
-
-	static async new(info: TransactionInfoConstructor): Promise<TransactionInfo> {
-		if (info instanceof TransactionInfo) {
-			return info;
-		}
-		const self = { key } as any as InternalConstructor;
-
-		if (typeof info !== "object") {
-			throw new TypeError(
-				`Expected info to be of type object, not ${typeof info}`,
-			);
-		}
-
-		// logging defaults to console.info
-		self.log =
-			info.logging ??
-			((...things: any[]) => {
-				console.info(...things);
-			});
-
-		self.gasEstimate = new GasEstimate(info.gasEstimate);
-
-		self.vaultAddress =
-			info.vaultAddress ||
-			(await askForInput(
-				`Please enter the account address from where you wish to execute the transfer: `,
-			));
-		if (!ethers.utils.isAddress(self.vaultAddress)) {
-			throw new Error(
-				"You need a valid account address to propose a transaction",
-			);
-		}
-
-		self.recipientAddress =
-			info.recipientAddress ||
-			(await askForInput(`Please enter the recipient's address: `));
-		if (!ethers.utils.isAddress(self.recipientAddress)) {
-			throw "You need a valid recipient address to propose a transaction";
-		}
-
-		if (typeof info.amount === "number" && info.amount <= 0) {
-			throw new RangeError(
-				"You need a positive amount to propose a transaction",
-			);
-		}
-		self.amount =
-			String(info.amount) ||
-			(await askForInput(`Please enter the amount to transfer: `));
-
-		self.skipConfirmation = info.skipConfirmation === true;
-
-		self.data = info.data ?? "";
-
-		return new TransactionInfo(self);
-	}
-}
-
-export type GasEstimateConstructor =
-	| GasEstimate
-	| ((initial: number) => number)
-	| undefined;
-
-/** See [GasEstimate.estimate] */
-export class GasEstimate {
-	handler: (initial: number) => number;
-
-	constructor(input: GasEstimateConstructor) {
-		if (input instanceof GasEstimate) {
-			this.handler = input.handler;
-		} else if (typeof input === "function") {
-			this.handler = input;
-		} else if (typeof input === "number") {
-			this.handler = (initial) => initial * input;
-		} else {
-			throw new Error(
-				`Invalid input type ${typeof input}, expected function or number`,
-			);
-		}
-	}
-
-	/** Takes as input an initial estimate and uses the result */
-	estimate(initial: number): number {
-		return this.handler(initial);
-	}
-}
+import {
+	TransactionInfo,
+	TransactionInfoConstructor,
+} from "./transaction/info";
 
 /** Will ask using stdin for missing info fields if not provided */
 export async function transaction(
@@ -149,13 +18,8 @@ export async function transaction(
 		config.signer.provider,
 	);
 
-	console.info("Beginning transaction ...");
-	console.info("vaultAddress:", info.vaultAddress);
-	console.info("recipientAddress:", info.recipientAddress);
-	console.info("amount:", info.amount);
-
 	const vault = managedVaults.find(
-		(v) => v.masterPublicAddress === info.vaultAddress,
+		(v) => v.masterPublicAddress === info.saltPublicAddress,
 	);
 	if (vault === undefined || !vault) {
 		throw new Error("Vault is undefined");
@@ -170,6 +34,16 @@ export async function transaction(
 	const gasPrice = BigNumber.from(feeData.gasPrice).toNumber();
 	const gas = info.gasEstimate.estimate(21000);
 	const data = info.data ?? "";
+
+	info.log(
+		`Stage 0: Beginning transaction`,
+		`*Observe the INTU smart contract here: https://sepolia.arbiscan.io/address/${vault.vaultAddress}*`,
+		`Salt account public address: ${info.saltPublicAddress}`,
+		`Recipient address: ${info.recipientAddress}`,
+		`Amount: ${info.amount}`,
+		`Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
+		`Broadcasting RPC URL: ${config.env.BROADCASTING_NETWORK_RPC_NODE_URL}`,
+	);
 
 	const submitTransactionTx = await submitTransaction(
 		info.recipientAddress,
@@ -206,6 +80,9 @@ export async function transaction(
 		txId: event.args[0]._hex,
 		txInfo: event.args[1],
 	};
+
+	const transactionHash = submitTransactionResult.transactionHash;
+	const block_explorer_url = "";
 
 	console.log("transaction submitted successfully", eventData.txId);
 
