@@ -41,7 +41,7 @@ export async function transaction(
 		`Salt account public address: ${info.saltPublicAddress}`,
 		`Recipient address: ${info.recipientAddress}`,
 		`Amount: ${info.amount}`,
-		`Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
+		// `Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
 		`Broadcasting RPC URL: ${config.env.BROADCASTING_NETWORK_RPC_NODE_URL}`,
 	);
 
@@ -82,9 +82,11 @@ export async function transaction(
 	};
 
 	const transactionHash = submitTransactionResult.transactionHash;
-	const block_explorer_url = "";
-
-	console.log("transaction submitted successfully", eventData.txId);
+	info.log(
+		`Stage 1: proposeTransaction finished`,
+		`*See this transaction here: https://etherscan.io/tx/${transactionHash}*`,
+		`TX ID: ${eventData.txId}`
+	);
 
 	console.log("Note the transaction details:");
 	console.log("recipient: " + info.recipientAddress);
@@ -97,9 +99,9 @@ export async function transaction(
 				.parseEther(BigNumber.from(feeData.gasPrice).toString())
 				.toString(),
 	);
-	console.log("gas: 21000");
+	console.log(`gas: ${gas}`);
 
-	if (!info.skipConfirmation) {
+	if (info.skipConfirmation !== true) {
 		const approval = await askForInput(
 			`\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `,
 		);
@@ -116,6 +118,8 @@ export async function transaction(
 		Number(eventData.txId),
 		config.signer,
 	)) as ethers.ContractTransaction;
+	
+	
 
 	console.info("Waiting for tx ...");
 	await tx.wait();
