@@ -10,9 +10,10 @@ export type TransactionInfoConstructor =
 			vaultAddress?: string;
 			recipientAddress?: string;
 			amount?: string | Number;
-			skipConfirmation?: boolean | undefined;
 			gasEstimate?: GasEstimateConstructor;
 			data?: string;
+			skipConfirmation?: boolean | undefined;
+			logging?: (...things: any[]) => undefined;
 	  };
 
 type InternalConstructor = {
@@ -20,8 +21,9 @@ type InternalConstructor = {
 	recipientAddress: string;
 	amount: string;
 	skipConfirmation: boolean;
-	gasEstimate: GasEstimateConstructor;
+	gasEstimate: GasEstimate;
 	data: string;
+	log: (...things: any[]) => undefined;
 	key: Symbol;
 };
 const key = Symbol("Transaction Info private constructor key");
@@ -32,6 +34,7 @@ export class TransactionInfo {
 	amount: string;
 	skipConfirmation: boolean;
 	gasEstimate: GasEstimate;
+	log: (...things: any[]) => undefined;
 	data: string;
 
 	/** @private */
@@ -44,19 +47,33 @@ export class TransactionInfo {
 		this.vaultAddress = info.vaultAddress;
 		this.recipientAddress = info.recipientAddress;
 		this.amount = info.amount;
+		this.skipConfirmation = info.skipConfirmation;
+		this.gasEstimate = info.gasEstimate;
+		this.log = info.log;
+		this.data = info.data;
 	}
 
 	static async new(info: TransactionInfoConstructor): Promise<TransactionInfo> {
-		const self = { key } as any as InternalConstructor;
 		if (info instanceof TransactionInfo) {
 			return info;
 		}
+		const self = { key } as any as InternalConstructor;
+
 		if (typeof info !== "object") {
 			throw new TypeError(
 				`Expected info to be of type object, not ${typeof info}`,
 			);
 		}
+
+		// logging defaults to console.info
+		self.log =
+			info.logging ??
+			((...things: any[]) => {
+				console.info(...things);
+			});
+
 		self.gasEstimate = new GasEstimate(info.gasEstimate);
+
 		self.vaultAddress =
 			info.vaultAddress ||
 			(await askForInput(
@@ -85,6 +102,7 @@ export class TransactionInfo {
 			(await askForInput(`Please enter the amount to transfer: `));
 
 		self.skipConfirmation = info.skipConfirmation === true;
+
 		self.data = info.data ?? "";
 
 		return new TransactionInfo(self);
