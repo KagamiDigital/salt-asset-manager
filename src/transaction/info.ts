@@ -99,6 +99,8 @@ export class TransactionInfo {
 		}
 		if (typeof info.amount === "number") {
 			self.amount = String(info.amount);
+		} else if (typeof info.amount === "string") {
+			self.amount = info.amount;
 		} else {
 			self.amount = await askForInput(`Please enter the amount to transfer: `);
 		}
