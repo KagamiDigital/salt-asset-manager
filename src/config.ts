@@ -18,7 +18,7 @@ export class Config {
 	}
 
 	/** Construct `Config` using this static method, e.g. `Config.newFromEnv(env)` */
-	static async newFromEnv(env: Env) {
+	static async newFromEnv(env: Env): Promise<Config> {
 		const self = new Config(private_symbol);
 		self.env = env;
 

@@ -48,7 +48,12 @@ if (args.useCliOnly === true) {
 		);
 		console.log("Transaction successful");
 	} catch (err) {
-		console.error("Transaction failed:", err);
+		if (err instanceof Error) {
+			console.error(`Transaction failed: ${err.message}`);
+		} else {
+			// will include ugly stack trace
+			console.error("Transaction failed:", err);
+		}
 		process.exit(69);
 	}
 
