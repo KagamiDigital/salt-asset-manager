@@ -85,7 +85,7 @@ export async function transaction(
 	info.log(
 		`Stage 1: proposeTransaction finished`,
 		`*See this transaction here: https://etherscan.io/tx/${transactionHash}*`,
-		`TX ID: ${eventData.txId}`
+		`TX ID: ${eventData.txId}`,
 	);
 
 	console.log("Note the transaction details:");
@@ -118,11 +118,9 @@ export async function transaction(
 		Number(eventData.txId),
 		config.signer,
 	)) as ethers.ContractTransaction;
-	
-	
 
 	console.info("Waiting for tx ...");
 	await tx.wait();
 
-	console.log("Transaction signed successfully");
+	info.log(`Stage 2: signTx finished`, ``);
 }

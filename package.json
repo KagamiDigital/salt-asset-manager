@@ -6,9 +6,10 @@
 	"exports": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"start": "npm run dev && npm run run",
+		"start": "npm run build && npm run run",
 		"build": "rm -rf dist && rspack build",
-		"run": "node dist/bundle.js"
+		"run": "node dist/bundle.js",
+		"start-windows": "rspack build && npm run run"
 	},
 	"dependencies": {
 		"command-line-parser": "^0.2.10",
