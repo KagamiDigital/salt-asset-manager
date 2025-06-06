@@ -56,7 +56,7 @@ if (args.useCliOnly === true) {
 			return new Promise((resolve) => setTimeout(() => resolve(TIMEOUT), durationMs));
 		};
 		const conn = async () => {
-			const socket = net.connect(port);
+			const socket = net.connect(`127.0.0.1:${port}`);
 			logging = (...things: any[]) => {
 				const marker = '🪵';
 				const str = things.join('\n') + marker;
