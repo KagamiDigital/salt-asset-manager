@@ -32,6 +32,7 @@ export class TransactionInfo {
 	amount: string;
 	skipConfirmation: boolean;
 	gasEstimate: GasEstimate;
+	/** Logging function, e.g. sent through discord for faucet bot */
 	log: (...things: any[]) => void | undefined;
 	data: string;
 

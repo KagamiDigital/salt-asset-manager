@@ -41,7 +41,7 @@ export async function transaction(
 		`Salt account public address: ${info.saltPublicAddress}`,
 		`Recipient address: ${info.recipientAddress}`,
 		`Amount: ${info.amount}`,
-		// `Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
+		`Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
 		`Broadcasting RPC URL: ${config.env.BROADCASTING_NETWORK_RPC_NODE_URL}`,
 	);
 
@@ -85,7 +85,7 @@ export async function transaction(
 	info.log(
 		`Stage 1: proposeTransaction finished`,
 		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${transactionHash}>*`,
-		`TX ID: ${eventData.txId}`,
+		`tx id: ${eventData.txId}`,
 	);
 
 	console.log("Note the transaction details:");
@@ -120,7 +120,11 @@ export async function transaction(
 	)) as ethers.ContractTransaction;
 
 	console.info("Waiting for tx ...");
-	await tx.wait();
+	const signTransactionResult = await tx.wait();
 
-	info.log(`Stage 2: signTx finished`, ``);
+	info.log(
+		`Stage 2: signTx / User Confirm Tx finished`,
+		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${signTransactionResult.transactionHash}>*`,
+	);
+	info.log(`Stage 3: Waiting for the robos to sign!`);
 }
