@@ -4,7 +4,6 @@ import { transaction } from "./transaction";
 import { Env } from "./env";
 import { Config } from "./config";
 import net from "net";
-import { connect } from "tls";
 
 const env = new Env(process.env);
 const config = await Config.newFromEnv(env);
@@ -57,12 +56,13 @@ if (args.useCliOnly === true) {
 			return new Promise((resolve) => setTimeout(() => resolve(TIMEOUT), durationMs));
 		};
 		const conn = async () => {
-			const socket = await connect(port);
+			const socket = net.connect(port);
 			logging = (...things: any[]) => {
 				const marker = '🪵';
 				const str = things.join('\n') + marker;
 				socket.write(str);
 			};
+			logging("Sending some data!", 123, "this is cool");
 		};
 		const res = await Promise.any([
 			delay(2000),
