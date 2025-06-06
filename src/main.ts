@@ -4,6 +4,7 @@ import { transaction } from "./transaction";
 import { Env } from "./env";
 import { Config } from "./config";
 import net from "net";
+import { connect } from "tls";
 
 const env = new Env(process.env);
 const config = await Config.newFromEnv(env);
@@ -51,43 +52,21 @@ if (args.useCliOnly === true) {
 		}
 
 		// wait for a connection
+		const TIMEOUT = Symbol("timeout");
 		const delay = (durationMs) => {
 			return new Promise((resolve) => setTimeout(() => resolve(TIMEOUT), durationMs));
 		};
-		const TIMEOUT = Symbol("timeout");
+		const conn = async () => {
+			const socket = await connect(port);
+			logging = (...things: any[]) => {
+				const marker = '🪵';
+				const str = things.join('\n') + marker;
+				socket.write(str);
+			};
+		};
 		const res = await Promise.any([
 			delay(2000),
-			new Promise((resolve, reject) => {
-				const server = net.createServer((c) => {
-					console.info(`[net] Client connected`);
-					c.on("end", () => {
-						console.info(`[net] Client disconnected`);
-					});
-					// write logs to connection
-					logging = (...things: any[]) => {
-						const marker = '🪵';
-						const str = things.join("\n") + marker;
-						console.log(`Writing this to the connection:\n`, str);
-						try {
-							c.write(str, (err) => {
-								if (err) {
-									console.error(`Couldn't write all data:`, err);
-								} else {
-									console.log(`Finished writing all data out successfully`);
-								}
-							});
-						} catch (err) {
-							console.error(`Error writing out`, err);
-						}
-					};
-					resolve(undefined);
-				});
-				server.on("error", (err) => {
-					console.error(`[net] Error on server`, err);
-					reject(new Error(`Error on server`, { cause: err }));
-				});
-				server.listen(port, "localhost");
-			}),
+			conn,
 		]);
 
 		if (res === TIMEOUT) {

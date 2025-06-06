@@ -8,7 +8,8 @@
 		"path": "node:path",
 		"url": "node:url",
 		"readline": "node:readline",
-		"net": "node:net"
+		"net": "node:net",
+		"tls": "node:tls",
 	},
 	"tasks": {
 		"start": "deno run -A --unstable-sloppy-imports src/main.ts",
