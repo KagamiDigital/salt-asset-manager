@@ -3,6 +3,7 @@ import { askForInput, printRectangle, rl } from "./helpers";
 import { transaction } from "./transaction";
 import { Env } from "./env";
 import { Config } from "./config";
+import net from "net";
 
 const env = new Env(process.env);
 const config = await Config.newFromEnv(env);
@@ -13,7 +14,7 @@ printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 let args = argsObj() as any;
 console.log("CLI args:", args);
 
-// if -use-cli-only then returns true
+// handle CLI only
 if (args.useCliOnly === true) {
 	rl.close();
 	console.info("Using CLI only");
@@ -36,6 +37,63 @@ if (args.useCliOnly === true) {
 		process.exit(42 + 3);
 	}
 
+	let data = undefined;
+	if (typeof args.data === "string") {
+		data = args.data;
+	}
+
+	let logging = console.info;
+	if (typeof args.loggingPort === "string") {
+		const port = parseInt(args.loggingPort);
+		if (isNaN(port)) {
+			console.error("-logging-port must be a number");
+			process.exit(42 + 4);
+		}
+
+		// wait for a connection
+		const delay = (durationMs) => {
+			return new Promise((resolve) => setTimeout(() => resolve(TIMEOUT), durationMs));
+		};
+		const TIMEOUT = Symbol("timeout");
+		const res = await Promise.any([
+			delay(2000),
+			new Promise((resolve, reject) => {
+				const server = net.createServer((c) => {
+					console.info(`[net] Client connected`);
+					c.on("end", () => {
+						console.info(`[net] Client disconnected`);
+					});
+					// write logs to connection
+					logging = (...things: any[]) => {
+						const str = things.join("\n");
+						console.log(`Writing this to the connection:\n`, str);
+						try {
+							c.write(str, (err) => {
+								if (err) {
+									console.error(`Couldn't write all data:`, err);
+								} else {
+									console.log(`Finished writing all data out successfully`);
+								}
+							});
+						} catch (err) {
+							console.error(`Error writing out`, err);
+						}
+					};
+					resolve(undefined);
+				});
+				server.on("error", (err) => {
+					console.error(`[net] Error on server`, err);
+					reject(new Error(`Error on server`, { cause: err }));
+				});
+				server.listen(port, "localhost");
+			}),
+		]);
+
+		if (res === TIMEOUT) {
+			console.error("Ignoring sending logging to tcp socket");
+		}
+	}
+
 	try {
 		await transaction(
 			{
@@ -43,6 +101,8 @@ if (args.useCliOnly === true) {
 				recipientAddress,
 				amount,
 				skipConfirmation: true,
+				data,
+				logging,
 			},
 			config,
 		);

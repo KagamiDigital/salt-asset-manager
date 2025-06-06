@@ -11,7 +11,7 @@ export type TransactionInfoConstructor =
 			gasEstimate?: GasEstimateConstructor;
 			data?: string;
 			skipConfirmation?: boolean | undefined;
-			logging?: (...things: any[]) => undefined;
+			logging?: (...things: any[]) => void | undefined;
 	  };
 
 type InternalConstructor = {
@@ -21,7 +21,7 @@ type InternalConstructor = {
 	skipConfirmation: boolean;
 	gasEstimate: GasEstimate;
 	data: string;
-	log: (...things: any[]) => undefined;
+	log: (...things: any[]) => void | undefined;
 	key: Symbol;
 };
 const key = Symbol("Transaction Info private constructor key");
@@ -32,7 +32,7 @@ export class TransactionInfo {
 	amount: string;
 	skipConfirmation: boolean;
 	gasEstimate: GasEstimate;
-	log: (...things: any[]) => undefined;
+	log: (...things: any[]) => void | undefined;
 	data: string;
 
 	/** @private */
