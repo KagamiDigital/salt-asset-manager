@@ -52,22 +52,39 @@ if (args.useCliOnly === true) {
 
 		// wait for a connection
 		const TIMEOUT = Symbol("timeout");
-		const delay = (durationMs) => {
-			return new Promise((resolve) => setTimeout(() => resolve(TIMEOUT), durationMs));
+		const delay = (durationMs: number) => {
+			return new Promise((resolve) =>
+				setTimeout(() => resolve(TIMEOUT), durationMs),
+			);
 		};
 		const conn = async () => {
-			const socket = net.connect(`127.0.0.1:${port}`);
-			logging = (...things: any[]) => {
-				const marker = '🪵';
-				const str = things.join('\n') + marker;
-				socket.write(str);
-			};
-			logging("Sending some data!", 123, "this is cool");
+			const socket = new net.Socket();
+			socket.connect(port, `127.0.0.1`, () => {
+				logging = (...things: any[]) => {
+					const marker = "🪵";
+					const str = things.join("\n") + marker;
+					socket.write(str);
+				};
+				console.log(`Connected!`);
+				logging("Sending some cool data", 123, "this is cool!");
+			});
+
+			// Handle data received from server (optional)
+			socket.on("data", (data) => {
+				console.log(`Received: ${data}`);
+			});
+
+			// Handle connection closed
+			socket.on("close", () => {
+				console.log("Connection closed");
+			});
+
+			// Handle errors
+			socket.on("error", (err) => {
+				console.error("Connection error:", err.message);
+			});
 		};
-		const res = await Promise.any([
-			delay(2000),
-			conn,
-		]);
+		const res = await Promise.any([delay(2000), conn]);
 
 		if (res === TIMEOUT) {
 			console.error("Ignoring sending logging to tcp socket");
