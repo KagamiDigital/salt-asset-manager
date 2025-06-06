@@ -65,7 +65,8 @@ if (args.useCliOnly === true) {
 					});
 					// write logs to connection
 					logging = (...things: any[]) => {
-						const str = things.join("\n");
+						const marker = '🪵';
+						const str = things.join("\n") + marker;
 						console.log(`Writing this to the connection:\n`, str);
 						try {
 							c.write(str, (err) => {
