@@ -42,8 +42,24 @@ if (args.useCliOnly === true) {
 		data = args.data;
 	}
 
+	const TIMEOUT = Symbol("timeout");
+	const delay = (durationMs: number) => {
+		return new Promise((resolve) =>
+			setTimeout(() => resolve(TIMEOUT), durationMs),
+		);
+	};
+
 	let logging = console.info;
+	let conn;
+	process.on("beforeExit", () => {
+		console.info(`Closing conn because of process exit`);
+		conn && conn.close();
+	});
 	if (typeof args.loggingPort === "string") {
+		if (Deno === undefined) {
+			console.error("Can only use -logging-port when running with Deno");
+			process.exit(42 + 5);
+		}
 		const port = parseInt(args.loggingPort);
 		if (isNaN(port)) {
 			console.error("-logging-port must be a number");
@@ -51,58 +67,53 @@ if (args.useCliOnly === true) {
 		}
 
 		// wait for a connection
-		const TIMEOUT = Symbol("timeout");
-		const delay = (durationMs: number) => {
-			return new Promise((resolve) =>
-				setTimeout(() => resolve(TIMEOUT), durationMs),
-			);
+		const conn_promise = async () => {
+			console.info(`Going to connect to port ${port}`);
+			conn = await Deno.connect({ port, hostname: "127.0.0.1" });
+			console.info(`Connected`);
+			logging = async (...things: any[]) => {
+				const marker = "🪵";
+				const str = things.join("\n") + marker;
+				const encoder = new TextEncoder();
+				const data = encoder.encode(str);
+				console.info(`Writing to conn`);
+				await conn.write(data);
+				console.info(`Finished writing to conn`);
+			};
 		};
-		const conn = async () => {
-			const socket = new net.Socket();
-			socket.connect(port, `127.0.0.1`, () => {
-				logging = (...things: any[]) => {
-					const marker = "🪵";
-					const str = things.join("\n") + marker;
-					socket.write(str);
-				};
-				console.log(`Connected!`);
-				logging("Sending some cool data", 123, "this is cool!");
-			});
-
-			// Handle data received from server (optional)
-			socket.on("data", (data) => {
-				console.log(`Received: ${data}`);
-			});
-
-			// Handle connection closed
-			socket.on("close", () => {
-				console.log("Connection closed");
-			});
-
-			// Handle errors
-			socket.on("error", (err) => {
-				console.error("Connection error:", err.message);
-			});
-		};
-		const res = await Promise.any([delay(2000), conn]);
+		const res = await Promise.any([delay(2000), conn_promise()]);
 
 		if (res === TIMEOUT) {
 			console.error("Ignoring sending logging to tcp socket");
+		} else {
+			console.log(`Returned from conn Promise`, res);
 		}
+
+		logging("Sending some cool data", 123, "this is cool!");
 	}
 
 	try {
-		await transaction(
-			{
-				vaultAddress,
-				recipientAddress,
-				amount,
-				skipConfirmation: true,
-				data,
-				logging,
-			},
-			config,
-		);
+		// await transaction(
+		// 	{
+		// 		vaultAddress,
+		// 		recipientAddress,
+		// 		amount,
+		// 		skipConfirmation: true,
+		// 		data,
+		// 		logging,
+		// 	},
+		// 	config,
+		// );
+
+		await delay(1000);
+		logging("Stage 0");
+		await delay(1000);
+		logging("Stage 1");
+		await delay(2000);
+		logging("Stage 2", "see it here", 123);
+		await delay(1000);
+		logging("exitting");
+
 		console.log("Transaction successful");
 	} catch (err) {
 		if (err instanceof Error) {

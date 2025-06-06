@@ -37,7 +37,7 @@ export async function transaction(
 
 	info.log(
 		`Stage 0: Beginning transaction`,
-		`*Observe the INTU smart contract here: https://sepolia.arbiscan.io/address/${vault.vaultAddress}*`,
+		`*Observe the INTU smart contract here: <https://sepolia.arbiscan.io/address/${vault.vaultAddress}>*`,
 		`Salt account public address: ${info.saltPublicAddress}`,
 		`Recipient address: ${info.recipientAddress}`,
 		`Amount: ${info.amount}`,
@@ -84,7 +84,7 @@ export async function transaction(
 	const transactionHash = submitTransactionResult.transactionHash;
 	info.log(
 		`Stage 1: proposeTransaction finished`,
-		`*See this transaction here: https://etherscan.io/tx/${transactionHash}*`,
+		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${transactionHash}>*`,
 		`TX ID: ${eventData.txId}`,
 	);
 
