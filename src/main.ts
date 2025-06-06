@@ -68,7 +68,7 @@ if (args.useCliOnly === true) {
 
 		// wait for a connection
 		const conn_promise = async () => {
-			console.info(`Going to connect to port ${port}`);
+			console.info(`Going to connect to port ${port} ...`);
 			conn = await Deno.connect({ port, hostname: "127.0.0.1" });
 			console.info(`Connected`);
 			logging = async (...things: any[]) => {
@@ -76,9 +76,9 @@ if (args.useCliOnly === true) {
 				const str = things.join("\n") + marker;
 				const encoder = new TextEncoder();
 				const data = encoder.encode(str);
-				console.info(`Writing to conn`);
+				// console.info(`Writing to conn`);
 				await conn.write(data);
-				console.info(`Finished writing to conn`);
+				// console.info(`Finished writing to conn`);
 			};
 		};
 		const res = await Promise.any([delay(2000), conn_promise()]);
@@ -86,34 +86,24 @@ if (args.useCliOnly === true) {
 		if (res === TIMEOUT) {
 			console.error("Ignoring sending logging to tcp socket");
 		} else {
-			console.log(`Returned from conn Promise`, res);
+			// console.log(`Returned from conn Promise`, res);
 		}
 
-		logging("Sending some cool data", 123, "this is cool!");
+		// logging("Sending some cool data", 123, "this is cool!");
 	}
 
 	try {
-		// await transaction(
-		// 	{
-		// 		vaultAddress,
-		// 		recipientAddress,
-		// 		amount,
-		// 		skipConfirmation: true,
-		// 		data,
-		// 		logging,
-		// 	},
-		// 	config,
-		// );
-
-		await delay(1000);
-		logging("Stage 0");
-		await delay(1000);
-		logging("Stage 1");
-		await delay(2000);
-		logging("Stage 2", "see it here", 123);
-		await delay(1000);
-		logging("exitting");
-
+		await transaction(
+			{
+				vaultAddress,
+				recipientAddress,
+				amount,
+				skipConfirmation: true,
+				data,
+				logging,
+			},
+			config,
+		);
 		console.log("Transaction successful");
 	} catch (err) {
 		if (err instanceof Error) {
