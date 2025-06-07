@@ -37,7 +37,7 @@ export async function transaction(
 
 	info.log(
 		`Stage 0: Beginning transaction`,
-		`*Observe the INTU smart contract here: <https://sepolia.arbiscan.io/address/${vault.vaultAddress}>*`,
+		`*Observe the orchestration smart contract here: <https://sepolia.arbiscan.io/address/${vault.vaultAddress}>*`,
 		`Salt account public address: ${info.saltPublicAddress}`,
 		`Recipient address: ${info.recipientAddress}`,
 		`Amount: ${info.amount}`,
