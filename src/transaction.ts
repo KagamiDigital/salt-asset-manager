@@ -126,5 +126,5 @@ export async function transaction(
 		`Stage 2: signTx / User Confirm Tx finished`,
 		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${signTransactionResult.transactionHash}>*`,
 	);
-	info.log(`Stage 3: Waiting for the robos to sign!`);
+	info.log(`Stage 3: Policy checks in progress. Robo guardians co-signing`);
 }
