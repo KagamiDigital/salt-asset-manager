@@ -42,6 +42,17 @@ if (args.useCliOnly === true) {
 		data = args.data;
 	}
 
+	let gasEstimate: undefined | ((initial: number) => number) = undefined;
+	if (typeof args.gas === "string") {
+		let obj = JSON.parse(args.gas);
+		if (typeof obj.Mul === "number") {
+			gasEstimate = (initial: number) => initial * obj.Mul;
+		} else {
+			console.error("Unknown gas estimation method");
+			process.exit(42 + 7);
+		}
+	}
+
 	const TIMEOUT = Symbol("timeout");
 	const delay = (durationMs: number) => {
 		return new Promise((resolve) =>
@@ -101,6 +112,7 @@ if (args.useCliOnly === true) {
 				skipConfirmation: true,
 				data,
 				logging,
+				gasEstimate,
 			},
 			config,
 		);
