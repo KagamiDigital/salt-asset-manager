@@ -1,6 +1,11 @@
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "./helpers";
-import { getVaultsWithoutTransactions, signTx, submitTransaction } from "intu";
+import {
+	combineSignedTx,
+	getVaultsWithoutTransactions,
+	signTx,
+	submitTransaction,
+} from "intu";
 import { Config } from "./config";
 import {
 	TransactionInfo,
@@ -130,6 +135,32 @@ export async function transaction(
 	info.log(
 		`Stage 3: Policy checks in progress. Waiting for robo-guardians to co-sign`,
 	);
+	const txId = eventData.txId;
+	let broadcastableTx: string | undefined = undefined;
+	while (!broadcastableTx) {
+		await delay(1000);
+		try {
+			broadcastableTx = await combineSignedTx(
+				vault.vaultAddress,
+				txId,
+				config.signer,
+			);
+		} catch (err) {
+			console.info(`Still waiting for Robos to co-sign`, err);
+		}
+	}
+	let broadcastableTxHash = ethers.utils.keccak256(broadcastableTx);
+	info.log(
+		`Stage 4: Robos have co-signed, and the threshold for broadcasting the transaction has been reached!`,
+		`Yet-to-broadcast transaction hash: ${broadcastableTxHash}`,
+	);
 
-	info.log({ BroadcastedTx: eventData.tx });
+	info.log({ BroadcastedTxHash: broadcastableTxHash });
 }
+
+const TIMEOUT = Symbol("timeout");
+const delay = (durationMs: number) => {
+	return new Promise((resolve) =>
+		setTimeout(() => resolve(TIMEOUT), durationMs),
+	);
+};
