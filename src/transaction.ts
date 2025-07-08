@@ -43,11 +43,11 @@ export async function transaction(
 	info.log(
 		`Stage 0: Beginning transaction`,
 		`*Observe the orchestration smart contract here: <https://sepolia.arbiscan.io/address/${vault.vaultAddress}>*`,
-		`Salt account public address: ${info.saltPublicAddress}`,
-		`Recipient address: ${info.recipientAddress}`,
-		`Amount: ${info.amount}`,
-		`Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
-		`Broadcasting RPC URL: ${config.env.BROADCASTING_NETWORK_RPC_NODE_URL}`,
+		// `Salt account public address: ${info.saltPublicAddress}`,
+		// `Recipient address: ${info.recipientAddress}`,
+		// `Amount: ${info.amount}`,
+		// `Arbitrum Sepolia RPC URL for orchestration: ${config.env.ORCHESTRATION_NETWORK_RPC_NODE_URL}`,
+		// `Broadcasting RPC URL: ${config.env.BROADCASTING_NETWORK_RPC_NODE_URL}`,
 	);
 
 	const submitTransactionTx = await submitTransaction(
@@ -90,7 +90,7 @@ export async function transaction(
 	info.log(
 		`Stage 1: proposeTransaction finished`,
 		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${transactionHash}>*`,
-		`tx id: ${eventData.txId}`,
+		// `TX ID: ${eventData.txId}`,
 	);
 
 	console.log("Note the transaction details:");
