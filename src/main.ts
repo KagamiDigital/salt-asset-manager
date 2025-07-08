@@ -86,6 +86,7 @@ if (args.useCliOnly === true) {
 			console.info(`Connected`);
 			logging = async (...things: any[]) => {
 				const marker = "🪵";
+				console.info(things);
 				const strings = things.map((item) => {
 					if (typeof item === "string") {
 						return item;
