@@ -86,7 +86,16 @@ if (args.useCliOnly === true) {
 			console.info(`Connected`);
 			logging = async (...things: any[]) => {
 				const marker = "🪵";
-				const str = things.join("\n") + marker;
+				const strings = things.map((item) => {
+					if (typeof item === "string") {
+						return item;
+					} else if (typeof item === "object") {
+						return JSON.stringify(item);
+					} else {
+						throw TypeError("Unsupported logging type");
+					}
+				});
+				const str = strings.join("\n") + marker;
 				const encoder = new TextEncoder();
 				const data = encoder.encode(str);
 				// console.info(`Writing to conn`);
