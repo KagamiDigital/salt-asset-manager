@@ -48,7 +48,8 @@ if (args.useCliOnly === true) {
 		if (typeof obj.Mul === "number") {
 			gasEstimate = (initial: number) => initial * obj.Mul;
 		} else if (typeof obj === "string" && obj === "Default") {
-			gasEstimate = (initial: number) => initial;
+			// the default is x2
+			gasEstimate = (initial: number) => initial * 2;
 		} else {
 			console.error("Unknown gas estimation method");
 			process.exit(42 + 7);
