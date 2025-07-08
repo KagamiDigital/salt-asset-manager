@@ -133,7 +133,7 @@ export class GasEstimate {
 		} else if (input === undefined) {
 			this.handler = (initial) => initial;
 		} else {
-			throw new Error(
+			throw new TypeError(
 				`Invalid input type ${typeof input}, expected function or number`,
 			);
 		}

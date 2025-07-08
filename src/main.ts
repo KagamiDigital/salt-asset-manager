@@ -47,6 +47,8 @@ if (args.useCliOnly === true) {
 		let obj = JSON.parse(args.gas);
 		if (typeof obj.Mul === "number") {
 			gasEstimate = (initial: number) => initial * obj.Mul;
+		} else if (typeof obj === "string" && obj === "Default") {
+			gasEstimate = (initial: number) => initial;
 		} else {
 			console.error("Unknown gas estimation method");
 			process.exit(42 + 7);
