@@ -149,10 +149,8 @@ export async function transaction(
 			console.info(`Still waiting for Robos to co-sign`, err);
 		}
 	}
-	let broadcastableTxHash = ethers.utils.keccak256(broadcastableTx);
 	info.log(
 		`Stage 4: Robos have co-signed, and the threshold for broadcasting the transaction has been reached!`,
-		`Yet-to-broadcast transaction hash: ${broadcastableTxHash}`,
 	);
 
 	info.log({ BroadcastedTx: broadcastableTx });
