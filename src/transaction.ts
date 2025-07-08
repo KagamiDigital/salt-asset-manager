@@ -131,5 +131,5 @@ export async function transaction(
 		`Stage 3: Policy checks in progress. Waiting for robo-guardians to co-sign`,
 	);
 
-	info.log({ BroadcastedTx: tx });
+	info.log({ BroadcastedTx: eventData.tx });
 }
