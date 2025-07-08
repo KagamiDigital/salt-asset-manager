@@ -78,10 +78,8 @@ export async function transaction(
 
 	const eventData = {
 		txId: event.args[0]._hex,
-		txInfo: event.args[1],
+		tx: event.args[1],
 	};
-
-	console.log(`Tx Info`, eventData.txInfo);
 
 	const transactionHash = submitTransactionResult.transactionHash;
 	info.log(
@@ -128,7 +126,10 @@ export async function transaction(
 		`Stage 2: signTx / User Confirm Tx finished`,
 		`*See this transaction here: <https://sepolia.arbiscan.io/tx/${signTransactionResult.transactionHash}>*`,
 	);
+
 	info.log(
 		`Stage 3: Policy checks in progress. Waiting for robo-guardians to co-sign`,
 	);
+
+	info.log({ BroadcastedTx: tx });
 }
