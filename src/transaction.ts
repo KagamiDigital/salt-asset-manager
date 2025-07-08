@@ -67,7 +67,10 @@ export async function transaction(
 		// based on the network ID you provide (above),
 		// and somnia shannon isn't in this list which requires us to manually specify this
 		config.broadcasting_network_provider,
-	);
+	).catch((err) => {
+		console.error("Failed to submitTransaction");
+		throw err;
+	});
 
 	const submitTransactionResult = await (
 		submitTransactionTx as ContractTransaction
