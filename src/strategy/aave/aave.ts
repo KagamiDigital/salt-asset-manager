@@ -30,7 +30,6 @@ export async function deposit() {
 
     // get the fee data on the broadcasting network
     const feeData = await broadcasting_network_provider.getFeeData();
-
     const depositAmountInEth = '0.0001' // REPLACE WITH ANY AMOUNT
     
     const contractInterface = new ethers.utils.Interface(WrappedTokenGatewayV3); 

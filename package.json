@@ -10,6 +10,7 @@
     "nodev": "node --version"
   },
   "dependencies": {
+    "@chorus-one/ethereum": "^2.0.4",
     "@intuweb3/sdk": "^0.0.433",
     "assert-browserify": "^2.0.0",
     "buffer-browserify": "^0.2.5",

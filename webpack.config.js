@@ -1,38 +1,45 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
 module.exports = {
-    target:"node",
-  entry: './src/index.ts',
-  mode:"production",
+  target: "node",
+  entry: "./src/index.ts",
+  mode: "production",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
       },
       {
         test: /\.wasm$/,
-        type: 'webassembly/async',
+        type: "webassembly/async",
+      },
+      {
+        test: /\.m?js$/,
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
       },
     ],
   },
-  optimization: {minimize: false},
+  optimization: { minimize: false },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.wasm'],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".mjs"],
     fallback: {
-        "path": require.resolve("path-browserify"),
-        "crypto": require.resolve("crypto-browserify"),
-        "stream": require.resolve("stream-browserify"),
-        "buffer": require.resolve("buffer-browserify"),
-        "os": require.resolve("os-browserify/browser"),
-        "vm": require.resolve("vm-browserify"),
-        "assert": require.resolve("assert-browserify"),
-    }
+      path: require.resolve("path-browserify"),
+      crypto: require.resolve("crypto-browserify"),
+      stream: require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer-browserify"),
+      os: require.resolve("os-browserify/browser"),
+      vm: require.resolve("vm-browserify"),
+      assert: require.resolve("assert-browserify"),
+    },
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
   experiments: {
     asyncWebAssembly: true,
@@ -43,8 +50,8 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      TextDecoder: ['util', 'TextDecoder'],
-      TextEncoder: ['util', 'TextEncoder'],
+      TextDecoder: ["util", "TextDecoder"],
+      TextEncoder: ["util", "TextEncoder"],
     }),
   ],
 };
