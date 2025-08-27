@@ -24,7 +24,7 @@ import { transaction } from "./transaction";
       });
     } else if (input === "2") {
       const input = await askForInput(
-        "Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] check your request status \n [4] withdraw \n [5] exit \n Please choose one of the options listed above: "
+        "Do you wish to: \n [1] stake \n [2] unstake \n [3] check your request status \n [4] withdraw \n [5] exit \n Please choose one of the options listed above: "
       );
 
       if (input === "1") {
@@ -48,7 +48,7 @@ import { transaction } from "./transaction";
       } else {
         console.log("Please enter a valid choice");
         console.log(
-          "Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] check your request status \n [4] withdraw \n [5] exit \n Please choose one of the options listed above: "
+          "Do you wish to: \n [1] stake \n [2] unstake \n [3] check your request status \n [4] withdraw \n [5] exit \n Please choose one of the options listed above: "
         );
       }
     } else if (input === "3") {
