@@ -11,6 +11,12 @@ import {
 } from "@intuweb3/sdk";
 import { broadcasting_network_provider, signer } from "../../constants";
 
+const validatorAddress = CHORUS_ONE_ETHEREUM_VALIDATORS.ethereum.mevMaxVault;
+const staker = new EthereumStaker({
+  network: process.env.INTU_NETWORK === "arbitrum-main" ? "ethereum" : "hoodi",
+  rpcUrl: process.env.BROADCASTING_NETWORK_RPC_NODE_URL,
+});
+
 export async function stake() {
   const vaultAddress = await askForInput(
     `\nPlease enter the account address from where you wish to execute the staking operation: `
@@ -35,13 +41,7 @@ export async function stake() {
     return;
   }
 
-  const staker = new EthereumStaker({
-    network: "hoodi",
-  });
-
   await staker.init();
-
-  const validatorAddress = CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault;
 
   if (!ethers.utils.isAddress(validatorAddress)) {
     console.log("You need a valid recipient address to propose a transaction");
@@ -75,7 +75,7 @@ export async function stake() {
     // Get the estimated gas for the fully populated transaction
     const gasEstimate = await broadcasting_network_provider.estimateGas({
       from: vault.masterPublicAddress!,
-      to: CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault,
+      to: validatorAddress,
       data: stakeTx.data,
     });
     gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase
@@ -116,13 +116,6 @@ export async function stake() {
   console.log("amount: " + amount);
   console.log("chainId: " + process.env.BROADCASTING_NETWORK_ID);
   console.log("nonce: " + nonce);
-  console.log(
-    "gasPrice: " +
-      ethers.utils
-        .parseEther(BigNumber.from(feeData.gasPrice).toString())
-        .toString()
-  );
-  console.log("gas: 21000");
 
   const approval = await askForInput(
     `\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `
@@ -168,13 +161,7 @@ export async function unstake() {
     return;
   }
 
-  const staker = new EthereumStaker({
-    network: "hoodi",
-  });
-
   await staker.init();
-
-  const validatorAddress = CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault;
 
   const { maxUnstake } = await staker.getStake({
     delegatorAddress: vault.masterPublicAddress as `0x${string}`,
@@ -206,7 +193,7 @@ export async function unstake() {
     // Get the estimated gas for the fully populated transaction
     const gasEstimate = await broadcasting_network_provider.estimateGas({
       from: vault.masterPublicAddress!,
-      to: CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault,
+      to: validatorAddress,
       data: unstakeTx.data,
     });
     gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase
@@ -300,13 +287,7 @@ export async function requestStatus() {
     return;
   }
 
-  const staker = new EthereumStaker({
-    network: "hoodi",
-  });
-
   await staker.init();
-
-  const validatorAddress = CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault;
 
   if (!ethers.utils.isAddress(validatorAddress)) {
     console.log("You need a valid recipient address to propose a transaction");
@@ -347,13 +328,7 @@ export async function withdraw() {
     return;
   }
 
-  const staker = new EthereumStaker({
-    network: "hoodi",
-  });
-
   await staker.init();
-
-  const validatorAddress = CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault;
 
   if (!ethers.utils.isAddress(validatorAddress)) {
     console.log("You need a valid recipient address to propose a transaction");
@@ -377,7 +352,7 @@ export async function withdraw() {
     // Get the estimated gas for the fully populated transaction
     const gasEstimate = await broadcasting_network_provider.estimateGas({
       from: vault.masterPublicAddress!,
-      to: CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault,
+      to: validatorAddress,
       data: withdrawTx.data,
     });
     gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase

@@ -99,13 +99,6 @@ export async function transaction() {
   console.log("amount: " + amount);
   console.log("chainId: " + process.env.BROADCASTING_NETWORK_ID);
   console.log("nonce: " + nonce);
-  console.log(
-    "gasPrice: " +
-      ethers.utils
-        .parseEther(BigNumber.from(feeData.gasPrice).toString())
-        .toString()
-  );
-  console.log("gas: 21000");
 
   const approval = await askForInput(
     `\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `
@@ -119,7 +112,10 @@ export async function transaction() {
   const tx = (await signTx(
     vault.vaultAddress,
     Number(eventData.txId),
-    signer
+    signer,
+    undefined,
+    undefined,
+    undefined
   )) as ethers.ContractTransaction;
 
   await tx.wait();
