@@ -27,15 +27,6 @@ module.exports = {
   optimization: { minimize: false },
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".mjs"],
-    fallback: {
-      path: require.resolve("path-browserify"),
-      crypto: require.resolve("crypto-browserify"),
-      stream: require.resolve("stream-browserify"),
-      buffer: require.resolve("buffer-browserify"),
-      os: require.resolve("os-browserify/browser"),
-      vm: require.resolve("vm-browserify"),
-      assert: require.resolve("assert-browserify"),
-    },
   },
   output: {
     filename: "bundle.js",
@@ -44,10 +35,7 @@ module.exports = {
   experiments: {
     asyncWebAssembly: true,
   },
-  externals: {
-    bufferutil: "bufferutil",
-    "utf-8-validate": "utf-8-validate",
-  },
+  externals: {},
   plugins: [
     new webpack.ProvidePlugin({
       TextDecoder: ["util", "TextDecoder"],
