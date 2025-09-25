@@ -24,6 +24,7 @@
     "node": "^22.4.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
+    "salt-sdk": "^0.0.4",
     "stable": "^0.1.8",
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.5.1",

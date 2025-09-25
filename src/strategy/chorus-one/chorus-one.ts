@@ -89,7 +89,7 @@ export async function stake() {
     process.env.BROADCASTING_NETWORK_ID,
     nonce,
     stakeTx.data,
-    BigNumber.from(feeData.gasPrice).toNumber(),
+    BigNumber.from(feeData.maxFeePerGas).toNumber(),
     gas.toNumber(),
     vault.vaultAddress,
     signer,
