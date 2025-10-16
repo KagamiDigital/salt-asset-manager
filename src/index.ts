@@ -7,7 +7,7 @@ import {
 	withdraw,
 } from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
-import { transaction } from "./transaction";
+import { transfer } from "./transaction";
 
 (async () => {
 	const publicAddress = await signer.getAddress();
@@ -17,6 +17,7 @@ import { transaction } from "./transaction";
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
 		await erc20.transfer({
 			token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160",
+			// token_address: "0xe29b0395e5e0c6df2d900a5369509acebd98da60",
 		});
 	}
 
@@ -27,7 +28,7 @@ import { transaction } from "./transaction";
 			"Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] exit \n Please choose one of the options listed above: ",
 		);
 		if (input === "1") {
-			await transaction().catch((error) => {
+			await transfer().catch((error) => {
 				console.error("Error:", error);
 			});
 		} else if (input === "2") {

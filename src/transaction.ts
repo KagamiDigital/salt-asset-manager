@@ -2,8 +2,8 @@ import { Salt, TransferType } from "salt-sdk";
 import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput } from "./helpers";
 
-/** Parameterized transfer function */
-export async function transaction() {
+/** Interactively performs a native currency transaction */
+export async function transfer() {
 	const sdk = new Salt({ environment: "TESTNET" });
 	await sdk.authenticate(signer);
 
@@ -52,8 +52,8 @@ export async function transaction() {
 	transfer.onTransition(4, 5, (data) => console.log("BROADCAST->END:", data));
 }
 
-/** Interactively performs a native currency transaction */
-export async function transfer() {
+/** Parameterized potentially interactive transfer function */
+export async function transaction({ value, decimals, recipient, data }) {
 	const sdk = new Salt({ environment: "TESTNET" });
 	await sdk.authenticate(signer);
 
@@ -75,21 +75,27 @@ export async function transfer() {
 		"Please choose one of the accounts above to send a transaction from: ",
 	);
 
-	const value = await askForInput(
-		"Please enter the amount you wish to transfer (in ETH): ",
-	);
+	value =
+		value ??
+		(await askForInput(
+			"Please enter the amount you wish to transfer (in ETH): ",
+		));
 
-	const recipient = await askForInput("Please enter the recipient's address: ");
+	recipient =
+		recipient ?? (await askForInput("Please enter the recipient's address: "));
 
 	const transfer = await sdk.transfer({
 		accountId: accounts[accIndex].id,
 		to: recipient,
 		value: value,
 		chainId: broadcasting_network_provider.network.chainId,
-		decimals: 18,
+		decimals,
 		type: TransferType.Native,
 		signer: signer,
 		sendingProvider: broadcasting_network_provider,
+		// This is a known issue, see https://teamkagamiworkspace.slack.com/archives/C06KZD0J11S/p1760574546543829
+		// @ts-ignore
+		data,
 	});
 
 	transfer.onTransition(0, 1, (data) => console.log("IDLE->PROPOSE:", data));
