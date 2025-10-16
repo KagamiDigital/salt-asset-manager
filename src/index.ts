@@ -7,25 +7,28 @@ import {
 	withdraw,
 } from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
+import * as hype from "./strategy/hype/hype";
 import { transfer } from "./transaction";
 
 (async () => {
 	const publicAddress = await signer.getAddress();
 	printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 
+	let done = false;
+
 	// only for quicker debug cycles, REMOVEME
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		await erc20.transfer({
-			token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160",
-			// token_address: "0xe29b0395e5e0c6df2d900a5369509acebd98da60",
-		});
+		await hype.fromEVMToCore();
+		// await erc20.transfer({
+		// 	token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160",
+		// 	// token_address: "0xe29b0395e5e0c6df2d900a5369509acebd98da60",
+		// });
+		done = true;
 	}
-
-	let done = false;
 
 	while (!done) {
 		const input = await askForInput(
-			"Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] exit \n Please choose one of the options listed above: ",
+			"Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] interact with HYPE \n [4] exit \n Please choose one of the options listed above: ",
 		);
 		if (input === "1") {
 			await transfer().catch((error) => {
@@ -76,17 +79,23 @@ import { transfer } from "./transaction";
 				done = true;
 			} else {
 				console.log("Please enter a valid choice");
-				console.log(
-					"Do you wish to: \n [1] stake \n [2] unstake \n [3] check your request status \n [4] withdraw \n [5] ERC20 \n [6] exit \n Please choose one of the options listed above: ",
-				);
 			}
 		} else if (input === "3") {
+			const msg = `Do you wish to: \n [1] Transfer some of your EVM native HYPE to HypeCore \n [2] exit \n Please choose one of the options listed above`;
+			const input = await askForInput(msg);
+			if (input === "1") {
+				await hype.fromEVMToCore().catch((error) => {
+					console.log(`Error: `, error);
+				});
+			} else if (input === "2") {
+				done = true;
+			} else {
+				console.log(`Please enver a valid choice`);
+			}
+		} else if (input === "4") {
 			done = true;
 		} else {
 			console.log("Please enter a valid choice");
-			console.log(
-				"Do you wish to: \n [1] make a native currency transfer \n [2] setup the asset manager bot \n [3] exit \n Please choose one of the options listed above: ",
-			);
 		}
 	}
 	rl.close();

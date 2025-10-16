@@ -53,7 +53,17 @@ export async function transfer() {
 }
 
 /** Parameterized potentially interactive transfer function */
-export async function transaction({ value, decimals, recipient, data }) {
+export async function transaction({
+	value,
+	decimals,
+	recipient,
+	data,
+}: {
+	value?: string;
+	decimals?: number;
+	recipient?: string;
+	data?: string;
+}) {
 	const sdk = new Salt({ environment: "TESTNET" });
 	await sdk.authenticate(signer);
 
@@ -93,7 +103,7 @@ export async function transaction({ value, decimals, recipient, data }) {
 		type: TransferType.Native,
 		signer: signer,
 		sendingProvider: broadcasting_network_provider,
-		// This is a known issue, see https://teamkagamiworkspace.slack.com/archives/C06KZD0J11S/p1760574546543829
+		// This is a known type issue, see https://teamkagamiworkspace.slack.com/archives/C06KZD0J11S/p1760574546543829
 		// @ts-ignore
 		data,
 	});
