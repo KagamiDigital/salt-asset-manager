@@ -1,7 +1,7 @@
 import { Salt, TransferType } from "salt-sdk";
 import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput } from "./helpers";
-import { ethers } from "ethers";
+import { ethers, BigNumber, BigNumberish } from "ethers";
 
 /** Parameterized potentially interactive transfer function */
 export async function transfer({
@@ -10,7 +10,7 @@ export async function transfer({
 	recipient,
 	data,
 }: {
-	value?: string;
+	value?: BigNumberish;
 	decimals?: number;
 	recipient?: string;
 	data?: string;
@@ -38,19 +38,23 @@ export async function transfer({
 
 	value =
 		value ??
-		(await askForInput(
-			"Please enter the amount you wish to transfer (in ETH): ",
-		));
+		ethers.utils.parseEther(
+			await askForInput(
+				"Please enter the amount you wish to transfer (in ETH): ",
+			),
+		);
 
 	recipient =
 		recipient ?? (await askForInput("Please enter the recipient's address: "));
 
 	if (process.env.SALT_ASSET_MANAGER_NATIVE) {
-		console.warn(`Natively sending tx`);
-		await signer
+		console.warn(`Natively sending tx`, await signer.getAddress());
+		await new ethers.Wallet(process.env.PRIVATE_KEY)
+			.connect(broadcasting_network_provider)
 			.sendTransaction({
 				to: recipient,
 				value: value,
+				gasLimit: BigNumber.from("100000"),
 			})
 			.catch((err) => {
 				console.error(`Couldn't natively send tx:`, err);
@@ -63,7 +67,7 @@ export async function transfer({
 	const transfer = await sdk.transfer({
 		accountId: accounts[accIndex].id,
 		to: recipient,
-		value: value,
+		value: value.toString(),
 		chainId: broadcasting_network_provider.network.chainId,
 		decimals,
 		type: TransferType.Native,
