@@ -26,12 +26,6 @@ export async function transfer(
 	// console.log(`My balance: `, ethers.utils.formatUnits(myBalance, 18));
 
 	token_address = token_address ?? (await askForInput("Token address: "));
-	to = to ?? (await askForInput("Recipient address: "));
-	amount =
-		amount ??
-		(await askForInput(
-			"Transfer amount (this will take into account decimals, e.g. 1.5 = 1.5ETH): ",
-		));
 
 	const erc20Contract = new Contract(
 		token_address,
@@ -39,10 +33,22 @@ export async function transfer(
 		// daiAbi,
 		broadcasting_network_provider,
 	);
+	const decimals = Number(await erc20Contract.decimals());
 	const name = await erc20Contract.name();
 	console.log(`Name: ${name}`);
 
-	const decimals = Number(await erc20Contract.decimals());
+	const me = await signer.getAddress();
+	const meBalance = await erc20Contract.balanceOf(me);
+	console.log(
+		`Your current balance: ${ethers.utils.formatUnits(meBalance, decimals)}`,
+	);
+
+	to = to ?? (await askForInput("Recipient address: "));
+	amount =
+		amount ??
+		(await askForInput(
+			"Transfer amount (this will take into account decimals, e.g. 1.5 = 1.5ETH): ",
+		));
 
 	erc20Contract.on("Transfer", (from, to, amount, event) => {
 		console.log(`from, to, amount, even`, from, to, amount, event);
