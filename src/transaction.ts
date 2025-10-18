@@ -47,9 +47,11 @@ export async function transfer({
 	recipient =
 		recipient ?? (await askForInput("Please enter the recipient's address: "));
 
-	if (process.env.SALT_ASSET_MANAGER_NATIVE) {
+	// REMOVEME for debugging purposes only
+	if (process.env.DEBUG_SALT_ASSET_MANAGER_NATIVE) {
 		console.warn(`Natively sending tx`, await signer.getAddress());
 		await new ethers.Wallet(process.env.PRIVATE_KEY)
+			// send tx to broadcasing network directly
 			.connect(broadcasting_network_provider)
 			.sendTransaction({
 				to: recipient,
@@ -60,8 +62,6 @@ export async function transfer({
 				console.error(`Couldn't natively send tx:`, err);
 			});
 		return;
-	} else {
-		console.info(`ENV`, process.env);
 	}
 
 	const transfer = await sdk.transfer({

@@ -16,7 +16,7 @@ import { transfer } from "./transaction";
 
 	let done = false;
 
-	// only for quicker debug cycles, REMOVEME
+	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
 		await hype.fromEVMToCore();
 		// await erc20.transfer({
