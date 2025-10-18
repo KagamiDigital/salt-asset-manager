@@ -3,34 +3,28 @@ import { askForInput } from "../../helpers";
 import { broadcasting_network_provider, signer } from "../../constants";
 import ERC20ContractABI from "../../../contracts/ERC20/abi/ERC20.json";
 import { Salt, TransferType } from "salt-sdk";
-import { transaction } from "../../transaction";
+import { transfer as salt_transfer } from "../../transaction";
 
 export async function transfer(
 	{
 		token_address,
 		to,
-		amount,
+		value,
 	}: {
 		token_address?: string;
 		to?: string;
-		amount?: string;
+		value?: string;
 	} = {
 		token_address: undefined,
 		to: undefined,
-		amount: undefined,
+		value: undefined,
 	},
 ) {
-	// const myBalance = await broadcasting_network_provider.getBalance(
-	// 	"0xe29B0395e5E0C6dF2D900a5369509aCEBd98da60",
-	// );
-	// console.log(`My balance: `, ethers.utils.formatUnits(myBalance, 18));
-
 	token_address = token_address ?? (await askForInput("Token address: "));
 
 	const erc20Contract = new Contract(
 		token_address,
 		ERC20ContractABI,
-		// daiAbi,
 		broadcasting_network_provider,
 	);
 	const decimals = Number(await erc20Contract.decimals());
@@ -44,8 +38,8 @@ export async function transfer(
 	);
 
 	to = to ?? (await askForInput("Recipient address: "));
-	amount =
-		amount ??
+	value =
+		value ??
 		(await askForInput(
 			"Transfer amount (this will take into account decimals, e.g. 1.5 = 1.5ETH): ",
 		));
@@ -56,10 +50,10 @@ export async function transfer(
 
 	const data = erc20Contract.interface.encodeFunctionData(
 		"transfer(address, unit256)",
-		[to, amount],
+		[to, value],
 	);
 
-	transaction({
+	salt_transfer({
 		value: "0",
 		decimals,
 		recipient: to,

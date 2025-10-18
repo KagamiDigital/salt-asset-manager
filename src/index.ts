@@ -18,17 +18,17 @@ import { transfer } from "./transaction";
 
 	// only for quicker debug cycles, REMOVEME
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		// await hype.fromEVMToCore();
-		await erc20.transfer({
-			// token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160", // WETH
-			// token_address: "0x0000000000000000000000000000000000000000",
-			// token_address: "0x5555555555555555555555555555555555555555",
-			// token_address: "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
-			// token_address: "0x0b80659a4076e9e93c7dbe0f10675a16a3e5c206", // HypeEVM bridging USDC from Core
-			token_address: "0xeb62eee3685fc4c43992febcd9e75443",
-			// HYPE/USDC USDC spot on HypeEVM
-			// token_address: "0xe29b0395e5e0c6df2d900a5369509acebd98da60",
-		});
+		await hype.fromEVMToCore();
+		// await erc20.transfer({
+		// 	// token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160", // WETH
+		// 	// token_address: "0x0000000000000000000000000000000000000000",
+		// 	// token_address: "0x5555555555555555555555555555555555555555",
+		// 	// token_address: "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+		// 	// token_address: "0x0b80659a4076e9e93c7dbe0f10675a16a3e5c206", // HypeEVM bridging USDC from Core
+		// 	token_address: "0xeb62eee3685fc4c43992febcd9e75443",
+		// 	// HYPE/USDC USDC spot on HypeEVM
+		// 	// token_address: "0xe29b0395e5e0c6df2d900a5369509acebd98da60",
+		// });
 		done = true;
 	}
 
@@ -37,7 +37,7 @@ import { transfer } from "./transaction";
 			"Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] interact with HYPE \n [4] exit \n Please choose one of the options listed above: ",
 		);
 		if (input === "1") {
-			await transfer().catch((error) => {
+			await transfer({}).catch((error) => {
 				console.error("Error:", error);
 			});
 		} else if (input === "2") {
