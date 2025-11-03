@@ -28,14 +28,19 @@ import { ethers } from "ethers";
 		});
 		const delegationsByValidator = {};
 		for (const validatorAddress of delegationValidators) {
-			delegationsByValidator[validatorAddress] = await somnia.delegatedStakes({
+			const info = await somnia.getDelegationInfo({
 				address: signer.address,
+				validatorAddress,
 			});
+			delegationsByValidator[validatorAddress] = ethers.utils.formatEther(
+				info.amount,
+			);
 		}
 		console.log(
 			`Already delegated`,
 			ethers.utils.formatEther(totalDelegated),
 			delegationValidators,
+			delegationsByValidator,
 		);
 		// await somnia.delegateStake({
 		// 	amount: ethers.utils.parseEther("1"),

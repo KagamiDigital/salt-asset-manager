@@ -98,6 +98,16 @@ export async function getDelegations({
 	return await stakingContract.getDelegations(address);
 }
 
+export async function getDelegationInfo({
+	address,
+	validatorAddress,
+}: {
+	address: string;
+	validatorAddress: string;
+}): Promise<{ amount: BigNumber; pendingRewards: BigNumber }> {
+	return await stakingContract.getDelegationInfo(address, validatorAddress);
+}
+
 /**
  * Example tx: https://shannon-explorer.somnia.network/tx/0x676bd44018af5da348e5607361b316c7712bb0c0511f74a4219e7f44d170d122?tab=index
  *
