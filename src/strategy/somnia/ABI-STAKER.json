@@ -295,116 +295,6 @@
 	},
 	{
 		"type": "function",
-		"name": "grantRole",
-		"inputs": [
-			{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
-			{ "name": "account", "type": "address", "internalType": "address" }
-		],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
-		"name": "hasRole",
-		"inputs": [
-			{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
-			{ "name": "account", "type": "address", "internalType": "address" }
-		],
-		"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
-		"name": "initialize",
-		"inputs": [
-			{ "name": "upgrader", "type": "address", "internalType": "address" },
-			{
-				"name": "nodeCommitteeAddress",
-				"type": "address",
-				"internalType": "address"
-			},
-			{
-				"name": "initialUnstakePeriod",
-				"type": "uint256",
-				"internalType": "uint256"
-			},
-			{
-				"name": "initialMinStake",
-				"type": "uint256",
-				"internalType": "uint256"
-			},
-			{
-				"name": "initialDefaultDelegateStakeRate",
-				"type": "uint256",
-				"internalType": "uint256"
-			}
-		],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
-		"name": "isValidatorInCommittee",
-		"inputs": [
-			{ "name": "validator", "type": "address", "internalType": "address" }
-		],
-		"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
-		"name": "isValidatorMarkedForRemoval",
-		"inputs": [
-			{ "name": "validator", "type": "address", "internalType": "address" }
-		],
-		"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
-		"name": "joinCommittee",
-		"inputs": [
-			{ "name": "validator", "type": "address", "internalType": "address" },
-			{
-				"name": "publicKeys",
-				"type": "tuple",
-				"internalType": "struct INodeCommittee.PublicKeys",
-				"components": [
-					{
-						"name": "ecdsaPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "blsPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfPossession",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfAddress",
-						"type": "bytes",
-						"internalType": "bytes"
-					}
-				]
-			}
-		],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
-		"name": "leaveCommittee",
-		"inputs": [],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
 		"name": "minSelfStake",
 		"inputs": [],
 		"outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
@@ -447,61 +337,6 @@
 	},
 	{
 		"type": "function",
-		"name": "nodeCallerStakeAndJoinCommittee",
-		"inputs": [
-			{ "name": "nodeAddress", "type": "address", "internalType": "address" },
-			{
-				"name": "stakedAmount",
-				"type": "uint256",
-				"internalType": "uint256"
-			},
-			{
-				"name": "publicKeys",
-				"type": "tuple",
-				"internalType": "struct INodeCommittee.PublicKeys",
-				"components": [
-					{
-						"name": "ecdsaPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "blsPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfPossession",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfAddress",
-						"type": "bytes",
-						"internalType": "bytes"
-					}
-				]
-			}
-		],
-		"outputs": [],
-		"stateMutability": "payable"
-	},
-	{
-		"type": "function",
-		"name": "nodeCommittee",
-		"inputs": [],
-		"outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
-		"name": "nodeCommitteeValidators",
-		"inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-		"outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
 		"name": "partialUnstake",
 		"inputs": [
 			{ "name": "amount", "type": "uint256", "internalType": "uint256" }
@@ -528,32 +363,8 @@
 	},
 	{
 		"type": "function",
-		"name": "renounceRole",
-		"inputs": [
-			{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
-			{
-				"name": "callerConfirmation",
-				"type": "address",
-				"internalType": "address"
-			}
-		],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
 		"name": "requestTotalUnstake",
 		"inputs": [],
-		"outputs": [],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
-		"name": "revokeRole",
-		"inputs": [
-			{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
-			{ "name": "account", "type": "address", "internalType": "address" }
-		],
 		"outputs": [],
 		"stateMutability": "nonpayable"
 	},
@@ -596,46 +407,6 @@
 		],
 		"outputs": [],
 		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
-		"name": "stakeAndJoinCommittee",
-		"inputs": [
-			{
-				"name": "stakedAmount",
-				"type": "uint256",
-				"internalType": "uint256"
-			},
-			{
-				"name": "publicKeys",
-				"type": "tuple",
-				"internalType": "struct INodeCommittee.PublicKeys",
-				"components": [
-					{
-						"name": "ecdsaPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "blsPublicKey",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfPossession",
-						"type": "bytes",
-						"internalType": "bytes"
-					},
-					{
-						"name": "proofOfAddress",
-						"type": "bytes",
-						"internalType": "bytes"
-					}
-				]
-			}
-		],
-		"outputs": [],
-		"stateMutability": "payable"
 	},
 	{
 		"type": "function",

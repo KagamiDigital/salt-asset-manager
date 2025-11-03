@@ -20,25 +20,28 @@ import { ethers } from "ethers";
 
 	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		const alreadyDelegated = await somnia.delegatedStakes({
+		const totalDelegated = await somnia.delegatedStakes({
 			address: signer.address,
 		});
-		const stakedInfo = await somnia.getStake({
-			validatorAddress: "0x8CaA4E607c6c2AE7b345014a0E9E084dC57B4FBa",
+		const delegationValidators = await somnia.getDelegations({
+			address: signer.address,
 		});
+		const delegationsByValidator = {};
+		for (const validatorAddress of delegationValidators) {
+			delegationsByValidator[validatorAddress] = await somnia.delegatedStakes({
+				address: signer.address,
+			});
+		}
 		console.log(
 			`Already delegated`,
-			ethers.utils.formatEther(alreadyDelegated),
-			{
-				stakedAmount: ethers.utils.formatEther(stakedInfo.stakedAmount),
-				delegatedAmount: ethers.utils.formatEther(stakedInfo.delegatedStake),
-			},
+			ethers.utils.formatEther(totalDelegated),
+			delegationValidators,
 		);
-		await somnia.delegateStake({
-			amount: ethers.utils.parseEther("1"),
-			// validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
-			validatorAddress: "0x8CaA4E607c6c2AE7b345014a0E9E084dC57B4FBa",
-		});
+		// await somnia.delegateStake({
+		// 	amount: ethers.utils.parseEther("1"),
+		// 	// validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+		// 	validatorAddress: "0x8CaA4E607c6c2AE7b345014a0E9E084dC57B4FBa",
+		// });
 		// await hype.fromEVMToCore();
 		// await erc20.transfer({
 		// 	// token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160", // WETH

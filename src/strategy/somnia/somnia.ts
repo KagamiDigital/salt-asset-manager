@@ -87,6 +87,17 @@ export async function getStake({
 	return await stakingContract.getStake(validatorAddress);
 }
 
+// 0x31cc13ba000000000000000000000000e29b0395e5e0c6df2d900a5369509acebd98da60
+
+/** All validators that the user has delegated to, then use `delegatedStake` */
+export async function getDelegations({
+	address,
+}: {
+	address: string;
+}): Promise<string[]> {
+	return await stakingContract.getDelegations(address);
+}
+
 /**
  * Example tx: https://shannon-explorer.somnia.network/tx/0x676bd44018af5da348e5607361b316c7712bb0c0511f74a4219e7f44d170d122?tab=index
  *
