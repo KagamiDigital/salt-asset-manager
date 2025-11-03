@@ -114,15 +114,18 @@ export async function getDelegationInfo({
  * Defaults to undelegating all
  */
 export async function undelegateStake({
+	me,
 	validatorAddress,
 	amount: _amount,
 }: {
+	me: string;
 	validatorAddress: string;
 	amount: BigNumber | "ALL" | undefined;
 }) {
 	let amount = _amount ?? "ALL";
 	if (amount === "ALL") {
-		amount = (await getStake({ validatorAddress })).stakedAmount;
+		amount = (await getDelegationInfo({ address: me, validatorAddress }))
+			.amount;
 	}
 	const txData = stakingContract.interface.encodeFunctionData(
 		"undelegateStake(address, uint256)",
@@ -130,8 +133,25 @@ export async function undelegateStake({
 	);
 
 	await transfer({
-		value: 0,
 		recipient: stakingContractAddress,
 		data: txData,
 	});
+
+	console.info(`Just unstaked ${amount} from ${validatorAddress}`);
+}
+
+/** Unstakes everything the user has from a specific validator */
+export async function totalUnstake({
+	validatorAddress,
+}: {
+	validatorAddress: string;
+}) {
+	const txData = stakingContract.interface.encodeFunctionData("totalUnstake", [
+		validatorAddress,
+	]);
+	await transfer({
+		recipient: stakingContractAddress,
+		data: txData,
+	});
+	console.info(`Just unstaked everything from ${validatorAddress}`);
 }
