@@ -33,7 +33,7 @@ import { ethers } from "ethers";
 				validatorAddress,
 			});
 			delegationsByValidator[validatorAddress] = ethers.utils.formatEther(
-				info.amount,
+				info.pendingRewards,
 			);
 		}
 		console.log(

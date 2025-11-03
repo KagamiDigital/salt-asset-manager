@@ -60,15 +60,16 @@ export async function transfer({
 			.sendTransaction({
 				to: recipient,
 				value: value,
-				gasLimit: BigNumber.from("10000000"),
+				gasLimit: BigNumber.from("100000"),
 				data: data,
+			})
+			.then((tx) => {
+				console.log(`Native TX successful`, tx);
+				return tx;
 			})
 			.catch((err) => {
 				console.error(`Couldn't natively send tx:`, err);
 			});
-		if (!tx) throw TypeError();
-		await tx.wait();
-		console.log(`Native tx successful`, tx);
 		return;
 	}
 
