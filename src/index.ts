@@ -20,7 +20,11 @@ import { ethers } from "ethers";
 
 	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		await somnia.stake({
+		const alreadyDelegated = await somnia.delegatedStakes({
+			validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+		});
+		console.log(`Alread delegated`, ethers.utils.formatEther(alreadyDelegated));
+		await somnia.delegateStake({
 			amount: ethers.utils.parseEther("1"),
 			validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
 		});
