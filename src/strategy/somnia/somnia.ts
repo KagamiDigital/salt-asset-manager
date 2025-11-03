@@ -1,11 +1,12 @@
 import { BigNumber, BigNumberish, Contract } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import {
-	___local_wallet,
-	broadcasting_network_provider,
-} from "../../constants";
+import { ethers } from "ethers";
+import { broadcasting_network_provider, signer } from "../../constants";
 import { transfer } from "../../transaction";
 import ABI from "./ABI-STAKER.json";
+
+// All of this was undocumented, or I couldn't find any docs for it
+// It appears you can't stake twice on the same validator
 
 const stakingContractAddress = "0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
 const stakingContractABI = [
@@ -51,8 +52,19 @@ export async function delegateStake({
 		[validatorAddress, amount],
 	);
 
+	console.log(
+		`Delegating ${ethers.utils.formatEther(amount)} STT to validator ${validatorAddress}`,
+		txData,
+	);
+
+	// REMOVEME too native
+	// await stakingContract
+	// 	.connect(___local_wallet.connect(broadcasting_network_provider))
+	// 	.delegateStake(validatorAddress, amount)
+	// 	.then((tx) => tx.wait());
+
 	await transfer({
-		value: 0,
+		value: amount,
 		recipient: stakingContractAddress,
 		data: txData,
 	});

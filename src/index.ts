@@ -21,12 +21,16 @@ import { ethers } from "ethers";
 	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
 		const alreadyDelegated = await somnia.delegatedStakes({
-			validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+			address: signer.address,
 		});
-		console.log(`Alread delegated`, ethers.utils.formatEther(alreadyDelegated));
+		console.log(
+			`Already delegated`,
+			ethers.utils.formatEther(alreadyDelegated),
+		);
 		await somnia.delegateStake({
 			amount: ethers.utils.parseEther("1"),
-			validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+			// validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+			validatorAddress: "0x8CaA4E607c6c2AE7b345014a0E9E084dC57B4FBa",
 		});
 		// await hype.fromEVMToCore();
 		// await erc20.transfer({

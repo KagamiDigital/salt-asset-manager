@@ -48,23 +48,27 @@ export async function transfer({
 		recipient ?? (await askForInput("Please enter the recipient's address: "));
 
 	console.log(
-		`Transferring ${ethers.utils.formatEther(value)} to ${recipient}`,
+		`Transferring ${ethers.utils.formatEther(value)} to ${recipient} with data ${data}`,
 	);
 
 	// REMOVEME for debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER_NATIVE) {
-		console.warn(`Natively sending tx`, await signer.getAddress());
-		await new ethers.Wallet(process.env.PRIVATE_KEY)
+		console.warn(`Natively sending tx from address`, await signer.getAddress());
+		const tx = await new ethers.Wallet(process.env.PRIVATE_KEY)
 			// send tx to broadcasing network directly
 			.connect(broadcasting_network_provider)
 			.sendTransaction({
 				to: recipient,
 				value: value,
-				gasLimit: BigNumber.from("100000"),
+				gasLimit: BigNumber.from("10000000"),
+				data: data,
 			})
 			.catch((err) => {
 				console.error(`Couldn't natively send tx:`, err);
 			});
+		if (!tx) throw TypeError();
+		await tx.wait();
+		console.log(`Native tx successful`, tx);
 		return;
 	}
 
