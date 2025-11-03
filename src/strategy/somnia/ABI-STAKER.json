@@ -193,15 +193,6 @@
 	},
 	{
 		"type": "function",
-		"name": "getRoleAdmin",
-		"inputs": [
-			{ "name": "role", "type": "bytes32", "internalType": "bytes32" }
-		],
-		"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
-		"stateMutability": "view"
-	},
-	{
-		"type": "function",
 		"name": "getStake",
 		"inputs": [
 			{ "name": "validator", "type": "address", "internalType": "address" }
@@ -956,56 +947,6 @@
 	},
 	{
 		"type": "event",
-		"name": "RoleGranted",
-		"inputs": [
-			{
-				"name": "role",
-				"type": "bytes32",
-				"indexed": true,
-				"internalType": "bytes32"
-			},
-			{
-				"name": "account",
-				"type": "address",
-				"indexed": true,
-				"internalType": "address"
-			},
-			{
-				"name": "sender",
-				"type": "address",
-				"indexed": true,
-				"internalType": "address"
-			}
-		],
-		"anonymous": false
-	},
-	{
-		"type": "event",
-		"name": "RoleRevoked",
-		"inputs": [
-			{
-				"name": "role",
-				"type": "bytes32",
-				"indexed": true,
-				"internalType": "bytes32"
-			},
-			{
-				"name": "account",
-				"type": "address",
-				"indexed": true,
-				"internalType": "address"
-			},
-			{
-				"name": "sender",
-				"type": "address",
-				"indexed": true,
-				"internalType": "address"
-			}
-		],
-		"anonymous": false
-	},
-	{
-		"type": "event",
 		"name": "StakeCreated",
 		"inputs": [
 			{
@@ -1089,19 +1030,6 @@
 				"type": "address",
 				"indexed": false,
 				"internalType": "address"
-			}
-		],
-		"anonymous": false
-	},
-	{
-		"type": "event",
-		"name": "StakerRolesAdded",
-		"inputs": [
-			{
-				"name": "validators",
-				"type": "address[]",
-				"indexed": false,
-				"internalType": "address[]"
 			}
 		],
 		"anonymous": false

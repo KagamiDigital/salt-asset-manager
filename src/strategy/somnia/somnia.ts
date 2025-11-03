@@ -57,21 +57,14 @@ export async function delegateStake({
 		txData,
 	);
 
-	// REMOVEME too native
-	// await stakingContract
-	// 	.connect(___local_wallet.connect(broadcasting_network_provider))
-	// 	.delegateStake(validatorAddress, amount)
-	// 	.then((tx) => tx.wait());
-
 	await transfer({
 		value: amount,
 		recipient: stakingContractAddress,
 		data: txData,
 	});
-
-	// todo
 }
 
+/** Total sum */
 export async function delegatedStakes({
 	address,
 }: {
@@ -80,7 +73,44 @@ export async function delegatedStakes({
 	return await stakingContract.delegatedStakes(address);
 }
 
+/** Info only about that validator, nothing concerning the user */
+export async function getStake({
+	validatorAddress,
+}: {
+	validatorAddress: string;
+}): Promise<{
+	validator: string;
+	stakedAmount: BigNumber;
+	accumulatedRewards: BigNumber;
+	delegatedStake: BigNumber;
+}> {
+	return await stakingContract.getStake(validatorAddress);
+}
+
 /**
  * Example tx: https://shannon-explorer.somnia.network/tx/0x676bd44018af5da348e5607361b316c7712bb0c0511f74a4219e7f44d170d122?tab=index
+ *
+ * Defaults to undelegating all
  */
-export async function unstake() {}
+export async function undelegateStake({
+	validatorAddress,
+	amount: _amount,
+}: {
+	validatorAddress: string;
+	amount: BigNumber | "ALL" | undefined;
+}) {
+	let amount = _amount ?? "ALL";
+	if (amount === "ALL") {
+		amount = (await getStake({ validatorAddress })).stakedAmount;
+	}
+	const txData = stakingContract.interface.encodeFunctionData(
+		"undelegateStake(address, uint256)",
+		[validatorAddress, amount],
+	);
+
+	await transfer({
+		value: 0,
+		recipient: stakingContractAddress,
+		data: txData,
+	});
+}

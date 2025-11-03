@@ -23,9 +23,16 @@ import { ethers } from "ethers";
 		const alreadyDelegated = await somnia.delegatedStakes({
 			address: signer.address,
 		});
+		const stakedInfo = await somnia.getStake({
+			validatorAddress: "0x8CaA4E607c6c2AE7b345014a0E9E084dC57B4FBa",
+		});
 		console.log(
 			`Already delegated`,
 			ethers.utils.formatEther(alreadyDelegated),
+			{
+				stakedAmount: ethers.utils.formatEther(stakedInfo.stakedAmount),
+				delegatedAmount: ethers.utils.formatEther(stakedInfo.delegatedStake),
+			},
 		);
 		await somnia.delegateStake({
 			amount: ethers.utils.parseEther("1"),
