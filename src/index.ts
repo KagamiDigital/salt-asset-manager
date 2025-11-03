@@ -9,6 +9,7 @@ import {
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
 import * as somnia from "./strategy/somnia/somnia";
+import * as somnia_staker from "./strategy/somnia/staker";
 import { transfer } from "./transaction";
 import { ethers } from "ethers";
 
@@ -20,28 +21,9 @@ import { ethers } from "ethers";
 
 	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		const totalDelegated = await somnia.delegatedStakes({
-			address: signer.address,
-		});
-		const delegationValidators = await somnia.getDelegations({
-			address: signer.address,
-		});
-		const delegationsByValidator = {};
-		for (const validatorAddress of delegationValidators) {
-			const info = await somnia.getDelegationInfo({
-				address: signer.address,
-				validatorAddress,
-			});
-			delegationsByValidator[validatorAddress] = ethers.utils.formatEther(
-				info.pendingRewards,
-			);
-		}
-		console.log(
-			`Already delegated`,
-			ethers.utils.formatEther(totalDelegated),
-			delegationValidators,
-			delegationsByValidator,
-		);
+		const info = await somnia_staker.info({ me: signer.address });
+		console.log(`Already delegated`, info);
+		await somnia_staker.unstakeEverything({ me: signer.address });
 		// await somnia.delegateStake({
 		// 	amount: ethers.utils.parseEther("1"),
 		// 	// validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
