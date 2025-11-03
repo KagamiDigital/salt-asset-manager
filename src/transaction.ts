@@ -47,6 +47,10 @@ export async function transfer({
 	recipient =
 		recipient ?? (await askForInput("Please enter the recipient's address: "));
 
+	console.log(
+		`Transferring ${ethers.utils.formatEther(value)} to ${recipient}`,
+	);
+
 	// REMOVEME for debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER_NATIVE) {
 		console.warn(`Natively sending tx`, await signer.getAddress());

@@ -1,7 +1,12 @@
 import { BigNumber, BigNumberish, Contract } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { broadcasting_network_provider } from "../../constants";
+import { transfer } from "../../transaction";
+import ABI from "./ABI-STAKER.json";
 
+/**
+ * Example tx: https://shannon-explorer.somnia.network/tx/0xefe52d003860d35622659ffe5f4ce4e5eee5366d0c8b7e506a3745a53849318f?tab=index
+ */
 export async function stake({
 	amount,
 	validatorAddress,
@@ -29,6 +34,7 @@ export async function stake({
 			stateMutability: "nonpayable",
 			type: "function",
 		},
+		...ABI,
 	];
 
 	const stakingContract = new Contract(
@@ -40,5 +46,17 @@ export async function stake({
 		"delegateStake(address, uint256)",
 		[validatorAddress, amount],
 	);
+
+	await transfer({
+		value: 0,
+		recipient: stakingContractAddress,
+		data: txData,
+	});
+
 	// todo
 }
+
+/**
+ * Example tx: https://shannon-explorer.somnia.network/tx/0x676bd44018af5da348e5607361b316c7712bb0c0511f74a4219e7f44d170d122?tab=index
+ */
+export async function unstake() {}

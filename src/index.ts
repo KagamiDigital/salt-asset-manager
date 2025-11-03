@@ -8,7 +8,9 @@ import {
 } from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
+import * as somnia from "./strategy/somnia/somnia";
 import { transfer } from "./transaction";
+import { ethers } from "ethers";
 
 (async () => {
 	const publicAddress = await signer.getAddress();
@@ -18,7 +20,11 @@ import { transfer } from "./transaction";
 
 	// REMOVEME for development / debugging purposes only
 	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		await hype.fromEVMToCore();
+		await somnia.stake({
+			amount: ethers.utils.parseEther("1"),
+			validatorAddress: "0xAf43e6f892ba3D9fE110f78568ecbF68250C840F",
+		});
+		// await hype.fromEVMToCore();
 		// await erc20.transfer({
 		// 	// token_address: "0xADcb2f358Eae6492F61A5F87eb8893d09391d160", // WETH
 		// 	// token_address: "0x0000000000000000000000000000000000000000",
