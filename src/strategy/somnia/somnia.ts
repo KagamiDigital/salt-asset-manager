@@ -47,6 +47,9 @@ export async function delegateStake({
 	amount: BigNumber;
 	validatorAddress: string;
 }) {
+	console.log(
+		`Delegating ${ethers.utils.formatEther(amount)} STT to validator ${validatorAddress}`,
+	);
 	const txData = stakingContract.interface.encodeFunctionData(
 		"delegateStake(address, uint256)",
 		[validatorAddress, amount],
@@ -62,6 +65,7 @@ export async function delegateStake({
 		recipient: stakingContractAddress,
 		data: txData,
 	});
+	console.info(`Delegation successful`);
 }
 
 /** Total sum */
@@ -138,7 +142,9 @@ export async function undelegateStake({
 		data: txData,
 	});
 
-	console.info(`Just unstaked ${amount} from ${validatorAddress}`);
+	console.info(
+		`Just unstaked ${ethers.utils.formatEther(amount)} from ${validatorAddress}`,
+	);
 }
 
 /** What a validator calls */

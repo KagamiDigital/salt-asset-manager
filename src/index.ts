@@ -24,8 +24,12 @@ import { ethers } from "ethers";
 		const info = await somnia_staker.info({ me: signer.address });
 		console.log(`Already delegated`, info);
 
-		// await somnia_staker.unstakeEverything({ me: signer.address });
+		await somnia_staker.delegateStake({
+			me: signer.address,
+			amount: ethers.utils.parseEther("5.0"),
+		});
 		await somnia_staker.claimAllRewards({ me: signer.address });
+		await somnia_staker.undelegateEverything({ me: signer.address });
 		done = true;
 	}
 

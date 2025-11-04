@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import * as somnia from "./somnia";
 import { ethers } from "ethers";
 import { broadcasting_network_provider } from "../../constants";
+import validators from "./validators.json";
 
 const log = console.log;
 
@@ -31,14 +32,32 @@ export async function info({ me }: { me: string }) {
 	};
 }
 
-export async function stakeEverything({
+export async function delegateStake({
 	me,
 	amount,
 }: {
 	me: string;
 	amount: BigNumber;
 }) {
-	// todo
+	// loops through all validators until it finds one that hasn't been staked too
+	// yet, then stakes the full amount to it.
+	// This is quite a naive strategy but it does work
+	let emptyValidator = undefined;
+	for (const validatorAddress of Object.keys(validators)) {
+		const info = await somnia.getDelegationInfo({
+			address: me,
+			validatorAddress,
+		});
+		if (info.amount.isZero()) {
+			emptyValidator = validatorAddress;
+			break;
+		}
+	}
+	if (!emptyValidator) {
+		throw new Error(`All the validators are already delegated too!`);
+	}
+
+	await somnia.delegateStake({ amount, validatorAddress: emptyValidator });
 }
 
 export async function claimAllRewards({ me }: { me: string }) {
@@ -56,7 +75,7 @@ export async function claimAllRewards({ me }: { me: string }) {
 		const preBalance = await broadcasting_network_provider.getBalance(me);
 		await somnia.claimDelegatorRewards({ validatorAddress });
 		const newBalance = await broadcasting_network_provider.getBalance(me);
-		
+
 		const diff = newBalance.sub(preBalance);
 		console.log(
 			`Claimed ${ethers.utils.formatEther(diff)} and expected ${ethers.utils.formatEther(expected)} from ${validatorAddress}`,
@@ -70,7 +89,7 @@ export async function claimAllRewards({ me }: { me: string }) {
 	);
 }
 
-export async function unstakeEverything({ me }: { me: string }) {
+export async function undelegateEverything({ me }: { me: string }) {
 	const totalDelegated = await somnia.delegatedStakes({ address: me });
 	if (totalDelegated.isZero()) {
 		log(`No need to undelegate, ${me} has nothing delegated`);
