@@ -60,7 +60,7 @@ export async function transfer({
 			.sendTransaction({
 				to: recipient,
 				value: value,
-				gasLimit: BigNumber.from("100000"),
+				gasLimit: BigNumber.from("100000000"),
 				data: data,
 			})
 			.then((tx) => {
@@ -70,6 +70,9 @@ export async function transfer({
 			.catch((err) => {
 				console.error(`Couldn't natively send tx:`, err);
 			});
+		// @ts-ignore
+		const recipt = await tx.wait();
+		console.log(`Natively sent tx`, recipt);
 		return;
 	}
 

@@ -133,6 +133,7 @@ export async function undelegateStake({
 	);
 
 	await transfer({
+		value: 0,
 		recipient: stakingContractAddress,
 		data: txData,
 	});
@@ -140,18 +141,39 @@ export async function undelegateStake({
 	console.info(`Just unstaked ${amount} from ${validatorAddress}`);
 }
 
-/** Unstakes everything the user has from a specific validator */
+/** What a validator calls */
 export async function totalUnstake({
 	validatorAddress,
 }: {
 	validatorAddress: string;
 }) {
-	const txData = stakingContract.interface.encodeFunctionData("totalUnstake", [
-		validatorAddress,
-	]);
+	console.log(`totalUnstake(${validatorAddress})`);
+	const txData = stakingContract.interface.encodeFunctionData(
+		"totalUnstake(address)",
+		[validatorAddress],
+	);
 	await transfer({
+		value: 0,
 		recipient: stakingContractAddress,
 		data: txData,
 	});
 	console.info(`Just unstaked everything from ${validatorAddress}`);
+}
+
+export async function claimDelegatorRewards({
+	validatorAddress,
+}: {
+	validatorAddress: string;
+}) {
+	console.log(`claimDelegatorRewards(${validatorAddress})`);
+	const txData = stakingContract.interface.encodeFunctionData(
+		"claimDelegatorRewards(address)",
+		[validatorAddress],
+	);
+	await transfer({
+		value: 0,
+		recipient: stakingContractAddress,
+		data: txData,
+	});
+	console.info(`Just claimed rewards from ${validatorAddress}`);
 }

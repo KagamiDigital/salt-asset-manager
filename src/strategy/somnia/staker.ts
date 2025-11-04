@@ -3,6 +3,7 @@
 import { BigNumber } from "ethers";
 import * as somnia from "./somnia";
 import { ethers } from "ethers";
+import { broadcasting_network_provider } from "../../constants";
 
 const log = console.log;
 
@@ -22,10 +23,51 @@ export async function info({ me }: { me: string }) {
 			pendingRewards: ethers.utils.formatEther(info.pendingRewards),
 		};
 	}
+	const balance = await broadcasting_network_provider.getBalance(me);
 	return {
-		total: totalDelegated,
-		byValidator: delegations,
+		balance,
+		totalDelegated: totalDelegated,
+		delegatedByValidator: delegations,
 	};
+}
+
+export async function stakeEverything({
+	me,
+	amount,
+}: {
+	me: string;
+	amount: BigNumber;
+}) {
+	// todo
+}
+
+export async function claimAllRewards({ me }: { me: string }) {
+	const initialBalance = await broadcasting_network_provider.getBalance(me);
+
+	const delegations = await somnia.getDelegations({ address: me });
+	for (const validatorAddress of delegations) {
+		const expected = (
+			await somnia.getDelegationInfo({
+				validatorAddress,
+				address: me,
+			})
+		).pendingRewards;
+
+		const preBalance = await broadcasting_network_provider.getBalance(me);
+		await somnia.claimDelegatorRewards({ validatorAddress });
+		const newBalance = await broadcasting_network_provider.getBalance(me);
+		
+		const diff = newBalance.sub(preBalance);
+		console.log(
+			`Claimed ${ethers.utils.formatEther(diff)} and expected ${ethers.utils.formatEther(expected)} from ${validatorAddress}`,
+		);
+	}
+
+	const finalBalance = await broadcasting_network_provider.getBalance(me);
+	const diff = finalBalance.sub(initialBalance);
+	console.log(
+		`Claimed all rewards for a total of ${ethers.utils.formatEther(diff)} `,
+	);
 }
 
 export async function unstakeEverything({ me }: { me: string }) {
@@ -36,7 +78,7 @@ export async function unstakeEverything({ me }: { me: string }) {
 	}
 	const existingDelegations = await somnia.getDelegations({ address: me });
 	for (const validatorAddress of existingDelegations) {
-		await somnia.totalUnstake({ validatorAddress });
+		await somnia.undelegateStake({ me, validatorAddress, amount: "ALL" });
 	}
 
 	// check everything unstaked
@@ -45,8 +87,4 @@ export async function unstakeEverything({ me }: { me: string }) {
 		throw new Error(`Failed to unstake everything from ${me}`);
 	}
 	console.log(`Unstaked everything from ${me}`);
-}
-
-export async function stake({ me, amount }: { me: string; amount: BigNumber }) {
-	// todo
 }
