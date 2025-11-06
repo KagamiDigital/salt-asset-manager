@@ -31,7 +31,7 @@ export async function chooseAccount(
 	}
 
 	const orgs = await sdk.getOrganisations();
-	if (!orgIndex) {
+	if (!orgIndex || retry) {
 		for (let i = 0; i < orgs.length; i++) {
 			console.log(`[${i}] ${orgs[i].name}`);
 		}
@@ -41,7 +41,7 @@ export async function chooseAccount(
 	}
 
 	const accounts = await sdk.getAccounts((orgs[orgIndex] as any)._id);
-	if (!accIndex) {
+	if (!accIndex || retry) {
 		for (let i = 0; i < accounts.length; i++) {
 			console.log(`[${i}] ${accounts[i].name}`);
 		}

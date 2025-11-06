@@ -73,7 +73,7 @@ import { formatEther } from "ethers/lib/utils";
 				const { accountAddress: me } = await chooseAccount();
 				const info = await somnia_staker.getInfo({ me });
 				console.log(
-					`Your Salt wallet currently has ${formatEther(info.balance)} SST, and you have delegated ${formatEther(info.totalDelegated)} SST already`,
+					`Your Salt wallet currently at ${me} has ${info.balance} SST, and you have delegated ${info.totalDelegated} SST already`,
 				);
 
 				const msg = `In Somnia staking, do you wish to: \n [1] Delegate stake \n [2] Collect rewards \n [3] Undelegate stake \n [4] Exit`;
