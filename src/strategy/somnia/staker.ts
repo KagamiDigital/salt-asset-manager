@@ -24,7 +24,9 @@ export async function info({ me }: { me: string }) {
 			pendingRewards: ethers.utils.formatEther(info.pendingRewards),
 		};
 	}
-	const balance = await broadcasting_network_provider.getBalance(me);
+	const balance = ethers.utils.formatEther(
+		await broadcasting_network_provider.getBalance(me),
+	);
 	return {
 		balance,
 		totalDelegated: totalDelegated,

@@ -1,35 +1,14 @@
 import { BigNumber, BigNumberish, Contract } from "ethers";
-import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { broadcasting_network_provider, signer } from "../../constants";
 import { transfer } from "../../transaction";
-import ABI from "./ABI-STAKER.json";
+import ABI from "../../../contracts/somnia/STAKER.json";
 
 // All of this was undocumented, or I couldn't find any docs for it
 // It appears you can't stake twice on the same validator
 
 const stakingContractAddress = "0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
-const stakingContractABI = [
-	{
-		inputs: [
-			{
-				internalType: "address",
-				name: "_validator",
-				type: "address",
-			},
-			{
-				internalType: "uint256",
-				name: "_amount",
-				type: "uint256",
-			},
-		],
-		name: "delegateStake",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
-	},
-	...ABI,
-];
+const stakingContractABI = ABI;
 
 const stakingContract = new Contract(
 	stakingContractAddress,
@@ -145,6 +124,19 @@ export async function undelegateStake({
 	console.info(
 		`Just unstaked ${ethers.utils.formatEther(amount)} from ${validatorAddress}`,
 	);
+
+	if (_amount ?? "ALL" === "ALL") {
+		// check that there is nothing left to be undelegated
+		// This could fail from a TOCTOU attack
+		const leftover = (
+			await getDelegationInfo({ address: me, validatorAddress })
+		).amount;
+		if (!leftover.isZero()) {
+			throw new Error(
+				`undelegateStake({ amount: ${_amount ?? "ALL"} }): Failed to undelegate all stake`,
+			);
+		}
+	}
 }
 
 /** What a validator calls */

@@ -1,11 +1,6 @@
 import { signer } from "./constants";
 import { askForInput, printRectangle, rl } from "./helpers";
-import {
-	requestStatus,
-	stake,
-	unstake,
-	withdraw,
-} from "./strategy/chorus-one/chorus-one";
+import * as chorus_one from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
 import * as somnia from "./strategy/somnia/somnia";
@@ -50,19 +45,19 @@ import { ethers } from "ethers";
 				const msg = `Do you wish to: \n [1] Stake \n [2] Unstake \n [3] Request status \n [4] Withdraw \n [5] exit \n Please choose one of the options listed above`;
 				const input = await askForInput(msg);
 				if (input === "1") {
-					await stake().catch((error) => {
+					await chorus_one.stake().catch((error) => {
 						console.error("Error:", error);
 					});
 				} else if (input === "2") {
-					await unstake().catch((error) => {
+					await chorus_one.unstake().catch((error) => {
 						console.log("Error:", error);
 					});
 				} else if (input === "3") {
-					await requestStatus().catch((error) => {
+					await chorus_one.requestStatus().catch((error) => {
 						console.log("Error:", error);
 					});
 				} else if (input === "4") {
-					await withdraw().catch((error) => {
+					await chorus_one.withdraw().catch((error) => {
 						console.log("Error:", error);
 					});
 				} else if (input === "5") {
