@@ -3,15 +3,26 @@ import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput } from "./helpers";
 import { ethers, BigNumber, BigNumberish } from "ethers";
 
-/** Parameterized potentially interactive transfer function */
+export let orgIndex = undefined;
+export let accIndex = undefined;
+
+/**
+ * Convenient interactive wrapper around Salt sdk.transfer function.
+ *
+ * Will interactively ask for the organisation index and account index of the
+ * desired Salt MPC account and save this information in `orgIndex` and `accIndex`
+ * respectively
+ *
+ * @param value Amount of native currency to transfer (e.g. ETH on chain-id = 1)
+ * @param recipient Address of the recipient
+ * @param data Data to include in the transaction. Used to make contract calls
+ */
 export async function transfer({
 	value,
-	decimals,
 	recipient,
 	data,
 }: {
 	value?: BigNumberish;
-	decimals?: number;
 	recipient?: string;
 	data?: string;
 }) {
@@ -19,22 +30,25 @@ export async function transfer({
 	await sdk.authenticate(signer);
 
 	const orgs = await sdk.getOrganisations();
-
-	for (let i = 0; i < orgs.length; i++) {
-		console.log(`[${i}] ${orgs[i].name}`);
+	if (!orgIndex) {
+		for (let i = 0; i < orgs.length; i++) {
+			console.log(`[${i}] ${orgs[i].name}`);
+		}
+		orgIndex = await askForInput(
+			"Please choose one of the organisations above to fetch the accounts from: ",
+		);
 	}
-	const orgIndex = await askForInput(
-		"Please choose one of the organisations above to fetch the accounts from: ",
-	);
+
 	const accounts = await sdk.getAccounts((orgs[orgIndex] as any)._id);
+	if (!accIndex) {
+		for (let i = 0; i < accounts.length; i++) {
+			console.log(`[${i}] ${accounts[i].name}`);
+		}
 
-	for (let i = 0; i < accounts.length; i++) {
-		console.log(`[${i}] ${accounts[i].name}`);
+		accIndex = await askForInput(
+			"Please choose one of the accounts above to send a transaction from: ",
+		);
 	}
-
-	const accIndex = await askForInput(
-		"Please choose one of the accounts above to send a transaction from: ",
-	);
 
 	value =
 		value ??
@@ -81,7 +95,6 @@ export async function transfer({
 		to: recipient,
 		value: value.toString(),
 		chainId: broadcasting_network_provider.network.chainId,
-		decimals,
 		type: TransferType.Native,
 		signer: signer,
 		sendingProvider: broadcasting_network_provider,
