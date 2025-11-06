@@ -43,7 +43,7 @@ import { formatEther } from "ethers/lib/utils";
 			);
 
 			if (input === "1") {
-				const msg = `Do you wish to: \n [1] Stake \n [2] Unstake \n [3] Request status \n [4] Withdraw \n [5] exit \n Please choose one of the options listed above`;
+				const msg = `Do you wish to: \n [1] Stake \n [2] Unstake \n [3] Request status \n [4] Withdraw \n [5] exit \n Please choose one of the options listed above: `;
 				const input = await askForInput(msg);
 				if (input === "1") {
 					await chorus_one.stake().catch((error) => {
@@ -67,26 +67,28 @@ import { formatEther } from "ethers/lib/utils";
 					console.log(`Please enter a valid choice`);
 				}
 			} else if (input === "2") {
+				const { accountAddress: me } = await chooseAccount();
 				console.log(
 					`Printing information about your current Somnia staking delegations`,
 				);
-				const { accountAddress: me } = await chooseAccount();
 				const info = await somnia_staker.getInfo({ me });
 				console.log(
 					`Your Salt wallet currently at ${me} has ${info.balance} SST, and you have delegated ${info.totalDelegated} SST already`,
 				);
 
-				const msg = `In Somnia staking, do you wish to: \n [1] Delegate stake \n [2] Collect rewards \n [3] Undelegate stake \n [4] Exit`;
+				const msg = `In Somnia staking, do you wish to: \n [1] Delegate stake \n [2] Collect rewards \n [3] Undelegate stake \n [4] Exit \n Please enter one of the options listed above: `;
 				const input = await askForInput(msg);
 
 				if (input === "1") {
 					const amount = ethers.utils.parseEther(
 						await askForInput("How much SST do you want to stake?: "),
 					);
-					somnia_staker.delegateStake({ amount, me });
+					await somnia_staker.delegateStake({ amount, me }).catch((error) => {
+						console.log(`Error: `, error);
+					});
 				} else if (input === "2") {
 					await somnia_staker.claimAllRewards({ me }).catch((error) => {
-						console.log(`Error: ${error}`);
+						console.log(`Error:`, error);
 					});
 				} else if (input === "3") {
 					// const amount = ethers.utils.parseEther(

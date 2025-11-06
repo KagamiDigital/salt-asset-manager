@@ -134,12 +134,44 @@ export async function transfer({
 		data,
 	});
 
-	transfer.onTransition(0, 1, (data) => console.log("IDLE->PROPOSE:", data));
-	transfer.onTransition(1, 2, (data) => console.log("PROPOSE->SIGN:", data));
-	transfer.onTransition(2, 5, (data) => console.log("SIGN->END:", data));
-	transfer.onTransition(2, 3, (data) => console.log("SIGN->COMBINE:", data));
-	transfer.onTransition(3, 4, (data) =>
-		console.log("COMBINE->BROADCAST:", data),
-	);
-	transfer.onTransition(4, 5, (data) => console.log("BROADCAST->END:", data));
+	await new Promise((resolve, reject) => {
+		// happy path
+		transfer.onTransition(0, 1, (data) =>
+			console.log("IDLE->PROPOSE Starting transfer:", data),
+		);
+		transfer.onTransition(1, 2, (data) =>
+			console.log("PROPOSE->SIGN Proposal created:", data),
+		);
+		transfer.onTransition(2, 3, (data) =>
+			console.log("SIGN->COMBINE Enough signatures provided:", data),
+		);
+		transfer.onTransition(3, 4, (data) =>
+			console.log("COMBINE->BROADCAST Combined signatures:", data),
+		);
+		transfer.onTransition(4, 5, (data) => {
+			console.log("BROADCAST->END Broadcased transaction:", data);
+			resolve("Transaction successful");
+		});
+
+		transfer.onTransition(0, 5, (data) => {
+			const err = new Error(`IDLE->END Error starting transfer`);
+			console.error(err, data);
+			reject(err);
+		});
+		transfer.onTransition(1, 5, (data) => {
+			const err = new Error(`PROPOSE->END Policy breach`);
+			console.error(err, data);
+			reject(err);
+		});
+		transfer.onTransition(2, 5, (data) => {
+			const err = new Error(`SIGN->END Error signing`);
+			console.error(err, data);
+			reject(err);
+		});
+		transfer.onTransition(3, 5, (data) => {
+			const err = new Error(`COMBINE->END Error combining`);
+			console.error(err, data);
+			reject(err);
+		});
+	});
 }
