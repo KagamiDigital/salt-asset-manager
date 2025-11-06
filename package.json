@@ -1,28 +1,28 @@
 {
-  "name": "kagami-asset-manager",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "type": "commonjs",
-  "scripts": {
-    "start": "rm -rf dist && webpack && node dist/bundle.js",
-    "buildwebpack": "rm -rf dist && webpack",
-    "nodev": "node --version"
-  },
-  "dependencies": {
-    "@chorus-one/ethereum": "^2.0.4",
-    "@intuweb3/sdk": "^0.0.525",
-    "dotenv": "^16.4.5",
-    "ethers": "^5.7.2",
-    "salt-sdk": "^0.0.4",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4"
-  },
-  "devDependencies": {
-    "typescript": "^5.5.3"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+	"name": "kagami-asset-manager",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"type": "commonjs",
+	"scripts": {
+		"start": "rm -rf dist && webpack && node dist/bundle.js",
+		"buildwebpack": "rm -rf dist && webpack",
+		"nodev": "node --version"
+	},
+	"dependencies": {
+		"@chorus-one/ethereum": "^2.0.4",
+		"@intuweb3/sdk": "^0.0.525",
+		"dotenv": "^16.4.5",
+		"ethers": "^5.7.2",
+		"salt-sdk": "^0.0.8",
+		"ts-loader": "^9.5.1",
+		"webpack": "^5.92.1",
+		"webpack-cli": "^5.1.4"
+	},
+	"devDependencies": {
+		"typescript": "^5.5.3"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }

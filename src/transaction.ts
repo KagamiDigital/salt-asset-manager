@@ -74,7 +74,7 @@ export async function transfer({
 	recipient,
 	data,
 }: {
-	value?: BigNumberish;
+	value?: BigNumber;
 	recipient?: string;
 	data?: string;
 }) {
@@ -91,6 +91,8 @@ export async function transfer({
 
 	recipient =
 		recipient ?? (await askForInput("Please enter the recipient's address: "));
+
+	recipient = ethers.utils.getAddress(recipient);
 
 	console.log(
 		`Transferring ${ethers.utils.formatEther(value)} to ${recipient} with data ${data}`,
@@ -124,14 +126,14 @@ export async function transfer({
 	const transfer = await sdk.transfer({
 		accountId: accountId,
 		to: recipient,
-		value: value.toString(),
+		value: ethers.utils.formatEther(value),
 		chainId: broadcasting_network_provider.network.chainId,
 		type: TransferType.Native,
 		signer: signer,
 		sendingProvider: broadcasting_network_provider,
 		// This is a known type issue, see https://teamkagamiworkspace.slack.com/archives/C06KZD0J11S/p1760574546543829
 		// @ts-ignore
-		data,
+		data: data ?? "0x",
 	});
 
 	await new Promise((resolve, reject) => {
@@ -150,6 +152,7 @@ export async function transfer({
 		);
 		transfer.onTransition(4, 5, (data) => {
 			console.log("BROADCAST->END Broadcased transaction:", data);
+			console.log(`Transaction successful!`);
 			resolve("Transaction successful");
 		});
 

@@ -102,7 +102,7 @@ export async function undelegateStake({
 	);
 
 	await transfer({
-		value: 0,
+		value: BigNumber.from(0),
 		recipient: stakingContractAddress,
 		data: txData,
 	});
@@ -123,7 +123,7 @@ export async function claimDelegatorRewards({
 		[validatorAddress],
 	);
 	await transfer({
-		value: 0,
+		value: BigNumber.from(0),
 		recipient: stakingContractAddress,
 		data: txData,
 	});

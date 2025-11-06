@@ -54,7 +54,7 @@ export async function transfer(
 	);
 
 	salt_transfer({
-		value: "0",
+		value: ethers.utils.parseEther("0"),
 		recipient: to,
 		data,
 	});
