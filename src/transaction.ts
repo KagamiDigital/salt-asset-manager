@@ -3,31 +3,32 @@ import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput } from "./helpers";
 import { ethers, BigNumber, BigNumberish } from "ethers";
 
-export let orgIndex = undefined;
-export let accIndex = undefined;
-
-/**
- * Convenient interactive wrapper around Salt sdk.transfer function.
- *
- * Will interactively ask for the organisation index and account index of the
- * desired Salt MPC account and save this information in `orgIndex` and `accIndex`
- * respectively
- *
- * @param value Amount of native currency to transfer (e.g. ETH on chain-id = 1)
- * @param recipient Address of the recipient
- * @param data Data to include in the transaction. Used to make contract calls
- */
-export async function transfer({
-	value,
-	recipient,
-	data,
-}: {
-	value?: BigNumberish;
-	recipient?: string;
-	data?: string;
-}) {
+const makeSDK = async () => {
 	const sdk = new Salt({ environment: "TESTNET" });
 	await sdk.authenticate(signer);
+	return sdk;
+};
+
+export let orgIndex = undefined;
+export let accIndex = undefined;
+export let accountAddress = undefined;
+
+/**
+ * Interactively asks user for orgIndex and accIndex.
+ *
+ * @param sdk Salt SDK instance *already authenticated*
+ * @returns accountAddress The public address of the chosen account
+ * @returns id The id of the chosen account, **internal** to Salt usage only
+ */
+export async function chooseAccount(
+	{ retry, sdk }: { retry?: boolean; sdk?: Salt } = { retry: false },
+): Promise<{
+	accountId: string;
+	accountAddress: string;
+}> {
+	if (!sdk) {
+		sdk = await makeSDK();
+	}
 
 	const orgs = await sdk.getOrganisations();
 	if (!orgIndex) {
@@ -49,6 +50,36 @@ export async function transfer({
 			"Please choose one of the accounts above to send a transaction from: ",
 		);
 	}
+
+	const ret = accounts[accIndex];
+	if (!ret) {
+		throw new Error("Invalid account index");
+	}
+	return { accountId: ret.id, accountAddress: ret.publicKey };
+}
+
+/**
+ * Convenient interactive wrapper around Salt sdk.transfer function.
+ *
+ * Will interactively ask for the organisation index and account index of the
+ * desired Salt MPC account and save this information in `orgIndex` and `accIndex`
+ * respectively
+ *
+ * @param value Amount of native currency to transfer (e.g. ETH on chain-id = 1)
+ * @param recipient Address of the recipient
+ * @param data Data to include in the transaction. Used to make contract calls
+ */
+export async function transfer({
+	value,
+	recipient,
+	data,
+}: {
+	value?: BigNumberish;
+	recipient?: string;
+	data?: string;
+}) {
+	const sdk = await makeSDK();
+	const { accountId } = await chooseAccount({ sdk });
 
 	value =
 		value ??
@@ -91,7 +122,7 @@ export async function transfer({
 	}
 
 	const transfer = await sdk.transfer({
-		accountId: accounts[accIndex].id,
+		accountId: accountId,
 		to: recipient,
 		value: value.toString(),
 		chainId: broadcasting_network_provider.network.chainId,

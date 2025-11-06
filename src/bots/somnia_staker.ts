@@ -1,14 +1,15 @@
 //! Somnia staking bot / strategy
 
 import { BigNumber } from "ethers";
-import * as somnia from "./staking";
+import * as somnia from "../strategy/somnia/staking";
 import { ethers } from "ethers";
-import { broadcasting_network_provider } from "../../constants";
-import validators from "./validators.json";
+import { broadcasting_network_provider } from "../constants";
+import validators from "../../contracts/somnia/validators.json";
 
 const log = console.log;
+const info = console.info;
 
-export async function info({ me }: { me: string }) {
+export async function getInfo({ me }: { me: string }) {
 	const totalDelegated = ethers.utils.formatEther(
 		await somnia.delegatedStakes({ address: me }),
 	);
@@ -79,16 +80,14 @@ export async function claimAllRewards({ me }: { me: string }) {
 		const newBalance = await broadcasting_network_provider.getBalance(me);
 
 		const diff = newBalance.sub(preBalance);
-		console.log(
+		log(
 			`Claimed ${ethers.utils.formatEther(diff)} and expected ${ethers.utils.formatEther(expected)} from ${validatorAddress}`,
 		);
 	}
 
 	const finalBalance = await broadcasting_network_provider.getBalance(me);
 	const diff = finalBalance.sub(initialBalance);
-	console.log(
-		`Claimed all rewards for a total of ${ethers.utils.formatEther(diff)} `,
-	);
+	log(`Claimed all rewards for a total of ${ethers.utils.formatEther(diff)} `);
 }
 
 export async function undelegateEverything({ me }: { me: string }) {
@@ -99,7 +98,10 @@ export async function undelegateEverything({ me }: { me: string }) {
 	}
 	const existingDelegations = await somnia.getDelegations({ address: me });
 	for (const validatorAddress of existingDelegations) {
-		await somnia.undelegateStake({ me, validatorAddress, amount: "ALL" });
+		const amount = (
+			await somnia.getDelegationInfo({ address: me, validatorAddress })
+		).amount;
+		await somnia.undelegateStake({ validatorAddress, amount });
 	}
 
 	// check everything unstaked
@@ -107,5 +109,5 @@ export async function undelegateEverything({ me }: { me: string }) {
 	if (!newTotalDelegated.isZero()) {
 		throw new Error(`Failed to unstake everything from ${me}`);
 	}
-	console.log(`Unstaked everything from ${me}`);
+	log(`Unstaked everything from ${me}`);
 }

@@ -6,10 +6,11 @@ import { broadcasting_network_provider, signer } from "../../constants";
 import { transfer } from "../../transaction";
 import ABI from "../../../contracts/somnia/STAKER.json";
 
-const stakingContractAddress = "0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
-const stakingContractABI = ABI;
+export const stakingContractAddress =
+	"0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
+export const stakingContractABI = ABI;
 
-const stakingContract = new Contract(
+export const stakingContract = new Contract(
 	stakingContractAddress,
 	stakingContractABI,
 	broadcasting_network_provider,

@@ -4,9 +4,10 @@ import * as chorus_one from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
 import * as somnia from "./strategy/somnia/staking";
-import * as somnia_staker from "./bots/staker";
-import { transfer } from "./transaction";
+import * as somnia_staker from "./bots/somnia_staker";
+import { chooseAccount, transfer } from "./transaction";
 import { ethers } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 
 (async () => {
 	const publicAddress = await signer.getAddress();
@@ -14,19 +15,19 @@ import { ethers } from "ethers";
 
 	let done = false;
 
-	// REMOVEME for development / debugging purposes only
-	if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-		const info = await somnia_staker.info({ me: signer.address });
-		console.log(`Already delegated`, info);
+	// // REMOVEME for development / debugging purposes only
+	// if (process.env.DEBUG_SALT_ASSET_MANAGER) {
+	// 	const info = await somnia_staker.getInfo({ me: signer.address });
+	// 	console.log(`Already delegated`, info);
 
-		await somnia_staker.delegateStake({
-			me: signer.address,
-			amount: ethers.utils.parseEther("5.0"),
-		});
-		await somnia_staker.claimAllRewards({ me: signer.address });
-		await somnia_staker.undelegateEverything({ me: signer.address });
-		done = true;
-	}
+	// 	// await somnia_staker.delegateStake({
+	// 	// 	me: signer.address,
+	// 	// 	amount: ethers.utils.parseEther("5.0"),
+	// 	// });
+	// 	// await somnia_staker.claimAllRewards({ me: signer.address });
+	// 	// await somnia_staker.undelegateEverything({ me: signer.address });
+	// 	done = true;
+	// }
 
 	while (!done) {
 		const input = await askForInput(
@@ -38,7 +39,7 @@ import { ethers } from "ethers";
 			});
 		} else if (input === "2") {
 			const input = await askForInput(
-				"Which strategy: \n [1] chorus-one \n [2] ERC20 \n [3] exit \n Please choose one of the options listed above: ",
+				"Which strategy: \n [1] chorus-one \n [2] Somnia staking \n [3] exit \n Please choose one of the options listed above: ",
 			);
 
 			if (input === "1") {
@@ -66,13 +67,42 @@ import { ethers } from "ethers";
 					console.log(`Please enter a valid choice`);
 				}
 			} else if (input === "2") {
-				const msg = `In ERC20, do you wish to: \n [1] \n [2] exit \n Please choose one of the options listed above`;
+				console.log(
+					`Printing information about your current Somnia staking delegations`,
+				);
+				const { accountAddress: me } = await chooseAccount();
+				const info = await somnia_staker.getInfo({ me });
+				console.log(
+					`Your Salt wallet currently has ${formatEther(info.balance)} SST, and you have delegated ${formatEther(info.totalDelegated)} SST already`,
+				);
+
+				const msg = `In Somnia staking, do you wish to: \n [1] Delegate stake \n [2] Collect rewards \n [3] Undelegate stake \n [4] Exit`;
 				const input = await askForInput(msg);
+
 				if (input === "1") {
-					await erc20.transfer().catch((error) => {
-						console.log(`Error: `, error);
-					});
+					const amount = ethers.utils.parseEther(
+						await askForInput("How much SST do you want to stake?: "),
+					);
+					somnia_staker.delegateStake({ amount, me });
 				} else if (input === "2") {
+					await somnia_staker.claimAllRewards({ me }).catch((error) => {
+						console.log(`Error: ${error}`);
+					});
+				} else if (input === "3") {
+					// const amount = ethers.utils.parseEther(
+					// 	await askForInput("How much SST do you want to undelegate?: "),
+					// );
+					const input = await askForInput(
+						`Are you sure you want to undelegate all your stake? (y/N): `,
+					);
+					if (input.toLowerCase() === "y") {
+						await somnia_staker.undelegateEverything({ me }).catch((error) => {
+							console.log(`Error: ${error}`);
+						});
+					} else {
+						console.log("Undelegation cancelled");
+					}
+				} else if (input === "4") {
 					done = true;
 				} else {
 					console.log(`Please enter a valid choice`);

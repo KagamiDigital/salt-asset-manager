@@ -55,7 +55,6 @@ export async function transfer(
 
 	salt_transfer({
 		value: "0",
-		decimals,
 		recipient: to,
 		data,
 	});

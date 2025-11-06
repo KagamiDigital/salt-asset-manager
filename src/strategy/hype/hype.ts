@@ -7,7 +7,6 @@ import { transfer } from "../../transaction";
 
 export async function fromEVMToCore() {
 	await transfer({
-		decimals: 18,
 		recipient: "0x2222222222222222222222222222222222222222",
 	});
 }
