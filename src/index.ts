@@ -3,7 +3,7 @@ import { askForInput, printRectangle, rl } from "./helpers";
 import * as chorus_one from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
-import * as somnia from "./strategy/somnia/somnia";
+import * as somnia from "./strategy/somnia/staking";
 import * as somnia_staker from "./strategy/somnia/staker";
 import { transfer } from "./transaction";
 import { ethers } from "ethers";

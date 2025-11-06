@@ -1,11 +1,10 @@
+//! Somnia staking example code
+
 import { BigNumber, BigNumberish, Contract } from "ethers";
 import { ethers } from "ethers";
 import { broadcasting_network_provider, signer } from "../../constants";
 import { transfer } from "../../transaction";
 import ABI from "../../../contracts/somnia/STAKER.json";
-
-// All of this was undocumented, or I couldn't find any docs for it
-// It appears you can't stake twice on the same validator
 
 const stakingContractAddress = "0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
 const stakingContractABI = ABI;
@@ -69,8 +68,6 @@ export async function getStake({
 }> {
 	return await stakingContract.getStake(validatorAddress);
 }
-
-// 0x31cc13ba000000000000000000000000e29b0395e5e0c6df2d900a5369509acebd98da60
 
 /** All validators that the user has delegated to, then use `delegatedStake` */
 export async function getDelegations({

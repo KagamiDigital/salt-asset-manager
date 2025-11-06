@@ -1,7 +1,7 @@
 //! Somnia staking bot / strategy
 
 import { BigNumber } from "ethers";
-import * as somnia from "./somnia";
+import * as somnia from "./staking";
 import { ethers } from "ethers";
 import { broadcasting_network_provider } from "../../constants";
 import validators from "./validators.json";
