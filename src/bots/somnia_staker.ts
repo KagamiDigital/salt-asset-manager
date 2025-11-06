@@ -13,6 +13,7 @@ export async function getInfo({ me }: { me: string }) {
 	const totalDelegated = ethers.utils.formatEther(
 		await somnia.delegatedStakes({ address: me }),
 	);
+	let totalPendingRewards = BigNumber.from(0);
 	const delegationsRaw = await somnia.getDelegations({ address: me });
 	const delegations = {};
 	for (const validatorAddress of delegationsRaw) {
@@ -24,6 +25,7 @@ export async function getInfo({ me }: { me: string }) {
 			amount: ethers.utils.formatEther(info.amount),
 			pendingRewards: ethers.utils.formatEther(info.pendingRewards),
 		};
+		totalPendingRewards = totalPendingRewards.add(info.pendingRewards);
 	}
 	const balance = ethers.utils.formatEther(
 		await broadcasting_network_provider.getBalance(me),
@@ -31,6 +33,7 @@ export async function getInfo({ me }: { me: string }) {
 	return {
 		balance,
 		totalDelegated: totalDelegated,
+		totalPendingRewards: ethers.utils.formatEther(totalPendingRewards),
 		delegatedByValidator: delegations,
 	};
 }
