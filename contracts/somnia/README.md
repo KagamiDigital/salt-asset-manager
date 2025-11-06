@@ -9,3 +9,6 @@ Includes the entire ABI reverse engineered from https://testnet.somnia.network/s
 
 ## STAKER.json
 Only includes the non-admin ABI part that is actually useful from STAKER-FULL.json
+
+## validators.json
+Reverse engineered list of validator addresses
