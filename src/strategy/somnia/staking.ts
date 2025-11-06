@@ -25,9 +25,6 @@ export async function delegateStake({
 	amount: BigNumber;
 	validatorAddress: string;
 }) {
-	console.log(
-		`Delegating ${ethers.utils.formatEther(amount)} STT to validator ${validatorAddress}`,
-	);
 	const txData = stakingContract.interface.encodeFunctionData(
 		"delegateStake(address, uint256)",
 		[validatorAddress, amount],
@@ -69,7 +66,7 @@ export async function getStake({
 	return await stakingContract.getStake(validatorAddress);
 }
 
-/** All validators that the user has delegated to, then use `delegatedStake` */
+/** All validators that the user has delegated to */
 export async function getDelegations({
 	address,
 }: {
@@ -90,23 +87,14 @@ export async function getDelegationInfo({
 
 /**
  * Example tx: https://shannon-explorer.somnia.network/tx/0x676bd44018af5da348e5607361b316c7712bb0c0511f74a4219e7f44d170d122?tab=index
- *
- * Defaults to undelegating all
  */
 export async function undelegateStake({
-	me,
 	validatorAddress,
-	amount: _amount,
+	amount,
 }: {
-	me: string;
 	validatorAddress: string;
-	amount: BigNumber | "ALL" | undefined;
+	amount: BigNumber;
 }) {
-	let amount = _amount ?? "ALL";
-	if (amount === "ALL") {
-		amount = (await getDelegationInfo({ address: me, validatorAddress }))
-			.amount;
-	}
 	const txData = stakingContract.interface.encodeFunctionData(
 		"undelegateStake(address, uint256)",
 		[validatorAddress, amount],
@@ -121,38 +109,6 @@ export async function undelegateStake({
 	console.info(
 		`Just unstaked ${ethers.utils.formatEther(amount)} from ${validatorAddress}`,
 	);
-
-	if (_amount ?? "ALL" === "ALL") {
-		// check that there is nothing left to be undelegated
-		// This could fail from a TOCTOU attack
-		const leftover = (
-			await getDelegationInfo({ address: me, validatorAddress })
-		).amount;
-		if (!leftover.isZero()) {
-			throw new Error(
-				`undelegateStake({ amount: ${_amount ?? "ALL"} }): Failed to undelegate all stake`,
-			);
-		}
-	}
-}
-
-/** What a validator calls */
-export async function totalUnstake({
-	validatorAddress,
-}: {
-	validatorAddress: string;
-}) {
-	console.log(`totalUnstake(${validatorAddress})`);
-	const txData = stakingContract.interface.encodeFunctionData(
-		"totalUnstake(address)",
-		[validatorAddress],
-	);
-	await transfer({
-		value: 0,
-		recipient: stakingContractAddress,
-		data: txData,
-	});
-	console.info(`Just unstaked everything from ${validatorAddress}`);
 }
 
 export async function claimDelegatorRewards({
