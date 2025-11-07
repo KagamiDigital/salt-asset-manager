@@ -150,11 +150,23 @@ export async function transfer({
 		transfer.onTransition(3, 4, (data) =>
 			console.log("COMBINE->BROADCAST Combined signatures:", data),
 		);
-		transfer.onTransition(4, 5, (data) => {
-			console.log("BROADCAST->END Broadcased transaction:", data);
-			console.log(`Transaction successful!`);
-			resolve("Transaction successful");
-		});
+		transfer.onTransition(
+			4,
+			5,
+			(data: { receipt: { transactionHash: string } }) => {
+				console.log("BROADCAST->END Broadcased transaction:", data);
+				console.log(`Transaction successful!`);
+				if (data?.receipt?.transactionHash) {
+					broadcasting_network_provider
+						.waitForTransaction(data.receipt.transactionHash)
+						.then(resolve);
+				} else {
+					resolve(
+						"Transaction successful, but didn't confirm it was broadcasted",
+					);
+				}
+			},
+		);
 
 		transfer.onTransition(0, 5, (data) => {
 			const err = new Error(`IDLE->END Error starting transfer`);

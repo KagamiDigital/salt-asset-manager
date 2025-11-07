@@ -64,6 +64,9 @@ export async function delegateStake({
 	}
 
 	await somnia.delegateStake({ amount, validatorAddress: emptyValidator });
+	
+	// assert that the validator now displays that we have staked
+	// 
 }
 
 export async function claimAllRewards({ me }: { me: string }) {
@@ -98,6 +101,10 @@ export async function undelegateEverything({ me }: { me: string }) {
 	if (totalDelegated.isZero()) {
 		log(`No need to undelegate, ${me} has nothing delegated`);
 		return;
+	} else {
+		log(
+			`Undelegating all your stake, for a total of ${ethers.utils.formatEther(totalDelegated)}`,
+		);
 	}
 	const existingDelegations = await somnia.getDelegations({ address: me });
 	for (const validatorAddress of existingDelegations) {
