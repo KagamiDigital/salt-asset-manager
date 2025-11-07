@@ -64,9 +64,9 @@ export async function delegateStake({
 	}
 
 	await somnia.delegateStake({ amount, validatorAddress: emptyValidator });
-	
+
 	// assert that the validator now displays that we have staked
-	// 
+	//
 }
 
 export async function claimAllRewards({ me }: { me: string }) {
@@ -81,13 +81,18 @@ export async function claimAllRewards({ me }: { me: string }) {
 			})
 		).pendingRewards;
 
+		if (expected.isZero()) {
+			log(`Skipped claiming rewards for ${validatorAddress}`);
+			continue;
+		}
+
 		const preBalance = await broadcasting_network_provider.getBalance(me);
 		await somnia.claimDelegatorRewards({ validatorAddress });
 		const newBalance = await broadcasting_network_provider.getBalance(me);
 
 		const diff = newBalance.sub(preBalance);
 		log(
-			`Claimed ${ethers.utils.formatEther(diff)} and expected ${ethers.utils.formatEther(expected)} from ${validatorAddress}`,
+			`Claimed ${ethers.utils.formatEther(diff)} (including gas fees) and expected ${ethers.utils.formatEther(expected)} (without gas) from ${validatorAddress}`,
 		);
 	}
 
