@@ -103,7 +103,7 @@ export async function transfer({
 	);
 
 	// REMOVEME for debugging purposes only
-	if (process.env.DEBUG_SALT_ASSET_MANAGER_NATIVE) {
+	if (process.env.DEBUG_SALT_ASSET_MANAGER_NATIVE === "1") {
 		console.warn(`Natively sending tx from address`, await signer.getAddress());
 		const tx = await new ethers.Wallet(process.env.PRIVATE_KEY)
 			// send tx to broadcasing network directly

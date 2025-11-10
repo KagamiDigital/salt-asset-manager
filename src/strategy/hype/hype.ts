@@ -8,6 +8,8 @@ import { transfer } from "../../transaction";
 export async function fromEVMToCore() {
 	// interactively picks the rest of the required options
 	await transfer({
+		value: undefined,
 		recipient: "0x2222222222222222222222222222222222222222",
+		data: undefined,
 	});
 }
