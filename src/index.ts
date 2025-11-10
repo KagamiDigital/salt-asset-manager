@@ -9,25 +9,12 @@ import { chooseAccount, transfer } from "./transaction";
 import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 
+// A basic TUI to demonstrate usage
 (async () => {
 	const publicAddress = await signer.getAddress();
 	printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 
 	let done = false;
-
-	// // REMOVEME for development / debugging purposes only
-	// if (process.env.DEBUG_SALT_ASSET_MANAGER) {
-	// 	const info = await somnia_staker.getInfo({ me: signer.address });
-	// 	console.log(`Already delegated`, info);
-
-	// 	// await somnia_staker.delegateStake({
-	// 	// 	me: signer.address,
-	// 	// 	amount: ethers.utils.parseEther("5.0"),
-	// 	// });
-	// 	// await somnia_staker.claimAllRewards({ me: signer.address });
-	// 	// await somnia_staker.undelegateEverything({ me: signer.address });
-	// 	done = true;
-	// }
 
 	while (!done) {
 		const input = await askForInput(

@@ -3,6 +3,10 @@ import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput } from "./helpers";
 import { ethers, BigNumber, BigNumberish } from "ethers";
 
+/**
+ *
+ * @returns An already authenticated Salt SDK instance
+ */
 const makeSDK = async () => {
 	const sdk = new Salt({ environment: "TESTNET" });
 	await sdk.authenticate(signer);
@@ -133,9 +137,10 @@ export async function transfer({
 		sendingProvider: broadcasting_network_provider,
 		// This is a known type issue, see https://teamkagamiworkspace.slack.com/archives/C06KZD0J11S/p1760574546543829
 		// @ts-ignore
-		data: data ?? "0x",
+		data: data ?? "0x", // you probably don't need to default to "0x" specifically
 	});
 
+	// A Promise wrapper around the salt-sdk internal state machine
 	await new Promise((resolve, reject) => {
 		// happy path
 		transfer.onTransition(0, 1, (data) =>
@@ -156,6 +161,7 @@ export async function transfer({
 			(data: { receipt: { transactionHash: string } }) => {
 				console.log("BROADCAST->END Broadcased transaction:", data);
 				console.log(`Transaction successful!`);
+				// waiting here is just a sanity check, salt-sdk should already do this internally
 				if (data?.receipt?.transactionHash) {
 					broadcasting_network_provider
 						.waitForTransaction(data.receipt.transactionHash)

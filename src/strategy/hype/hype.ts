@@ -6,6 +6,7 @@ import { Salt, TransferType } from "salt-sdk";
 import { transfer } from "../../transaction";
 
 export async function fromEVMToCore() {
+	// interactively picks the rest of the required options
 	await transfer({
 		recipient: "0x2222222222222222222222222222222222222222",
 	});

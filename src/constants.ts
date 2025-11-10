@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 
+// loads local .env file
 dotenv.config();
 
 export const orchestration_network_provider =
@@ -14,6 +15,7 @@ export const broadcasting_network_provider =
 		skipFetchSetup: true,
 	});
 
+// sanity check for chain-id
 broadcasting_network_provider.getNetwork().then((network) => {
 	// this is where we might parse the string as hexadecimal instead of base 10
 	const envChainId = Number(process.env.BROADCASTING_NETWORK_ID);

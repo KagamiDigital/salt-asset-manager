@@ -1,4 +1,6 @@
-//! Somnia staking example code
+/**
+ * Somnia staking smart contract (reverse engineered)
+ */
 
 import { BigNumber, BigNumberish, Contract } from "ethers";
 import { ethers } from "ethers";

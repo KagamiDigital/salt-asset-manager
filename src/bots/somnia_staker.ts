@@ -1,4 +1,7 @@
-//! Somnia staking bot / strategy
+/**
+ * Somnia staking bot / strategy
+ * with a nicer API surface than the underlying smart contract
+ */
 
 import { BigNumber } from "ethers";
 import * as somnia from "../strategy/somnia/staking";
@@ -38,6 +41,7 @@ export async function getInfo({ me }: { me: string }) {
 	};
 }
 
+/** Automatically picks a validator node from a pre-set list */
 export async function delegateStake({
 	me,
 	amount,

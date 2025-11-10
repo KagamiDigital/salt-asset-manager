@@ -40,13 +40,8 @@ export async function transfer(
 	to = to ?? (await askForInput("Recipient address: "));
 	value =
 		value ??
-		(await askForInput(
-			"Transfer amount (this will take into account decimals, e.g. 1.5 = 1.5ETH): ",
-		));
-
-	erc20Contract.on("Transfer", (from, to, amount, event) => {
-		console.log(`from, to, amount, even`, from, to, amount, event);
-	});
+		(await askForInput("Transfer amount (accounting for ERC decimals): "));
+	const valueNum = ethers.utils.parseUnits(value, decimals);
 
 	const data = erc20Contract.interface.encodeFunctionData(
 		"transfer(address, unit256)",
@@ -54,7 +49,7 @@ export async function transfer(
 	);
 
 	salt_transfer({
-		value: ethers.utils.parseEther("0"),
+		value: valueNum,
 		recipient: to,
 		data,
 	});
