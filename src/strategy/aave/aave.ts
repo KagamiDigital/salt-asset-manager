@@ -2,6 +2,8 @@
  * https://aave.com/docs/developers/smart-contracts/wrapped-token-gateway
  */
 
+//! NOTE: Untested!
+
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "../../helpers";
 import { broadcasting_network_provider } from "../../constants";
@@ -10,7 +12,7 @@ import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
 import { transfer } from "../../transaction";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 
-// https://aave.com/docs/resources/addresses
+// https://aave.com/docs/resources/addresses - only testnet that is supported it eth sep
 // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3ArbitrumSepolia.sol
 
 // specific to aave
