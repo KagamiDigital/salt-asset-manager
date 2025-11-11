@@ -127,6 +127,7 @@ export async function transfer({
 		return;
 	}
 
+	// gas is handled by SDK
 	const transfer = await sdk.transfer({
 		accountId: accountId,
 		to: recipient,

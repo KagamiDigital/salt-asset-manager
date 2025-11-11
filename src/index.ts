@@ -4,6 +4,7 @@ import * as chorus_one from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
 import * as hype from "./strategy/hype/hype";
 import * as somnia from "./strategy/somnia/staking";
+import * as aave from "./strategy/aave/aave";
 import * as somnia_staker from "./bots/somnia_staker";
 import { chooseAccount, transfer } from "./transaction";
 import { ethers } from "ethers";
@@ -26,10 +27,11 @@ import { formatEther } from "ethers/lib/utils";
 			});
 		} else if (input === "2") {
 			const input = await askForInput(
-				"Which strategy: \n [1] chorus-one \n [2] Somnia staking \n [3] exit \n Please choose one of the options listed above: ",
+				"Which strategy: \n [1] chorus-one \n [2] Somnia staking \n [3] aave \n [4] exit \n Please choose one of the options listed above: ",
 			);
 
 			if (input === "1") {
+				// Chorous One
 				const msg = `Do you wish to: \n [1] Stake \n [2] Unstake \n [3] Request status \n [4] Withdraw \n [5] exit \n Please choose one of the options listed above: `;
 				const input = await askForInput(msg);
 				if (input === "1") {
@@ -54,6 +56,7 @@ import { formatEther } from "ethers/lib/utils";
 					console.log(`Please enter a valid choice`);
 				}
 			} else if (input === "2") {
+				// Somnia staking
 				const { accountAddress: me } = await chooseAccount();
 				console.log(
 					`Printing information about your current Somnia staking delegations`,
@@ -99,6 +102,28 @@ SST already with ${info.totalPendingRewards} pending rewards across ${Object.key
 					console.log(`Please enter a valid choice`);
 				}
 			} else if (input === "3") {
+				// Aave
+				const msg = `In Aave, do you wish to \n [1] Deposit \n [2] Approve \n [3] Withdraw [4] exit \n Please choose one of the options listed above: `;
+				const input = await askForInput(msg);
+				const { accountAddress: me } = await chooseAccount();
+				if (input === "1") {
+					await aave.deposit({ me }).catch((error) => {
+						console.log(`Error: ${error}`);
+					});
+				} else if (input === "2") {
+					await aave.approve().catch((error) => {
+						console.log(`Error: ${error}`);
+					});
+				} else if (input === "3") {
+					await aave.withdraw().catch((error) => {
+						console.log(`Error: ${error}`);
+					});
+				} else if (input === "4") {
+					done = true;
+				} else {
+					console.log(`Please enter a valid choice`);
+				}
+			} else if (input === "4") {
 				done = true;
 			} else {
 				console.log("Please enter a valid choice");
