@@ -14,7 +14,10 @@ import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
 import { transfer } from "../../transaction";
 import { parseEther } from "ethers/lib/utils";
 
-const aETHWETHContractAddress = "0x5b071b590a59395fE4025A0Ccc1FcC931AAc1830";
+// last updated Nov 11 2025
+// const aETHWETHContractAddress = "0x5b071b590a59395fE4025A0Ccc1FcC931AAc1830";
+const aETHWETHContractAddress = "0xC558DBdd856501FCd9aaF1E62eae57A9F0629a3c";
+
 const WrappedTokenGatewayV3ContractAddress =
 	"0x387d311e47e80b498169e6fb51d3193167d89F7D";
 const poolContractAddress = "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951";
@@ -25,11 +28,13 @@ const aaveContract = new ethers.Contract(
 	broadcasting_network_provider,
 );
 
-aaveContract.getWETHAddress().then((data) => {
-	if (data.address !== aETHWETHContractAddress) {
-		console.warn(
-			`WETH addresses differ`,
-			data.address,
+// if this sanity check fails, its likely because you are on a chain that
+// doesn't support Aave (e.g. Somnia)
+aaveContract.getWETHAddress().then((address) => {
+	if (address !== aETHWETHContractAddress) {
+		console.error(
+			`\n(Warning: WETH addresses differ for aave smart contract)\n`,
+			address,
 			aETHWETHContractAddress,
 		);
 	}
