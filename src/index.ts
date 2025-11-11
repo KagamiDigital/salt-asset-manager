@@ -1,4 +1,4 @@
-import { signer } from "./constants";
+import { broadcasting_network_provider, signer } from "./constants";
 import { askForInput, printRectangle, rl } from "./helpers";
 import * as chorus_one from "./strategy/chorus-one/chorus-one";
 import * as erc20 from "./strategy/simple-erc20/erc20";
@@ -8,7 +8,7 @@ import * as aave from "./strategy/aave/aave";
 import * as somnia_staker from "./bots/somnia_staker";
 import { chooseAccount, transfer } from "./transaction";
 import { ethers } from "ethers";
-import { formatEther } from "ethers/lib/utils";
+import { formatEther, formatUnits } from "ethers/lib/utils";
 
 // A basic TUI to demonstrate usage
 (async () => {
@@ -16,17 +16,6 @@ import { formatEther } from "ethers/lib/utils";
 	printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 
 	let done = false;
-
-	// REMOVEME
-	if (process.env.DEBUG_SALT_ASSET_MANAGER === "1") {
-		const me = await signer.getAddress(); // only for native signing
-		const { nativeBalance, aaveWETHBalance } = await aave.getInfo({
-			me,
-		});
-		console.info(
-			`Your native balance: ${nativeBalance}, your aave WETH balance: ${aaveWETHBalance}`,
-		);
-	}
 
 	while (!done) {
 		const input = await askForInput(
@@ -119,9 +108,13 @@ SST already with ${info.totalPendingRewards} pending rewards across ${Object.key
 				const { accountAddress: me } = await chooseAccount();
 
 				// helpful information
-				const { nativeBalance, aaveWETHBalance } = await aave.getInfo({
-					me,
-				});
+				const nativeBalance = formatEther(
+					await broadcasting_network_provider.getBalance(me),
+				);
+				const aaveWETHBalance = formatUnits(
+					await aave.aaveWETHContract.balanceOf(me),
+					await aave.aaveWETHContract.decimals(),
+				);
 				console.info(
 					`Your native balance: ${nativeBalance}, your aave WETH balance: ${aaveWETHBalance}`,
 				);

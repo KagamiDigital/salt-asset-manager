@@ -4,11 +4,7 @@
 
 import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { askForInput } from "../../helpers";
-import {
-	broadcasting_network_provider,
-	orchestration_network_provider,
-	signer,
-} from "../../constants";
+import { broadcasting_network_provider } from "../../constants";
 import WrappedTokenGatewayV3 from "../../../contracts/Protocols/Aave/abi/WrappedTokenGatewayV3.json";
 import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
 import { transfer } from "../../transaction";
@@ -30,23 +26,30 @@ const aaveContract = new ethers.Contract(
 	broadcasting_network_provider,
 );
 
-const aaveWETHContract = new ethers.Contract(
+export const aaveWETHContract = new ethers.Contract(
 	aETHWETHContractAddress,
 	ERC20,
 	broadcasting_network_provider,
 );
 
-// // if this sanity check fails, its likely because you are on a chain that
-// // doesn't support Aave (e.g. Somnia)
-// aaveContract.getWETHAddress().then((address) => {
-// 	if (address !== aETHWETHContractAddress) {
-// 		console.error(
-// 			`\n(Warning: WETH addresses differ for aave smart contract)\n`,
-// 			address,
-// 			aETHWETHContractAddress,
-// 		);
-// 	}
-// });
+let doneSanity = false;
+export async function sanityCheck() {
+	// if this sanity check fails, its likely because you are on a chain that
+	// doesn't support Aave (e.g. Somnia)
+	if (doneSanity) return Promise.resolve();
+	await aaveContract.getWETHAddress().then((address) => {
+		doneSanity = true;
+		if (address !== wETHContractAddress) {
+			console.error(
+				`\n(Warning: WETH addresses differ for aave smart contract, this likely means the chain you are on doesn't support Aave)\n`,
+				`Returned address:`,
+				address,
+				`Address we have hardcoded:`,
+				wETHContractAddress,
+			);
+		}
+	});
+}
 
 export async function deposit({
 	me,
@@ -55,6 +58,8 @@ export async function deposit({
 	me: string;
 	amount?: BigNumber;
 }) {
+	await sanityCheck();
+
 	const data = aaveContract.interface.encodeFunctionData(
 		"depositETH(address, address onBehalfOf, uint16 referralCode)",
 		[poolContractAddress, me, 0],
@@ -62,7 +67,7 @@ export async function deposit({
 
 	const value =
 		amount ?? parseEther(await askForInput("Deposit amount (ETH): "));
-	console.log(`Depositing ${formatEther(value)} ETH to ${me}`);
+	console.log(`Depositing ${formatEther(value)} ETH from ${me}`);
 	await transfer({
 		recipient: aaveContract.address,
 		value,
@@ -70,30 +75,16 @@ export async function deposit({
 	});
 }
 
-export async function getInfo({ me }: { me: string }) {
-	// current balacne
-	const nativeBalance = formatEther(
-		await broadcasting_network_provider.getBalance(me),
-	);
-	const aaveWETHBalance = formatUnits(
-		await aaveWETHContract.balanceOf(me),
-		await aaveWETHContract.decimals(),
-	);
-	return {
-		nativeBalance,
-		aaveWETHBalance,
-	};
-}
-
 export async function approve({ me }: { me: string }) {
+	await sanityCheck();
+
 	const balance = await aaveWETHContract.balanceOf(me);
-	console.log(`Your current balance of aave WETH is: ${formatEther(balance)}`);
 	const data = aaveWETHContract.interface.encodeFunctionData(
 		"approve(address, uint256)",
 		[aaveContract.address, balance],
 	);
-	return;
 
+	console.log(`approving ${formatEther(balance)} aave WETH from ${me}`);
 	transfer({
 		recipient: aaveWETHContract.address,
 		value: BigNumber.from(0),
@@ -101,109 +92,20 @@ export async function approve({ me }: { me: string }) {
 	});
 }
 
-export async function withdraw() {
-	return;
-	// const vaultAddress = await askForInput(
-	// 	`\nPlease enter the account (public key) from where you wish to execute the transfer: `,
-	// );
+export async function withdraw({ me }: { me: string }) {
+	await sanityCheck();
 
-	// if (!ethers.utils.isAddress(vaultAddress)) {
-	// 	console.log("You need a valid account address to propose a transaction");
-	// 	return;
-	// }
+	const balance = await aaveWETHContract.balanceOf(me);
 
-	// const managedVaults = await getVaultsWithoutTransactions(
-	// 	signer.address,
-	// 	signer.provider,
-	// );
+	const data = aaveContract.interface.encodeFunctionData(
+		"withdrawETH(address, uint256 amount, address to)",
+		[poolContractAddress, balance, me],
+	);
 
-	// const vault = managedVaults.find(
-	// 	(v) => v.masterPublicAddress === vaultAddress,
-	// );
-
-	// if (!vault) {
-	// 	console.log("No Managed account found for address: " + vaultAddress);
-	// 	return;
-	// }
-	// const nonce = await broadcasting_network_provider.getTransactionCount(
-	// 	vault.masterPublicAddress,
-	// );
-
-	// // get the fee data on the broadcasting network
-	// const feeData = await broadcasting_network_provider.getFeeData();
-
-	// const aETHWETH = new ethers.Contract(
-	// 	aETHWETHContractAddress,
-	// 	ERC20,
-	// 	broadcasting_network_provider,
-	// );
-	// const balance = await aETHWETH.balanceOf(vault.masterPublicAddress);
-
-	// const contractInterface = new ethers.utils.Interface(WrappedTokenGatewayV3);
-	// const data = contractInterface.encodeFunctionData("withdrawETH", [
-	// 	poolContractAddress,
-	// 	balance,
-	// 	vault.masterPublicAddress,
-	// ]);
-
-	// let gas: BigNumber;
-
-	// try {
-	// 	// Get the estimated gas for the fully populated transaction
-	// 	const gasEstimate = await broadcasting_network_provider.estimateGas({
-	// 		from: vault.masterPublicAddress!,
-	// 		to: WrappedTokenGatewayV3ContractAddress,
-	// 		data: data,
-	// 	});
-	// 	gas = gasEstimate.mul(155).div(100); // return the estimate with a 55% increase
-	// } catch (err) {
-	// 	gas = BigNumber.from(35000).mul(1000).div(100); // return 350k gas, i.e. just a large value
-	// }
-
-	// const submitTransactionTx = await submitTransaction(
-	// 	WrappedTokenGatewayV3ContractAddress,
-	// 	0,
-	// 	process.env.BROADCASTING_NETWORK_ID,
-	// 	nonce,
-	// 	data,
-	// 	BigNumber.from(feeData.gasPrice).toNumber(),
-	// 	gas.toNumber(),
-	// 	vault.vaultAddress,
-	// 	signer,
-	// 	"SERVER",
-	// 	false,
-	// 	broadcasting_network_provider,
-	// );
-
-	// const submitTransactionResult = await (
-	// 	submitTransactionTx as ContractTransaction
-	// ).wait();
-	// const submitTransactionEvents = submitTransactionResult.events;
-	// const event = submitTransactionEvents[0];
-
-	// const eventData = {
-	// 	txId: event.args[0]._hex,
-	// 	txInfo: event.args[1],
-	// };
-
-	// console.log("transaction submitted successfully", eventData.txId);
-
-	// const approval = await askForInput(
-	// 	`\nPlease confirm you want to sign the transaction, you cannot cancel the transaction after this point? [yes/no] `,
-	// );
-
-	// if (approval !== "yes") {
-	// 	console.log("transaction proposal cannot carry on without the signature");
-	// 	return;
-	// }
-
-	// const tx = (await signTx(
-	// 	vault.vaultAddress,
-	// 	Number(eventData.txId),
-	// 	signer,
-	// )) as ethers.ContractTransaction;
-
-	// await tx.wait();
-
-	// console.log("transaction signed successfully");
+	console.log(`withdrawing ${formatEther(balance)} aave WETH from ${me}`);
+	transfer({
+		value: BigNumber.from(0),
+		recipient: aaveContract.address,
+		data,
+	});
 }
