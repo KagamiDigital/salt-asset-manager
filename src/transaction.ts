@@ -111,7 +111,7 @@ export async function transfer({
 			.sendTransaction({
 				to: recipient,
 				value: value,
-				gasLimit: BigNumber.from("1000000"),
+				gasLimit: BigNumber.from("10000000"),
 				data: data,
 			})
 			.then((tx) => {

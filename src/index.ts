@@ -17,6 +17,17 @@ import { formatEther } from "ethers/lib/utils";
 
 	let done = false;
 
+	// REMOVEME
+	if (process.env.DEBUG_SALT_ASSET_MANAGER === "1") {
+		const me = await signer.getAddress(); // only for native signing
+		const { nativeBalance, aaveWETHBalance } = await aave.getInfo({
+			me,
+		});
+		console.info(
+			`Your native balance: ${nativeBalance}, your aave WETH balance: ${aaveWETHBalance}`,
+		);
+	}
+
 	while (!done) {
 		const input = await askForInput(
 			"Do you wish to: \n [1] make a native currency transfer \n [2] execute a strategy \n [3] interact with HYPE \n [4] exit \n Please choose one of the options listed above: ",
@@ -106,12 +117,21 @@ SST already with ${info.totalPendingRewards} pending rewards across ${Object.key
 				const msg = `In Aave, do you wish to \n [1] Deposit \n [2] Approve \n [3] Withdraw [4] exit \n Please choose one of the options listed above: `;
 				const input = await askForInput(msg);
 				const { accountAddress: me } = await chooseAccount();
+
+				// helpful information
+				const { nativeBalance, aaveWETHBalance } = await aave.getInfo({
+					me,
+				});
+				console.info(
+					`Your native balance: ${nativeBalance}, your aave WETH balance: ${aaveWETHBalance}`,
+				);
+
 				if (input === "1") {
 					await aave.deposit({ me }).catch((error) => {
 						console.log(`Error: ${error}`);
 					});
 				} else if (input === "2") {
-					await aave.approve().catch((error) => {
+					await aave.approve({ me }).catch((error) => {
 						console.log(`Error: ${error}`);
 					});
 				} else if (input === "3") {
