@@ -10,6 +10,9 @@ import ERC20 from "../../../contracts/ERC20/abi/ERC20.json";
 import { transfer } from "../../transaction";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 
+// https://aave.com/docs/resources/addresses
+// https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3ArbitrumSepolia.sol
+
 // specific to aave
 // https://sepolia.etherscan.io/token/0x5b071b590a59395fe4025a0ccc1fcc931aac1830#readProxyContract
 const aETHWETHContractAddress = "0x5b071b590a59395fE4025A0Ccc1FcC931AAc1830";

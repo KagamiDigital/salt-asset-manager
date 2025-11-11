@@ -128,7 +128,7 @@ SST already with ${info.totalPendingRewards} pending rewards across ${Object.key
 						console.log(`Error: ${error}`);
 					});
 				} else if (input === "3") {
-					await aave.withdraw().catch((error) => {
+					await aave.withdraw({ me }).catch((error) => {
 						console.log(`Error: ${error}`);
 					});
 				} else if (input === "4") {
