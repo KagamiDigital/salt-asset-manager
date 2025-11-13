@@ -6,6 +6,7 @@ import * as hype from "./strategy/hype/hype";
 import * as somnia from "./strategy/somnia/staking";
 import * as aave from "./strategy/aave/aave";
 import * as somnia_staker from "./bots/somnia_staker";
+import * as tokos_somnia from "./strategy/tokos.fi/somnia";
 import { chooseAccount, transfer } from "./transaction";
 import { ethers } from "ethers";
 import { formatEther, formatUnits } from "ethers/lib/utils";
@@ -16,6 +17,12 @@ import { formatEther, formatUnits } from "ethers/lib/utils";
 	printRectangle(`ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED`);
 
 	let done = false;
+
+	if (process.env.DEBUG_SALT_ASSET_MANAGER === "1") {
+		const me = await signer.getAddress();
+		tokos_somnia.getInfo({ me });
+		done = true;
+	}
 
 	while (!done) {
 		const input = await askForInput(
