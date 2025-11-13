@@ -1,0 +1,883 @@
+{
+	"Mt": [
+		{ "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
+		{ "type": "receive", "stateMutability": "payable" },
+		{
+			"type": "function",
+			"name": "DEFAULT_ADMIN_ROLE",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "NODE_CALLER_ROLE",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "UPGRADER_ROLE",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "UPGRADE_INTERFACE_VERSION",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "string", "internalType": "string" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "_sortWeightedValues",
+			"inputs": [
+				{
+					"name": "data",
+					"type": "tuple[]",
+					"internalType": "struct NodeCommitteeV2.WeightedValue[]",
+					"components": [
+						{ "name": "value", "type": "uint256", "internalType": "uint256" },
+						{ "name": "weight", "type": "uint256", "internalType": "uint256" }
+					]
+				}
+			],
+			"outputs": [
+				{
+					"name": "",
+					"type": "tuple[]",
+					"internalType": "struct NodeCommitteeV2.WeightedValue[]",
+					"components": [
+						{ "name": "value", "type": "uint256", "internalType": "uint256" },
+						{ "name": "weight", "type": "uint256", "internalType": "uint256" }
+					]
+				}
+			],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "burnFeePercentage",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "finaliseEpoch",
+			"inputs": [],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "getCurrentEpochCommittee",
+			"inputs": [],
+			"outputs": [
+				{
+					"name": "",
+					"type": "tuple[]",
+					"internalType": "struct INodeCommitteeV2.Node[]",
+					"components": [
+						{
+							"name": "nodeAddress",
+							"type": "address",
+							"internalType": "address"
+						},
+						{
+							"name": "stakedAmount",
+							"type": "uint256",
+							"internalType": "uint256"
+						},
+						{
+							"name": "publicKeys",
+							"type": "tuple",
+							"internalType": "struct INodeCommitteeV2.PublicKeys",
+							"components": [
+								{
+									"name": "ecdsaPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "blsPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfPossession",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfAddress",
+									"type": "bytes",
+									"internalType": "bytes"
+								}
+							]
+						}
+					]
+				}
+			],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getCurrentGasPrice",
+			"inputs": [
+				{ "name": "baseFee", "type": "uint256", "internalType": "uint256" }
+			],
+			"outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getFinalisedNodes",
+			"inputs": [],
+			"outputs": [
+				{
+					"name": "",
+					"type": "tuple[]",
+					"internalType": "struct INodeCommitteeV2.Node[]",
+					"components": [
+						{
+							"name": "nodeAddress",
+							"type": "address",
+							"internalType": "address"
+						},
+						{
+							"name": "stakedAmount",
+							"type": "uint256",
+							"internalType": "uint256"
+						},
+						{
+							"name": "publicKeys",
+							"type": "tuple",
+							"internalType": "struct INodeCommitteeV2.PublicKeys",
+							"components": [
+								{
+									"name": "ecdsaPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "blsPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfPossession",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfAddress",
+									"type": "bytes",
+									"internalType": "bytes"
+								}
+							]
+						}
+					]
+				}
+			],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getNextEpochCommittee",
+			"inputs": [],
+			"outputs": [
+				{
+					"name": "",
+					"type": "tuple[]",
+					"internalType": "struct INodeCommitteeV2.Node[]",
+					"components": [
+						{
+							"name": "nodeAddress",
+							"type": "address",
+							"internalType": "address"
+						},
+						{
+							"name": "stakedAmount",
+							"type": "uint256",
+							"internalType": "uint256"
+						},
+						{
+							"name": "publicKeys",
+							"type": "tuple",
+							"internalType": "struct INodeCommitteeV2.PublicKeys",
+							"components": [
+								{
+									"name": "ecdsaPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "blsPublicKey",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfPossession",
+									"type": "bytes",
+									"internalType": "bytes"
+								},
+								{
+									"name": "proofOfAddress",
+									"type": "bytes",
+									"internalType": "bytes"
+								}
+							]
+						}
+					]
+				}
+			],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getRegisteredNode",
+			"inputs": [
+				{ "name": "nodeAddress", "type": "address", "internalType": "address" }
+			],
+			"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getRoleAdmin",
+			"inputs": [
+				{ "name": "role", "type": "bytes32", "internalType": "bytes32" }
+			],
+			"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "getWarnedNodeWeight",
+			"inputs": [
+				{ "name": "nodeAddress", "type": "address", "internalType": "address" }
+			],
+			"outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "grantRole",
+			"inputs": [
+				{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
+				{ "name": "account", "type": "address", "internalType": "address" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "hasRole",
+			"inputs": [
+				{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
+				{ "name": "account", "type": "address", "internalType": "address" }
+			],
+			"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "initialize",
+			"inputs": [
+				{ "name": "upgrader", "type": "address", "internalType": "address" },
+				{
+					"name": "initialMaxNodes",
+					"type": "uint256",
+					"internalType": "uint256"
+				},
+				{
+					"name": "initialBurnFeePercentage",
+					"type": "uint256",
+					"internalType": "uint256"
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "joinCommittee",
+			"inputs": [
+				{ "name": "nodeAddress", "type": "address", "internalType": "address" },
+				{
+					"name": "amountToStake",
+					"type": "uint256",
+					"internalType": "uint256"
+				},
+				{
+					"name": "publicKeys",
+					"type": "tuple",
+					"internalType": "struct INodeCommitteeV2.PublicKeys",
+					"components": [
+						{
+							"name": "ecdsaPublicKey",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "blsPublicKey",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "proofOfPossession",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "proofOfAddress",
+							"type": "bytes",
+							"internalType": "bytes"
+						}
+					]
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "leaveCommittee",
+			"inputs": [
+				{ "name": "nodeAddress", "type": "address", "internalType": "address" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "maxNodes",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "moveToNextEpoch",
+			"inputs": [
+				{
+					"name": "rewardsPayedToContract",
+					"type": "uint256",
+					"internalType": "uint256"
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "nodeCommitteeStaking",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "proxiableUUID",
+			"inputs": [],
+			"outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "renounceRole",
+			"inputs": [
+				{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
+				{
+					"name": "callerConfirmation",
+					"type": "address",
+					"internalType": "address"
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "revokeRole",
+			"inputs": [
+				{ "name": "role", "type": "bytes32", "internalType": "bytes32" },
+				{ "name": "account", "type": "address", "internalType": "address" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "setBurnFeePercentage",
+			"inputs": [
+				{
+					"name": "newBurnFeePercentage",
+					"type": "uint256",
+					"internalType": "uint256"
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "setNodeCommitteeStaking",
+			"inputs": [
+				{
+					"name": "newNodeCommitteeStaking",
+					"type": "address",
+					"internalType": "address"
+				}
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "setNodeGasPriceVote",
+			"inputs": [
+				{ "name": "gasPriceVote", "type": "uint256", "internalType": "uint256" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "supportsInterface",
+			"inputs": [
+				{ "name": "interfaceId", "type": "bytes4", "internalType": "bytes4" }
+			],
+			"outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+			"stateMutability": "view"
+		},
+		{
+			"type": "function",
+			"name": "updateNodeStake",
+			"inputs": [
+				{ "name": "nodeAddress", "type": "address", "internalType": "address" },
+				{ "name": "newStake", "type": "uint256", "internalType": "uint256" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "function",
+			"name": "upgradeToAndCall",
+			"inputs": [
+				{
+					"name": "newImplementation",
+					"type": "address",
+					"internalType": "address"
+				},
+				{ "name": "data", "type": "bytes", "internalType": "bytes" }
+			],
+			"outputs": [],
+			"stateMutability": "payable"
+		},
+		{
+			"type": "function",
+			"name": "voteInactiveNode",
+			"inputs": [
+				{
+					"name": "peer_address",
+					"type": "address",
+					"internalType": "address"
+				},
+				{ "name": "is_active", "type": "bool", "internalType": "bool" }
+			],
+			"outputs": [],
+			"stateMutability": "nonpayable"
+		},
+		{
+			"type": "event",
+			"name": "BurnFeePercentageUpdated",
+			"inputs": [
+				{
+					"name": "newPercentage",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "EpochFinalized",
+			"inputs": [
+				{
+					"name": "numNodes",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "EpochMoved",
+			"inputs": [
+				{
+					"name": "rewardsDistributed",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "Initialized",
+			"inputs": [
+				{
+					"name": "version",
+					"type": "uint64",
+					"indexed": false,
+					"internalType": "uint64"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "NodeJoinedCommittee",
+			"inputs": [
+				{
+					"name": "nodeAddress",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "stakedAmount",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				},
+				{
+					"name": "publicKeys",
+					"type": "tuple",
+					"indexed": false,
+					"internalType": "struct INodeCommitteeV2.PublicKeys",
+					"components": [
+						{
+							"name": "ecdsaPublicKey",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "blsPublicKey",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "proofOfPossession",
+							"type": "bytes",
+							"internalType": "bytes"
+						},
+						{
+							"name": "proofOfAddress",
+							"type": "bytes",
+							"internalType": "bytes"
+						}
+					]
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "NodeLeftCommittee",
+			"inputs": [
+				{
+					"name": "nodeAddress",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "timestamp",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "NodeStakeUpdated",
+			"inputs": [
+				{
+					"name": "nodeAddress",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "newStake",
+					"type": "uint256",
+					"indexed": false,
+					"internalType": "uint256"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "NodeVotedInactive",
+			"inputs": [
+				{
+					"name": "nodeAddress",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "peerAddress",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "isActive",
+					"type": "bool",
+					"indexed": false,
+					"internalType": "bool"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "RoleAdminChanged",
+			"inputs": [
+				{
+					"name": "role",
+					"type": "bytes32",
+					"indexed": true,
+					"internalType": "bytes32"
+				},
+				{
+					"name": "previousAdminRole",
+					"type": "bytes32",
+					"indexed": true,
+					"internalType": "bytes32"
+				},
+				{
+					"name": "newAdminRole",
+					"type": "bytes32",
+					"indexed": true,
+					"internalType": "bytes32"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "RoleGranted",
+			"inputs": [
+				{
+					"name": "role",
+					"type": "bytes32",
+					"indexed": true,
+					"internalType": "bytes32"
+				},
+				{
+					"name": "account",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "sender",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "RoleRevoked",
+			"inputs": [
+				{
+					"name": "role",
+					"type": "bytes32",
+					"indexed": true,
+					"internalType": "bytes32"
+				},
+				{
+					"name": "account",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				},
+				{
+					"name": "sender",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "StakingContractUpdated",
+			"inputs": [
+				{
+					"name": "newStakingContract",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				}
+			],
+			"anonymous": false
+		},
+		{
+			"type": "event",
+			"name": "Upgraded",
+			"inputs": [
+				{
+					"name": "implementation",
+					"type": "address",
+					"indexed": true,
+					"internalType": "address"
+				}
+			],
+			"anonymous": false
+		},
+		{ "type": "error", "name": "AccessControlBadConfirmation", "inputs": [] },
+		{
+			"type": "error",
+			"name": "AccessControlUnauthorizedAccount",
+			"inputs": [
+				{ "name": "account", "type": "address", "internalType": "address" },
+				{ "name": "neededRole", "type": "bytes32", "internalType": "bytes32" }
+			]
+		},
+		{
+			"type": "error",
+			"name": "AddressEmptyCode",
+			"inputs": [
+				{ "name": "target", "type": "address", "internalType": "address" }
+			]
+		},
+		{
+			"type": "error",
+			"name": "ERC1967InvalidImplementation",
+			"inputs": [
+				{
+					"name": "implementation",
+					"type": "address",
+					"internalType": "address"
+				}
+			]
+		},
+		{ "type": "error", "name": "ERC1967NonPayable", "inputs": [] },
+		{ "type": "error", "name": "FailedCall", "inputs": [] },
+		{ "type": "error", "name": "InvalidInitialization", "inputs": [] },
+		{ "type": "error", "name": "NodeCommittee_CommitteeFull", "inputs": [] },
+		{
+			"type": "error",
+			"name": "NodeCommittee_EpochAlreadyFinalised",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_EpochAlreadySettled",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_EpochNotFinalised",
+			"inputs": []
+		},
+		{ "type": "error", "name": "NodeCommittee_FailedToBurnFees", "inputs": [] },
+		{
+			"type": "error",
+			"name": "NodeCommittee_FailedToSendFeesToStaking",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_InsufficientBalance",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_NoNodesToFinalise",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_NodeAlreadyRegistered",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_NodeNotInCommittee",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_NodeNotRegistered",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_OnlyNodeCanCallThisFunction",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_OnlyStakingContractCanCallThisFunction",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_PreviousEpochNotFinalised",
+			"inputs": []
+		},
+		{
+			"type": "error",
+			"name": "NodeCommittee_PreviousEpochNotSettled",
+			"inputs": []
+		},
+		{ "type": "error", "name": "NotInitializing", "inputs": [] },
+		{ "type": "error", "name": "UUPSUnauthorizedCallContext", "inputs": [] },
+		{
+			"type": "error",
+			"name": "UUPSUnsupportedProxiableUUID",
+			"inputs": [
+				{ "name": "slot", "type": "bytes32", "internalType": "bytes32" }
+			]
+		}
+	]
+}
