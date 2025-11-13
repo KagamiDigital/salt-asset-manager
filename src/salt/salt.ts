@@ -71,7 +71,7 @@ export async function sendTransaction({
   const { accountId } = await chooseAccount();
 
   value =
-    value && value.gt(0)
+    value && value.gte(0)
       ? value
       : ethers.utils.parseEther(
           await askForInput(

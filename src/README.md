@@ -6,15 +6,15 @@ package that you can use today!
 ### salt/salt.ts
 
 However, it is rather low level. [`salt.ts`](./salt/salt.ts) provides
-a higher-level API for using SALT's software interactively. **This is likely the most
+a higher-level API for using Salt's software interactively. **This is likely the most
 interesting part of this repo**, the rest is example code using the exported
 higher-level function `sendTransaction`.
 
-This file should be really helpful for readers wondering how to use SALT.
+This file should be really helpful for readers wondering how to use Salt.
 
 ### salt/strategies
 
-Every subfolder in the `/strategies` folder contains an example of how to use SALT with another protocol.
+Every subfolder in the `/strategies` folder contains an example of how to use Salt with another protocol.
 The integration is straightforward, it only consists in passing the needed inputs to `sendTransaction` which takes care of the rest
 
 ### config.ts

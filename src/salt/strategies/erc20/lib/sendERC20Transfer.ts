@@ -1,8 +1,8 @@
 import { ethers, Contract } from "ethers";
-import { askForInput } from "../../../helpers";
-import { broadcasting_network_provider } from "../../../config";
-import ERC20ContractABI from "../../../../contracts/ERC20/abi/ERC20.json";
-import { chooseAccount, sendTransaction } from "../../salt";
+import { askForInput } from "../../../../helpers";
+import { broadcasting_network_provider } from "../../../../config";
+import ERC20ContractABI from "../../../../../contracts/ERC20/abi/ERC20.json";
+import { chooseAccount, sendTransaction } from "../../../salt";
 
 /**
  *  Facilitates  an ERC-20 token transfer
@@ -10,7 +10,7 @@ import { chooseAccount, sendTransaction } from "../../salt";
  * @param to address of the recipient
  * @param value amount of token to transfer
  */
-export async function sendERC20Transfer(
+export async function transfer(
   {
     tokenAddress,
     accountAddress,

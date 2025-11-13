@@ -6,7 +6,7 @@ import {
 export const validatorAddress =
   CHORUS_ONE_ETHEREUM_VALIDATORS.hoodi.mevMaxVault;
 export const staker = new EthereumStaker({
-  network: process.env.INTU_NETWORK === "arbitrum-main" ? "ethereum" : "hoodi",
+  network: "hoodi",
   rpcUrl: process.env.BROADCASTING_NETWORK_RPC_NODE_URL,
 });
 

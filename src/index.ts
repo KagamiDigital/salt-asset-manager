@@ -1,14 +1,14 @@
 import { broadcasting_network_provider, signer } from "./config";
 import { askForInput, networkSanityCheck, printRectangle, rl } from "./helpers";
 import * as chorus_one from "./salt/strategies/chorus-one";
-import * as aave from "./salt/strategies/aave/aave";
-import * as somnia_staker from "./salt/strategies/somnia/somnia_staker";
+import * as aave from "./salt/strategies/aave";
+import * as somnia from "./salt/strategies/somnia";
 import { chooseAccount, sendTransaction } from "./salt/salt";
 import { ethers } from "ethers";
 import { formatEther, formatUnits } from "ethers/lib/utils";
 import { Salt } from "salt-sdk";
 import { SOMNIA_SHANON } from "./salt/strategies/somnia";
-import { sendERC20Transfer } from "./salt/strategies/erc20";
+import { transfer } from "./salt/strategies/erc20";
 
 export const salt = new Salt({ environment: "TESTNET" });
 
@@ -23,7 +23,7 @@ export const salt = new Salt({ environment: "TESTNET" });
   }
 
   printRectangle(
-    `ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED to SALT`
+    `ASSET MANAGER ${publicAddress.toUpperCase()} CONNECTED to Salt`
   );
 
   let done = false;
@@ -37,7 +37,7 @@ export const salt = new Salt({ environment: "TESTNET" });
         console.error("Error:", error);
       });
     } else if (input === "2") {
-      await sendERC20Transfer({}).catch((error) => {
+      await transfer({}).catch((error) => {
         console.error("Error:", error);
       });
     } else if (input === "3") {
@@ -106,7 +106,7 @@ export const salt = new Salt({ environment: "TESTNET" });
         console.log(
           `Printing information about your current Somnia staking delegations`
         );
-        const info = await somnia_staker.getInfo({ accountAddress });
+        const info = await somnia.getInfo({ accountAddress });
         console.log(
           `Your Salt wallet currently at ${accountAddress} has ${
             info.balance
@@ -124,27 +124,23 @@ SST already with ${info.totalPendingRewards} pending rewards across ${
           const amount = ethers.utils.parseEther(
             await askForInput("How much SST do you want to stake?: ")
           );
-          await somnia_staker
-            .delegateStake({ amount, accountAddress })
+          await somnia
+            .delegateStakeToFirst({ amount, accountAddress })
             .catch((error) => {
               console.log(`Error: `, error);
             });
         } else if (input === "2") {
-          await somnia_staker
-            .claimAllRewards({ accountAddress })
-            .catch((error) => {
-              console.log(`Error:`, error);
-            });
+          await somnia.claimAllRewards({ accountAddress }).catch((error) => {
+            console.log(`Error:`, error);
+          });
         } else if (input === "3") {
           const input = await askForInput(
             `Are you sure you want to undelegate all your stake? (y/N): `
           );
           if (input.toLowerCase() === "y") {
-            await somnia_staker
-              .undelegateEverything({ accountAddress })
-              .catch((error) => {
-                console.log(`Error: ${error}`);
-              });
+            await somnia.undelegateAll({ accountAddress }).catch((error) => {
+              console.log(`Error: ${error}`);
+            });
           } else {
             console.log("Undelegation cancelled");
           }

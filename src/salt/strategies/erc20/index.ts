@@ -1,1 +1,1 @@
-export { sendERC20Transfer } from "./sendERC20Transfer";
+export { transfer } from "./lib/sendERC20Transfer";
