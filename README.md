@@ -1,22 +1,28 @@
-# Salt Asset Manager Bot
+# Salt Asset Manager Repository
 
 ## Introduction
 
-The asset manager bot is a starter pack for Salt asset managers. By setting up this software, you can propose transactions to Salt accounts that you are an authorised signer on. The transaction proposal will be picked up by Salt's backend, which will initiate the signing flow.
+The asset manager repository is a starter pack for Salt asset managers.
+By using our software, you can propose transactions to Salt accounts where you are an authorized signer.
 
 ## Pre-requisites
 
 ### Technical pre-requisites
 
-Node.js is a required dependency to be able to install and run the asset manager bot. [Install Node.js](https://nodejs.org/en/download/package-manager).
+Node.js is a required dependency to be able to install and run the asset manager repository. [Install Node.js](https://nodejs.org/en/download/package-manager).
 
 ### Business pre-requisites
 
 A completely set up organisation on [testnet.salt.space](https://testnet.salt.space) with a funded account.
 
+what does it mean for an account to be funded?
+
+1. the account should have ETH (on Arbitrum Sepolia)
+2. (optional) the account should have
+
 The bot will need to be set up as a co-signers on a Salt account. To do this, it will need access to MetaMask and the Chrome browser.
 
-## Set up the Asset Manager Bot
+## Set up the Asset Manager Repository
 
 1. clone the repo to your local machine
 2. npm install
@@ -35,11 +41,13 @@ This repository is meant to serve as a starter pack for testing purposes, we enc
 ## Supported Networks
 
 As of now Salt supports the following networks to broadcast transactions:
+
 - Ethereum Sepolia
 - Base Sepolia
 - Moonbase Alpha
 - Polygon Amoy
 - Somnia Shannon
+- HyperEVM Testnet
 
 ### Important Considerations
 
