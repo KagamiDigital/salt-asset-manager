@@ -3,13 +3,13 @@ import { broadcasting_network_provider } from "../../../config";
 import ABI from "../../../../contracts/somnia/STAKER.json";
 
 export const stakingContractAddress =
-  "0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
+	"0xBe367d410D96E1cAeF68C0632251072CDf1b8250";
 export const stakingContractABI = ABI;
 
 export const stakingContract = new Contract(
-  stakingContractAddress,
-  stakingContractABI,
-  broadcasting_network_provider
+	stakingContractAddress,
+	stakingContractABI,
+	broadcasting_network_provider,
 );
 
 export const SOMNIA_SHANON = 50312;

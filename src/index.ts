@@ -194,6 +194,14 @@ SST already with ${info.totalPendingRewards} pending rewards across ${
 				}
 			} else if (input === "4") {
 				// tokos.fi
+				// checks using somnia testnet
+				const networkMatch = await networkSanityCheck(SOMNIA_SHANON);
+				if (!networkMatch) {
+					console.error(
+						`\n(Warning: Switch your orchestration network to Somnia Shannon (${SOMNIA_SHANON}) (.env) and reload the project to use tokos.fi)\n`,
+					);
+					return;
+				}
 				const msg = `In tokos.fi re-staking, do you wish to: \n [1] depositETH \n [2] TODO \n [3] Exit \n Please choose one of the options above`;
 				const input = await askForInput(msg);
 
