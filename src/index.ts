@@ -3,9 +3,10 @@ import { askForInput, networkSanityCheck, printRectangle, rl } from "./helpers";
 import * as chorus_one from "./salt/strategies/chorus-one";
 import * as aave from "./salt/strategies/aave";
 import * as somnia from "./salt/strategies/somnia";
+import * as tokosfi from "./salt/strategies/tokos.fi";
 import { chooseAccount, sendTransaction } from "./salt/salt";
 import { ethers } from "ethers";
-import { formatEther, formatUnits } from "ethers/lib/utils";
+import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { Salt } from "salt-sdk";
 import { SOMNIA_SHANON } from "./salt/strategies/somnia";
 import { transfer } from "./salt/strategies/erc20";
@@ -195,9 +196,28 @@ SST already with ${info.totalPendingRewards} pending rewards across ${
 				// tokos.fi
 				const msg = `In tokos.fi re-staking, do you wish to: \n [1] depositETH \n [2] TODO \n [3] Exit \n Please choose one of the options above`;
 				const input = await askForInput(msg);
+
+				const { accountAddress } = await chooseAccount();
+
 				if (input === "1") {
 					// depositETH
-					
+					const amount = await askForInput(
+						"Enter the amount to deposit (in ETH): ",
+					);
+					await tokosfi
+						.depositETH({
+							me: accountAddress,
+							amount: parseEther(amount),
+						})
+						.catch((error) => {
+							console.log(`Error:`, error);
+						});
+				} else if (input === "2") {
+					// TODO
+				} else if (input === "3") {
+					done = true;
+				} else {
+					console.log(`Please enter a valid choice`);
 				}
 			} else if (input === "5") {
 				done = true;
