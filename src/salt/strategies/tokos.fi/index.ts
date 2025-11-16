@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { depositETH } from "./lib/depositETH";
+import { aSOMIWSSTContract } from "./lib/tokens";
 
 import WrappedTokenGatewayV3ABI from "../../../../contracts/tokos.fi/abi/WrappedTokenGatewayV3.json";
 import { broadcasting_network_provider } from "../../../config";
@@ -11,4 +12,4 @@ export const tokosContract = new ethers.Contract(
 	broadcasting_network_provider,
 );
 
-export { depositETH };
+export { depositETH, aSOMIWSSTContract };

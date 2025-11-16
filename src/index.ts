@@ -202,10 +202,21 @@ SST already with ${info.totalPendingRewards} pending rewards across ${
 					);
 					return;
 				}
-				const msg = `In tokos.fi re-staking, do you wish to: \n [1] depositETH \n [2] TODO \n [3] Exit \n Please choose one of the options above`;
-				const input = await askForInput(msg);
-
+				const msg = `In tokos.fi re-staking, do you wish to: \n [1] depositETH \n [2] TODO \n [3] Exit \n Please choose one of the options above: `;
 				const { accountAddress } = await chooseAccount();
+
+				// Print useful information
+				const nativeBalance = formatEther(
+					await broadcasting_network_provider.getBalance(accountAddress),
+				);
+				const restakedBalance = formatEther(
+					await tokosfi.aSOMIWSSTContract.balanceOf(accountAddress),
+				);
+				console.log(`Your Salt account tokos.fi information:`);
+				console.log(`- Native balance (SST): ${nativeBalance}`);
+				console.log(`- aSOMWSST balance: ${restakedBalance}`);
+
+				const input = await askForInput(msg);
 
 				if (input === "1") {
 					// depositETH

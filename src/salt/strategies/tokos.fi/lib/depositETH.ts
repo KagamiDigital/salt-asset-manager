@@ -23,7 +23,7 @@ export async function depositETH({
 		[poolAddress, me, 0],
 	);
 
-	sendTransaction({
+	await sendTransaction({
 		recipient: tokosContract.address,
 		data: data,
 		value: amount,
