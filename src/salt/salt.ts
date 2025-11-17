@@ -90,6 +90,21 @@ export async function sendTransaction({
 		)} to ${recipient} with data ${data}`,
 	);
 
+	// sanity check
+	await broadcasting_network_provider
+		.estimateGas({
+			to: recipient,
+			value,
+			data,
+		})
+		.catch((error) => {
+			console.error(
+				`It appears that a call to sendTransaction isn't valid`,
+				error,
+				`This is just a sanity check, continuing on nevertheless`,
+			);
+		});
+
 	// gas is handled by SDK
 	const transfer = await salt.submitTx({
 		accountId: accountId,
@@ -105,7 +120,7 @@ export async function sendTransaction({
 	// A Promise wrapper around the salt-sdk internal state machine
 	await new Promise((resolve, reject) => {
 		//propose
-		transfer.onPropose((data) => console.log("PROPOSE :", data));
+		transfer.onPropose((data) => console.log("PROPOSE:", data));
 		// sign
 		transfer.onSign((data) => console.log(`SIGNING:`, data));
 		//combine
