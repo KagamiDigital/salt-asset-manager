@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The asset manager repository is a starter pack for Salt asset managers.
+This repository is a starter pack for non-custodial service providers on Salt accounts. We call this being a "wallet butler". 
 By using our software, you can propose transactions to Salt accounts where you are an authorized signer.
 Instructions are for testnet access. Production access is available on request.
 
@@ -49,6 +49,7 @@ The broadcasting network simply refers to the network on which you wish to execu
 As of now Salt supports the following networks to broadcast transactions:
 
 - Ethereum Sepolia
+- Arbitrum Sepolia
 - Base Sepolia
 - Moonbase Alpha
 - Polygon Amoy
