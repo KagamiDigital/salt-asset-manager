@@ -2,8 +2,9 @@
 
 ## Introduction
 
-This repository is a starter pack for non-custodial service providers on Salt accounts. We call this being a "wallet butler". 
-By using our software, you can propose transactions to Salt accounts where you are an authorized signer.
+This repository is a starter pack for non-custodial service providers on Salt accounts. For example you could run a "wallet butler" which responds to messages from your customer on Salt and deploys funds on their behalf into yield opportunities.
+
+To achieve this, you will propose transactions to Salt accounts where you are an authorized signer.
 Instructions are for testnet access. Production access is available on request.
 
 ## Pre-requisites
@@ -17,14 +18,14 @@ Node.js is a required dependency to be able to install and run the asset manager
 1. A completely set up organisation on [testnet.salt.space](https://testnet.salt.space) with a funded account.
 2. One of the account's signers private key (add private key in .env file).
 
-## Set up the Asset Manager Repository
+## Set up the Salt-Autofi Repository
 
 1. clone the repo to your local machine
 2. npm install
 3. rename .env.sample to .env and set the private key variable to the private key of the account you want to manage assets from. You must be a signer on this account.
 4. set BROADCASTING_NETWORK_RPC_NODE_URL, and BROADCASTING_NETWORK_ID to the broadcasting network of your choice from the [supported networks list](#supported-broadcasting-networks) below.
 
-## Start the Asset Manager Bot
+## Start the Salt-Autofi Bot
 
 1. npm start
 2. follow the instructions printed on the command line
@@ -63,6 +64,10 @@ The orchestration network cannot be changed. Salt uses Arbitrum Sepolia for test
 The RPC nodes supplied by default in the .env.sample file are free nodes. The repository has been tested using these nodes. You may want to switch to paid nodes to improve your experience.
 
 If you wish to broadcast on a test EVM network that is not supported in the list, please contact the Salt team on [Discord](https://discord.gg/UhDUBW9ymM).
+
+## Useful Links
+SDK: https://www.npmjs.com/package/salt-sdk
+SDK docs: https://salt-sdk-docs.edd.deno.net/classes/Salt.html#acceptorganisationinvitation
 
 ## Notes
 
